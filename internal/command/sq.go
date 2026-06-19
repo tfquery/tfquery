@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -121,6 +122,9 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	var combined []map[string]interface{}
+	rawOutput := cmd.String("output") == "raw"
+	aggregateRawOutput := multiRoot && rawOutput
+	singleRawOutput := !multiRoot && rawOutput
 	resolvedPassphrase := ""
 
 	// Iterate over all the roots, combining each state into the common dataset.
@@ -152,6 +156,24 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 		doc, resolvedPassphrase, err = decryptStateIfNeeded(cmd, doc, resolvedPassphrase)
 		if err != nil {
 			return err
+		}
+
+		// We're problably most commonly in single-root mode when using raw, so
+		// check for that and bail out early if so.
+		if outputSingleRootRaw(singleRawOutput, doc, attrs, cmd, postProcess, os.Stdout) {
+			return nil
+		}
+
+		if aggregateRawOutput {
+			iacroot := transformIacroot(wd, m.StartingDir, relativeIacroot)
+
+			rawRow, err := buildAggregatedRawRow(doc, iacroot)
+			if err != nil {
+				return err
+			}
+
+			combined = append(combined, rawRow)
+			continue
 		}
 
 		rows, err := output.FlattenTerraformState(doc, !cmd.Bool("short"))
@@ -441,4 +463,34 @@ func transformIacroot(iacroot string, baseDir string, relative bool) string {
 	}
 
 	return rel
+}
+
+// buildAggregatedRawRow takes the raw JSON document and iacroot for a each
+// root and builds a single row for the aggregated raw output. We do this to
+// ensure that the final aggregated output has identity built in and also a
+// consistent structure with the non-raw output, which allows us to use the same
+// output formatting logic for both.
+func buildAggregatedRawRow(doc []byte, iacroot string) (map[string]interface{}, error) {
+	var stateDoc interface{}
+	if err := json.Unmarshal(doc, &stateDoc); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal aggregated raw state: %w", err)
+	}
+
+	return map[string]interface{}{
+		"iacroot": iacroot,
+		"state":   stateDoc,
+	}, nil
+}
+
+func outputSingleRootRaw(singleRawOutput bool, doc []byte, attrs attrs.AttrList,
+	cmd *cli.Command, postProcess func([]map[string]interface{}) error, w io.Writer) bool {
+	if !singleRawOutput {
+		return false
+	}
+
+	var raw bytes.Buffer
+	raw.Write(doc)
+	output.SliceDiceSpit(raw, attrs, cmd, "", w, postProcess)
+
+	return true
 }

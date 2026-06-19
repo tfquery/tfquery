@@ -5,9 +5,14 @@
 package command
 
 import (
+	"bytes"
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli/v3"
+
+	"github.com/tfctl/tfctl/internal/attrs"
 )
 
 func TestFormatIacrootForOutput(t *testing.T) {
@@ -234,4 +239,83 @@ func TestParseSqRootArgs(t *testing.T) {
 			assert.Equal(t, tt.want, parseSqRootArgs(tt.args))
 		})
 	}
+}
+
+func TestBuildAggregatedRawRow(t *testing.T) {
+	t.Run("valid_json_document", func(t *testing.T) {
+		doc := []byte(`{"version":4,"resources":[{"type":"aws_s3_bucket"}]}`)
+
+		row, err := buildAggregatedRawRow(doc, "/tmp/root-a")
+		assert.NoError(t, err)
+		assert.Equal(t, "/tmp/root-a", row["iacroot"])
+
+		stateDoc, ok := row["state"].(map[string]interface{})
+		assert.True(t, ok)
+		assert.Equal(t, float64(4), stateDoc["version"])
+
+		resources, ok := stateDoc["resources"].([]interface{})
+		assert.True(t, ok)
+		assert.Equal(t, 1, len(resources))
+
+		_, marshalErr := json.Marshal(row)
+		assert.NoError(t, marshalErr)
+	})
+
+	t.Run("invalid_json_document", func(t *testing.T) {
+		doc := []byte(`{"version":4,`)
+
+		row, err := buildAggregatedRawRow(doc, "/tmp/root-a")
+		assert.Error(t, err)
+		assert.Nil(t, row)
+	})
+}
+
+func TestOutpuSingleRootRaw(t *testing.T) {
+	t.Run("writes_raw_document_when_enabled", func(t *testing.T) {
+		cmd := &cli.Command{
+			Flags: []cli.Flag{
+				&cli.StringFlag{Name: "output", Value: "raw"},
+			},
+			Metadata: make(map[string]interface{}),
+		}
+
+		doc := []byte(`{"version":4,"serial":3}`)
+		var out bytes.Buffer
+
+		handled := outputSingleRootRaw(
+			true,
+			doc,
+			attrs.AttrList{},
+			cmd,
+			nil,
+			&out,
+		)
+
+		assert.True(t, handled)
+		assert.Equal(t, string(doc), out.String())
+	})
+
+	t.Run("no_write_when_disabled", func(t *testing.T) {
+		cmd := &cli.Command{
+			Flags: []cli.Flag{
+				&cli.StringFlag{Name: "output", Value: "raw"},
+			},
+			Metadata: make(map[string]interface{}),
+		}
+
+		doc := []byte(`{"version":4,"serial":3}`)
+		var out bytes.Buffer
+
+		handled := outputSingleRootRaw(
+			false,
+			doc,
+			attrs.AttrList{},
+			cmd,
+			nil,
+			&out,
+		)
+
+		assert.False(t, handled)
+		assert.Equal(t, "", out.String())
+	})
 }
