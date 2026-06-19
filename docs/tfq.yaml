@@ -1,17 +1,17 @@
-# tfctl configuration is made in this document. It should be placed in one of
+# tfq configuration is made in this document. It should be placed in one of
 # the directories as specified in configuration.md.  There are two sections -
 # GLOBAL and COMMAND-SPECIFIC.
 
 #
-# TFCTL GLOBAL CONFIGURATION
+# TFQ GLOBAL CONFIGURATION
 #
 
 # The top-level `defaults`` argument set is reserved and defines arguments that
 # are added into every command line. For example, with the configuration below,
-# the command `tfctl sq --color` will effectively become `tfctl sq --padding 1
+# the command `tfq sq --color` will effectively become `tfq sq --padding 1
 # --titles --color`. Note that global defaults arguments are the least
 # precedent and are overridden by both command-specific config and command line
-# arguments. So, for example, `tfctl sq --no-titles` would "cancel out" the
+# arguments. So, for example, `tfq sq --no-titles` would "cancel out" the
 # global `--titles` argument, but `--padding 1` would still be in effect.
 defaults:
   - --local
@@ -24,7 +24,7 @@ defaults:
 # therefore, have these arguments injected. Note that these arguments have a
 # higher precedent than "global" arguments, but lower than command-specific
 # arguments and command line arguments. For example, with the configuration
-# below, the command `tfctl oq` will effectively become `tfctl oq --host
+# below, the command `tfq oq` will effectively become `tfq oq --host
 # app.terraform.io`.
 nostate:
   - --host app.terraform.io
@@ -57,18 +57,18 @@ sq:
   #
   # In this example, all sq command lines will automatically be injected with
   # the `--padding 1` and `--short` options. So, the entered command line
-  # `tfctl sq` will effectively become `tfctl sq --padding 1 --short`.  If the
-  # user enters, for example, `tfctl sq --padding 4`, the effective command line
-  # will be `tfctl sq --padding 4 --short`, since command line arguments
+  # `tfq sq` will effectively become `tfq sq --padding 1 --short`.  If the
+  # user enters, for example, `tfq sq --padding 4`, the effective command line
+  # will be `tfq sq --padding 4 --short`, since command line arguments
   # override set arguments.
   defaults:
     - --padding 1
     - --short
 
   # Alternate argument sets can be specified using the '@set' syntax on the
-  # command line. For example, `tfctl sq @example` will inject the arguments
-  # from the `example` set in addition to the `defaults`` set. So, `tfctl sq`
-  # will become `tfctl sq --padding 1 --short --color --sort id`.
+  # command line. For example, `tfq sq @example` will inject the arguments
+  # from the `example` set in addition to the `defaults`` set. So, `tfq sq`
+  # will become `tfq sq --padding 1 --short --color --sort id`.
   #
   # Note that argument sets can be specified as YAML collections (`defaults`) or
   # as a single string (`example`).
@@ -81,21 +81,21 @@ sq:
 presets:
   attrs:
     # Global presets that can be used in any command's --attrs arguement.
-    # For example, with the configuration below, the command `tfctl sq --attrs
-    # set1` will effectively become `tfctl sq --attrs region,tags_all.layer`.
-    # Not that these presets are additive, so `tfctl sq --attrs "arn,@set1"`
-    # will become `tfctl sq --attrs arn,region,tags_all.layer`. Multiple presets
-    # can be used as well. For example, `tfctl sq --attrs "@set1,@set2"` will
-    # become `tfctl sq --attrs region,tags_all.layer,arn:ARN:u`.
+    # For example, with the configuration below, the command `tfq sq --attrs
+    # set1` will effectively become `tfq sq --attrs region,tags_all.layer`.
+    # Not that these presets are additive, so `tfq sq --attrs "arn,@set1"`
+    # will become `tfq sq --attrs arn,region,tags_all.layer`. Multiple presets
+    # can be used as well. For example, `tfq sq --attrs "@set1,@set2"` will
+    # become `tfq sq --attrs region,tags_all.layer,arn:ARN:u`.
     set1: region,tags_all.layer
     set2: arn:ARN:u
 
   filters:
     # Global presets that can be used in any command's --filter arguement. For
-    # example, with the configuration below, the command `tfctl sq --filter
-    # set1` will effectively become `tfctl sq --filter region=us-west-2`.
-    # Multiple presets can be used as well. For example, `tfctl sq --filter
-    # "@set1,@set2"` will become `tfctl sq --filter region=us-west-2,
+    # example, with the configuration below, the command `tfq sq --filter
+    # set1` will effectively become `tfq sq --filter region=us-west-2`.
+    # Multiple presets can be used as well. For example, `tfq sq --filter
+    # "@set1,@set2"` will become `tfq sq --filter region=us-west-2,
     # tags_all.layer=prod`.
     set1: region=us-east-12
     set2: layer=myapp
@@ -117,7 +117,7 @@ cache:
 
   # Caching of raw state file info used by, currently, only the sq command can
   # be enabled or disabled here. By default it is disabled. This setting can
-  # be overriden by the TFCTL_CACHE environment variable.
+  # be overriden by the TFQ_CACHE environment variable.
   enabled: false
 
 # Colors to use for --output=text --colors. They must be set here and cannot be

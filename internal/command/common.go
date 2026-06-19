@@ -38,7 +38,8 @@ func BuildAttrs(cmd *cli.Command, defaults ...string) attrs.AttrList {
 			defaults = attrsFromConfig
 		}
 	}
-	//nolint:errcheck // AttrList.Set errors are logged internally
+
+	//nolint:errcheck,gosec // AttrList.Set errors are logged internally
 	{
 		for _, defaultAttr := range defaults {
 			attrList.Set(defaultAttr)
@@ -48,6 +49,7 @@ func BuildAttrs(cmd *cli.Command, defaults ...string) attrs.AttrList {
 		}
 		attrList.SetGlobalTransformSpec()
 	}
+
 	return attrList
 }
 

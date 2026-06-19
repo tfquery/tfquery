@@ -1,10 +1,10 @@
-.TH tfctl-pq 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfctl-pq 1 "June 17, 2026" "tfctl v2.0.0" "tfctl"
 .SH NAME
 tfctl\-pq \- HCP/TFE Project Query
 .SH SYNOPSIS
-tfctl pq [options]
+tfq pq [options]
 .br
-tfctl project [options]
+tfq project [options]
 .SH DESCRIPTION
 Query HCP/TFE projects.
 
@@ -111,11 +111,11 @@ secondary output path to write YAML output to.
 .TP
 Display projects and include Updated At information.
 .IP
-tfctl pq --attrs updated-at
+tfq pq --attrs updated-at
 
 .TP
 Display projects in the "hr" org with "prod" in their name.
 .IP
-tfctl pq --org hr --filter 'name@prod'
+tfq pq --org hr --filter 'name@prod'
 
 

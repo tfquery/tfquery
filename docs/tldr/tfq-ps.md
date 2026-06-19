@@ -5,8 +5,8 @@
 
 - Show only a summary of a Terraform plan.
 
-`terraform plan | tfctl ps`
+`terraform plan | tfq ps`
 
 - Show the full plan output while also including a summary.
 
-`terraform plan | tee >(tfctl ps)`
+`terraform plan | tee >(tfq ps)`

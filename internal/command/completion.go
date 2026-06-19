@@ -232,24 +232,28 @@ func completionCommandAction(ctx context.Context, cmd *cli.Command) error {
 	if args := cmd.Args().Slice(); len(args) > 0 {
 		shell = args[0]
 	}
-	switch shell {
-	case "bash":
-		fmt.Fprint(os.Stdout, bashCompletionScript)
-	case "zsh":
-		fmt.Fprint(os.Stdout, zshCompletionScript)
-	default:
-		// Try to detect from SHELL or print help
-		sh := os.Getenv("SHELL")
-		switch {
-		case strings.HasSuffix(sh, "zsh"):
-			fmt.Fprint(os.Stdout, zshCompletionScript)
-		case strings.HasSuffix(sh, "bash"):
+	//nolint:errcheck
+	{
+		switch shell {
+		case "bash":
 			fmt.Fprint(os.Stdout, bashCompletionScript)
+		case "zsh":
+			fmt.Fprint(os.Stdout, zshCompletionScript)
 		default:
-			fmt.Fprintln(os.Stderr, "usage: tfctl completion [bash|zsh]")
-			return nil
+			// Try to detect from SHELL or print help
+			sh := os.Getenv("SHELL")
+			switch {
+			case strings.HasSuffix(sh, "zsh"):
+				fmt.Fprint(os.Stdout, zshCompletionScript)
+			case strings.HasSuffix(sh, "bash"):
+				fmt.Fprint(os.Stdout, bashCompletionScript)
+			default:
+				fmt.Fprintln(os.Stderr, "usage: tfctl completion [bash|zsh]")
+				return nil
+			}
 		}
 	}
+
 	return nil
 }
 

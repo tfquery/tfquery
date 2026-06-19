@@ -1,6 +1,6 @@
-# tfctl Flags
+# tfq Flags
 
-tfctl has a rich collection of flags available to each command. Many of these flags are common across all commands. See each command's help for information about unique flags and functionality details.
+tfq has a rich collection of flags available to each command. Many of these flags are common across all commands. See each command's help for information about unique flags and functionality details.
 
 ## Common Flags
 
@@ -13,7 +13,7 @@ tfctl has a rich collection of flags available to each command. Many of these fl
 | `--json-into` | Write the result as JSON to the specified file. This is a secondary output and is independent of `--output`. |
 | `-o`, `--output` | Output format. Valid values are `text` (default), `json`, `yaml` or `raw`. Raw is a JSON dump of the Terraform API response. |
 | `-s`, `--sort`    | A comma-separated list of attributes to sort the result by. Reverse sorting is indicated by a leading `-`. |
-| `-v`, `--version` | Print tfctl version information and exit. |
+| `-v`, `--version` | Print tfq version information and exit. |
 | `-t`, `--titles`  | Print attribute name column headings when in text output mode. |
 | `--yaml-into` | Write the result as YAML to the specified file. This is a secondary output and is independent of `--output`. |
 
@@ -25,14 +25,14 @@ Unless noted otherwise in the command-specific documentation, flags and argument
 ```sh
 # Query the current state assuming the CWD is the
 # IaC root directory. CWD is implied.
-tfctl sq --sort resource
+tfq sq --sort resource
 
 # Query the current state of a specific IaC root
 # directory that might not be CWD.
-tfctl sq ${HOME}/myproject/iac --sort name
+tfq sq ${HOME}/myproject/iac --sort name
 
 # Aggregate state across multiple IaC root directories.
-tfctl sq ${HOME}/project1/iac ${HOME}/project2/iac --sort name
+tfq sq ${HOME}/project1/iac ${HOME}/project2/iac --sort name
 ```
 
 Conflicting flags and arguments will often be silently ignored. For example, the `--titles` flag is only used in text output mode. If `--titles` is used alongside, for example, `--output json`, it is silently ignored.
@@ -40,8 +40,8 @@ Conflicting flags and arguments will often be silently ignored. For example, the
 ```sh
 # These both produce identical results.  --titles
 # is silently ignored.
-tfctl oq --output json
-tfctl oq --output json --titles
+tfq oq --output json
+tfq oq --output json --titles
 ```
 
 The `--json-into` and `--yaml-into` flags are additive and are combined with `--output`. The file is written after the primary output is rendered.
@@ -49,9 +49,9 @@ The `--json-into` and `--yaml-into` flags are additive and are combined with `--
 ```sh
 # Display text output in the terminal and save a JSON
 # copy to a file simultaneously.
-tfctl pq --json-into /tmp/projects.json
+tfq pq --json-into /tmp/projects.json
 
 # Output to a named-pipe. On Linux, all special file types
 # are supported. Windows does not support named pipes.
-tfctl pq --json-into /dev/stderr
+tfq pq --json-into /dev/stderr
 ```

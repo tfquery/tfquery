@@ -8,7 +8,7 @@ Query HCP/TFE runs for the given workspace.
 
 # USAGE
 
-`tfctl rq [options]`
+`tfq rq [options]`
 
 
 # OPTIONS
@@ -54,14 +54,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display runs and include Created At and Status information.**
 
 ```sh
-tfctl rq --attrs created-at,status
+tfq rq --attrs created-at,status
 ```
 
 
 **Display errored runs in the "prod" workspace of the "hr" org.**
 
 ```sh
-tfctl rq --org hr --workspace prod --filter 'status@errored'
+tfq rq --org hr --workspace prod --filter 'status@errored'
 ```
 
 

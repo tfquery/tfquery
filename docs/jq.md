@@ -1,4 +1,4 @@
-# tfctl jq Queries
+# tfq jq Queries
 
 The `--jq` flag provides an alternate filtering mode using jq query syntax. This mode is **experimental** and evaluates jq expressions against your query results.
 
@@ -16,7 +16,7 @@ The `--jq` implementation uses the [gojq](https://github.com/itchyny/gojq) libra
 
 ## jq Presets
 
-You can store reusable jq queries under `presets.jq` in your tfctl config and
+You can store reusable jq queries under `presets.jq` in your tfq config and
 reference them with `@name`.
 
 Example config:
@@ -31,15 +31,15 @@ presets:
 Example usage:
 
 ```bash
-tfctl wq --jq @query1
-tfctl oq --jq @query2
+tfq wq --jq @query1
+tfq oq --jq @query2
 ```
 
-## How jq Queries Work with tfctl
+## How jq Queries Work with tfq
 
 When you use `--jq`, each result row becomes the input to your jq expression. The row contains the attributes available in your output (as defined by `--attrs` or the command defaults).
 
-For example, with `tfctl oq`, each organization becomes an object like:
+For example, with `tfq oq`, each organization becomes an object like:
 ```json
 {
   "id": "org-...",
@@ -83,73 +83,73 @@ See the [jq manual](https://stedolan.github.io/jq/manual/) for the full referenc
 **Basic matching:**
 ```bash
 # Exact equality
-tfctl oq --jq '.name == "my-org"'
+tfq oq --jq '.name == "my-org"'
 
 # Substring matching
-tfctl oq --jq '.name | contains("prod")'
+tfq oq --jq '.name | contains("prod")'
 
 # Case-insensitive substring
-tfctl oq --jq '(.name | ascii_downcase) | contains("prod")'
+tfq oq --jq '(.name | ascii_downcase) | contains("prod")'
 ```
 
 **Logical combinations:**
 ```bash
 # AND: both conditions must be true
-tfctl wq --jq '.name | contains("prod") and .status == "applied"'
+tfq wq --jq '.name | contains("prod") and .status == "applied"'
 
 # OR: either condition can be true
-tfctl oq --jq '.name | contains("prod") or .name | contains("dev")'
+tfq oq --jq '.name | contains("prod") or .name | contains("dev")'
 
 # Grouping with parentheses
-tfctl sq --jq '((.type // "") | contains("security")) and ((.resource // "") | contains("8"))'
+tfq sq --jq '((.type // "") | contains("security")) and ((.resource // "") | contains("8"))'
 ```
 
 **Null-safe operations:**
 ```bash
 # Use // to provide a default if a field is null or missing
-tfctl mq --jq '(.description // "") | contains("important")'
+tfq mq --jq '(.description // "") | contains("important")'
 
 # Check if a field exists and is not empty
-tfctl wq --jq '.email != null and .email != ""'
+tfq wq --jq '.email != null and .email != ""'
 ```
 
 **Pattern matching:**
 ```bash
 # Prefix check
-tfctl sq --jq '.type | startswith("aws_")'
+tfq sq --jq '.type | startswith("aws_")'
 
 # Suffix check
-tfctl oq --jq '.email | endswith("@example.com")'
+tfq oq --jq '.email | endswith("@example.com")'
 
 # Multiple patterns with OR
-tfctl sq --jq '(.type | startswith("aws_")) or (.type | startswith("google_"))'
+tfq sq --jq '(.type | startswith("aws_")) or (.type | startswith("google_"))'
 ```
 
 **Advanced:**
 ```bash
 # Using select: emit if condition is true (alternative to just filtering)
-tfctl wq --jq 'select(.status == "active" and .workspace_count > 5)'
+tfq wq --jq 'select(.status == "active" and .workspace_count > 5)'
 
 # Type checking
-tfctl oq --jq '.metadata | type == "object"'
+tfq oq --jq '.metadata | type == "object"'
 
 # Piping multiple operations
-tfctl sq --jq '.resource_type | ascii_downcase | contains("instance")'
+tfq sq --jq '.resource_type | ascii_downcase | contains("instance")'
 ```
 
 ## Mutual Exclusivity with --filter
 
-The `--filter` and `--jq` flags cannot be used together. If both are provided, tfctl will return an error:
+The `--filter` and `--jq` flags cannot be used together. If both are provided, tfq will return an error:
 
 ```bash
 # This will fail
-tfctl oq --filter 'name@prod' --jq '.status == "applied"'
+tfq oq --filter 'name@prod' --jq '.status == "applied"'
 
 # Error: flags --filter and --jq are mutually exclusive
 ```
 
 Choose one filtering approach based on your needs:
-- Use `--filter` for simple, high-performance filtering with tfctl's native syntax.
+- Use `--filter` for simple, high-performance filtering with tfq's native syntax.
 - Use `--jq` for complex expressions or when you're already familiar with jq.
 
 ## Limitations and Future Work

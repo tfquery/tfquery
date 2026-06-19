@@ -39,9 +39,9 @@ anchors:
     default: default
 
 root:
-  name: tfctl
+  name: tfq
   short: Terraform Control
-  usage: tfctl [global options] [command [command options]]
+  usage: tfq [global options] [command [command options]]
   commands:
     - names: mq
       alias: module
@@ -70,17 +70,17 @@ root:
   global_flags:
     - id: help
       syntax: --help,
-      description: show tfctl command help
+      description: show tfq command help
     - id: version
       syntax: --version, -v
-      description: tfctl version info
+      description: tfq version info
 
 subcommands:
   - id: mq
     alias: module
     short: HCP/TFE Module Query
     description: Query HCP/TFE modules.
-    usage: tfctl mq [options]
+    usage: tfq mq [options]
     flags:
       - *attrs
       - *host
@@ -88,32 +88,32 @@ subcommands:
       - *org
       - *schema
     examples:
-      - command: tfctl mq --attrs created-at
+      - command: tfq mq --attrs created-at
         description: Display modules and include Created At information.
-      - command: tfctl mq --org hr --filter 'name@iam'
+      - command: tfq mq --org hr --filter 'name@iam'
         description: Display modules in the "hr" org with "iam" in their name.
 
   - id: oq
     alias: org
     short: HCP/TFE Organization Query
     description: Query HCP/TFE organizations.
-    usage: tfctl oq [options]
+    usage: tfq oq [options]
     flags:
       - *attrs
       - *host
       - *limit
       - *schema
     examples:
-      - command: tfctl oq --attrs created-at
+      - command: tfq oq --attrs created-at
         description: Display organizations and include Created At information.
-      - command: tfctl oq --filter 'name@myorg'
+      - command: tfq oq --filter 'name@myorg'
         description: Display organizations with "myorg" in their name.
 
   - id: pq
     alias: project
     short: HCP/TFE Project Query
     description: Query HCP/TFE projects.
-    usage: tfctl pq [options]
+    usage: tfq pq [options]
     flags:
       - *attrs
       - *host
@@ -121,27 +121,27 @@ subcommands:
       - *org
       - *schema
     examples:
-      - command: tfctl pq --attrs updated-at
+      - command: tfq pq --attrs updated-at
         description: Display projects and include Updated At information.
-      - command: tfctl pq --org hr --filter 'name@prod'
+      - command: tfq pq --org hr --filter 'name@prod'
         description: Display projects in the "hr" org with "prod" in their name.
 
   - id: ps
     alias: summarize
     short: Plan summary
     description: Show a summary of the given plan.
-    usage: tfctl ps [planfile] [options]
+    usage: tfq ps [planfile] [options]
     examples:
-      - command: terraform plan | tfctl ps
+      - command: terraform plan | tfq ps
         description: Show only a summary of a Terraform plan.
-      - command: terraform plan | tee >(tfctl ps)
+      - command: terraform plan | tee >(tfq ps)
         description: Show the full plan output while also including a summary.
 
   - id: rq
     alias: run
     short: HCP/TFE Run Query
     description: Query HCP/TFE runs for the given workspace.
-    usage: tfctl rq [options]
+    usage: tfq rq [options]
     flags:
       - *attrs
       - *host
@@ -150,16 +150,16 @@ subcommands:
       - *workspace
       - *schema
     examples:
-      - command: tfctl rq --attrs created-at,status
+      - command: tfq rq --attrs created-at,status
         description: Display runs and include Created At and Status information.
-      - command: tfctl rq --org hr --workspace prod --filter 'status@errored'
+      - command: tfq rq --org hr --workspace prod --filter 'status@errored'
         description: Display errored runs in the "prod" workspace of the "hr" org.
 
   - id: sq
     alias: state
     short: State Query
     description: Query Terraform state files.
-    usage: tfctl sq [RootDir...] [options]
+    usage: tfq sq [RootDir...] [options]
     flags:
       - *attrs
       - id: chop
@@ -193,13 +193,13 @@ subcommands:
           `-2` is two versions ago, `+1` is the next version, and so on.
       - *workspace
     examples:
-      - command: tfctl sq --attrs created-at
+      - command: tfq sq --attrs created-at
         description: Display state file in current directory and include Created At information.
-      - command: tfctl sq iac1/ iac2/
+      - command: tfq sq iac1/ iac2/
         description: Aggregates the state files in the `iac1/` and `iac2/` directories and displays combined results.
-      - command: tfctl sq --concrete --filter 'resource@vpc'
+      - command: tfq sq --concrete --filter 'resource@vpc'
         description: Display only concrete resources with "vpc" in their type or name.
-      - command: tfctl sq --sv -3 --output json
+      - command: tfq sq --sv -3 --output json
         description: Display the third most recent state file version in JSON format.
     notes:
       - "`sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided."
@@ -209,7 +209,7 @@ subcommands:
     alias: state-version
     short: State Version Query
     description: Query Terraform state version history.
-    usage: tfctl svq [RootDir] [options]
+    usage: tfq svq [RootDir] [options]
     flags:
       - *attrs
       - *host
@@ -217,16 +217,16 @@ subcommands:
       - *org
       - *workspace
     examples:
-      - command: tfctl svq --attrs created-at
+      - command: tfq svq --attrs created-at
         description: Display state file history for current directory and include Created At information.
-      - command: tfctl svq --limit 5 --attrs created-at::10
+      - command: tfq svq --limit 5 --attrs created-at::10
         description: Display the five most recent state file versions and include the YYYY-MM-DD portion of the Created At information.
 
   - id: wq
     alias: workspace
     short: HCP/TFE Workspace Query
     description: Query HCP/TFE workspaces.
-    usage: tfctl wq [options]
+    usage: tfq wq [options]
     flags:
       - *attrs
       - *host
@@ -234,9 +234,9 @@ subcommands:
       - *org
       - *schema
     examples:
-      - command: tfctl wq --attrs created-at
+      - command: tfq wq --attrs created-at
         description: Display workspaces and include Created At information.
-      - command: tfctl wq --org hr --filter 'name@prod'
+      - command: tfq wq --org hr --filter 'name@prod'
         description: Display workspaces in the "hr" org with "prod" in their name.
 
 common:

@@ -8,7 +8,7 @@ Query HCP/TFE workspaces.
 
 # USAGE
 
-`tfctl wq [options]`
+`tfq wq [options]`
 
 
 # OPTIONS
@@ -53,14 +53,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display workspaces and include Created At information.**
 
 ```sh
-tfctl wq --attrs created-at
+tfq wq --attrs created-at
 ```
 
 
 **Display workspaces in the "hr" org with "prod" in their name.**
 
 ```sh
-tfctl wq --org hr --filter 'name@prod'
+tfq wq --org hr --filter 'name@prod'
 ```
 
 

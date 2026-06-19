@@ -180,6 +180,7 @@ func GetStringSlice(key string, defaultValue ...[]string) ([]string, error) {
 // Load reads the YAML configuration file from the standard user config
 // directory and populates the global Config. If cfgFilePath is provided in the
 // future, it can be used to override the path selection (currently ignored).
+// THINK Is there a use case for passing cfg file path?  --cfg= or some such?
 //
 // Returns the loaded Type or an error if the file could not be located or
 // parsed.

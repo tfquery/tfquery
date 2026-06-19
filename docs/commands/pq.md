@@ -8,7 +8,7 @@ Query HCP/TFE projects.
 
 # USAGE
 
-`tfctl pq [options]`
+`tfq pq [options]`
 
 
 # OPTIONS
@@ -53,14 +53,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display projects and include Updated At information.**
 
 ```sh
-tfctl pq --attrs updated-at
+tfq pq --attrs updated-at
 ```
 
 
 **Display projects in the "hr" org with "prod" in their name.**
 
 ```sh
-tfctl pq --org hr --filter 'name@prod'
+tfq pq --org hr --filter 'name@prod'
 ```
 
 

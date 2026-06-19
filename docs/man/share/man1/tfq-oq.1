@@ -1,12 +1,12 @@
-.TH tfctl-rq 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfctl-oq 1 "June 17, 2026" "tfctl v2.0.0" "tfctl"
 .SH NAME
-tfctl\-rq \- HCP/TFE Run Query
+tfctl\-oq \- HCP/TFE Organization Query
 .SH SYNOPSIS
-tfctl rq [options]
+tfq oq [options]
 .br
-tfctl run [options]
+tfq org [options]
 .SH DESCRIPTION
-Query HCP/TFE runs for the given workspace.
+Query HCP/TFE organizations.
 
 .SH OPTIONS
 
@@ -57,11 +57,6 @@ Show timestamps in local time according to your OS.
 
 
 .TP
-\fB--org string\fR
-Organization to use for all commands. Overrides the backend.
-
-
-.TP
 \fB--output/-o string\fR
 Output format (text (default), json, yaml, csv).
 
@@ -100,11 +95,6 @@ Show tldr page if a client is installed.
 
 
 .TP
-\fB--workspace/-w string\fR
-Workspace to use for all commands. Overrides the backend.
-
-
-.TP
 \fB--yaml-into string\fR
 secondary output path to write YAML output to.
 
@@ -114,13 +104,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Display runs and include Created At and Status information.
+Display organizations and include Created At information.
 .IP
-tfctl rq --attrs created-at,status
+tfq oq --attrs created-at
 
 .TP
-Display errored runs in the "prod" workspace of the "hr" org.
+Display organizations with "myorg" in their name.
 .IP
-tfctl rq --org hr --workspace prod --filter 'status@errored'
+tfq oq --filter 'name@myorg'
 
 

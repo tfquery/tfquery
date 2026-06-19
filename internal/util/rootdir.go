@@ -4,6 +4,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,6 +20,18 @@ func ParseRootDir(rootDir string) (string, string, error) {
 
 	var dir, env string
 
+	// How many "::" are there?
+	switch strings.Count(rootDir, "::") {
+	case 0:
+		// No env override, so just use the rootDir as is.
+	case 1:
+		// One env override, so split on "::" and use the first part as the
+		// rootDir and the second part as the env override.
+	default:
+		// More than one "::" is invalid.
+		return "", "", fmt.Errorf("multiple '::' seperators are not supported")
+	}
+
 	// First, split the path to see if there is an ::env override.
 	parts := strings.Split(rootDir, "::")
 	if len(parts) > 1 {
@@ -27,7 +40,7 @@ func ParseRootDir(rootDir string) (string, string, error) {
 
 	// Now determine if the actual root directory (parts[0]) is absolute or
 	// relative. If it is relative, make it absolute.
-	if !strings.HasPrefix(parts[0], "/") {
+	if !filepath.IsAbs(parts[0]) {
 		cwd, err := os.Getwd()
 		if err != nil {
 			return "", "", err

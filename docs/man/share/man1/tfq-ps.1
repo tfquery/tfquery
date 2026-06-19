@@ -1,10 +1,10 @@
-.TH tfctl-ps 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfctl-ps 1 "June 17, 2026" "tfctl v2.0.0" "tfctl"
 .SH NAME
 tfctl\-ps \- Plan summary
 .SH SYNOPSIS
-tfctl ps [planfile] [options]
+tfq ps [planfile] [options]
 .br
-tfctl summarize [planfile] [options]
+tfq summarize [planfile] [options]
 .SH DESCRIPTION
 Show a summary of the given plan.
 
@@ -80,11 +80,11 @@ secondary output path to write YAML output to.
 .TP
 Show only a summary of a Terraform plan.
 .IP
-terraform plan | tfctl ps
+terraform plan | tfq ps
 
 .TP
 Show the full plan output while also including a summary.
 .IP
-terraform plan | tee >(tfctl ps)
+terraform plan | tee >(tfq ps)
 
 

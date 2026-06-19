@@ -1,12 +1,12 @@
-.TH tfctl-mq 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfctl-rq 1 "June 17, 2026" "tfctl v2.0.0" "tfctl"
 .SH NAME
-tfctl\-mq \- HCP/TFE Module Query
+tfctl\-rq \- HCP/TFE Run Query
 .SH SYNOPSIS
-tfctl mq [options]
+tfq rq [options]
 .br
-tfctl module [options]
+tfq run [options]
 .SH DESCRIPTION
-Query HCP/TFE modules.
+Query HCP/TFE runs for the given workspace.
 
 .SH OPTIONS
 
@@ -100,6 +100,11 @@ Show tldr page if a client is installed.
 
 
 .TP
+\fB--workspace/-w string\fR
+Workspace to use for all commands. Overrides the backend.
+
+
+.TP
 \fB--yaml-into string\fR
 secondary output path to write YAML output to.
 
@@ -109,13 +114,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Display modules and include Created At information.
+Display runs and include Created At and Status information.
 .IP
-tfctl mq --attrs created-at
+tfq rq --attrs created-at,status
 
 .TP
-Display modules in the "hr" org with "iam" in their name.
+Display errored runs in the "prod" workspace of the "hr" org.
 .IP
-tfctl mq --org hr --filter 'name@iam'
+tfq rq --org hr --workspace prod --filter 'status@errored'
 
 

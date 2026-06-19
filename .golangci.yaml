@@ -1,18 +1,20 @@
 version: "2"
 run:
   tests: true
+  go: "1.26"
 linters:
   enable:
     - copyloopvar
+    - decorder
     - dupl
     - funcorder
     - gocritic
     - gocyclo
     - godot
     - gosec
+    - lll
     - misspell
     - predeclared
-    - revive
     - staticcheck
     - unparam
     - whitespace
@@ -41,6 +43,7 @@ linters:
       - third_party$
       - builtin$
       - examples$
+
 formatters:
   enable:
     - gofmt

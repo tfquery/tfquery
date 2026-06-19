@@ -8,7 +8,7 @@ Query Terraform state version history.
 
 # USAGE
 
-`tfctl svq [RootDir] [options]`
+`tfq svq [RootDir] [options]`
 
 
 # OPTIONS
@@ -53,14 +53,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display state file history for current directory and include Created At information.**
 
 ```sh
-tfctl svq --attrs created-at
+tfq svq --attrs created-at
 ```
 
 
 **Display the five most recent state file versions and include the YYYY-MM-DD portion of the Created At information.**
 
 ```sh
-tfctl svq --limit 5 --attrs created-at::10
+tfq svq --limit 5 --attrs created-at::10
 ```
 
 

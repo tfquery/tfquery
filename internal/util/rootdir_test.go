@@ -119,7 +119,7 @@ func TestParseRootDir(t *testing.T) {
 				return tmpDir + "::dev::extra"
 			},
 			wantEnv: "dev",
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "env_with_whitespace",

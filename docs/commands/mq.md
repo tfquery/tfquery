@@ -8,7 +8,7 @@ Query HCP/TFE modules.
 
 # USAGE
 
-`tfctl mq [options]`
+`tfq mq [options]`
 
 
 # OPTIONS
@@ -53,14 +53,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display modules and include Created At information.**
 
 ```sh
-tfctl mq --attrs created-at
+tfq mq --attrs created-at
 ```
 
 
 **Display modules in the "hr" org with "iam" in their name.**
 
 ```sh
-tfctl mq --org hr --filter 'name@iam'
+tfq mq --org hr --filter 'name@iam'
 ```
 
 

@@ -77,7 +77,12 @@ func psCommandAction(ctx context.Context, cmd *cli.Command) error {
 		if err != nil {
 			return fmt.Errorf("failed to open plan file: %w", err)
 		}
-		defer input.Close()
+		defer func() {
+			if cerr := input.Close(); cerr != nil {
+				log.Errorf("failed to close plan file: %v", cerr)
+				err = cerr
+			}
+		}()
 	}
 
 	// Parse the plan output and get resource actions

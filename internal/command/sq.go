@@ -408,7 +408,7 @@ func includeIacrootAttribute(all *attrs.AttrList) {
 	}
 
 	// If iacroot isn't already present, add a root-level accessor.
-	//nolint:errcheck // AttrList.Set errors are logged internally
+	//nolint:errcheck,gosec // AttrList.Set errors are logged internally
 	all.Set(".iacroot")
 }
 

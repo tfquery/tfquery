@@ -8,7 +8,7 @@ Show a summary of the given plan.
 
 # USAGE
 
-`tfctl ps [planfile] [options]`
+`tfq ps [planfile] [options]`
 
 
 # OPTIONS
@@ -43,14 +43,14 @@ Show a summary of the given plan.
 **Show only a summary of a Terraform plan.**
 
 ```sh
-terraform plan | tfctl ps
+terraform plan | tfq ps
 ```
 
 
 **Show the full plan output while also including a summary.**
 
 ```sh
-terraform plan | tee >(tfctl ps)
+terraform plan | tee >(tfq ps)
 ```
 
 

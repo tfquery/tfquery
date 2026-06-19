@@ -5,16 +5,16 @@
 
 - Display state file in current directory and include Created At information.
 
-`tfctl sq --attrs created-at`
+`tfq sq --attrs created-at`
 
-- Display state file in current directory and include column headings.
+- Aggregates the state files in the `iac1/` and `iac2/` directories and displays combined results.
 
-`tfctl sq --titles`
+`tfq sq iac1/ iac2/`
 
 - Display only concrete resources with "vpc" in their type or name.
 
-`tfctl sq --concrete --filter 'resource@vpc'`
+`tfq sq --concrete --filter 'resource@vpc'`
 
 - Display the third most recent state file version in JSON format.
 
-`tfctl sq --sv -3 --output json`
+`tfq sq --sv -3 --output json`

@@ -94,12 +94,14 @@ func EntryPath(subdirs []string, clearKey string) (string, bool) {
 	if !ok {
 		return "", false
 	}
-	encoded := encodeKey(clearKey)
-	p := filepath.Join(append([]string{base}, append(subdirs, encoded)...)...)
-	if _, err := os.Stat(p); err == nil {
-		return p, true
-	}
-	return p, false
+
+	// Build the full cache entry path.
+	parts := append([]string{base}, append(subdirs, encodeKey(clearKey))...)
+	path := filepath.Join(parts...)
+
+	// If the path doesn't exist we'll treat it as a miss.
+	_, err := os.Stat(path)
+	return path, err == nil
 }
 
 // Purge removes stale cache files and then clears out empty directories.

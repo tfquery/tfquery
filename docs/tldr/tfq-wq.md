@@ -5,8 +5,8 @@
 
 - Display workspaces and include Created At information.
 
-`tfctl wq --attrs created-at`
+`tfq wq --attrs created-at`
 
 - Display workspaces in the "hr" org with "prod" in their name.
 
-`tfctl wq --org hr --filter 'name@prod'`
+`tfq wq --org hr --filter 'name@prod'`

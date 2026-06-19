@@ -1,12 +1,12 @@
-.TH tfctl-oq 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfctl-svq 1 "June 17, 2026" "tfctl v2.0.0" "tfctl"
 .SH NAME
-tfctl\-oq \- HCP/TFE Organization Query
+tfctl\-svq \- State Version Query
 .SH SYNOPSIS
-tfctl oq [options]
+tfq svq [RootDir] [options]
 .br
-tfctl org [options]
+tfq state-version [RootDir] [options]
 .SH DESCRIPTION
-Query HCP/TFE organizations.
+Query Terraform state version history.
 
 .SH OPTIONS
 
@@ -57,6 +57,11 @@ Show timestamps in local time according to your OS.
 
 
 .TP
+\fB--org string\fR
+Organization to use for all commands. Overrides the backend.
+
+
+.TP
 \fB--output/-o string\fR
 Output format (text (default), json, yaml, csv).
 
@@ -68,11 +73,6 @@ The `text` output format is a human-friendly table format. The `json`, `yaml`, a
 .TP
 \fB--padding int\fR
 Number of spaces to pad columns in text output.
-
-
-.TP
-\fB--schema\fR
-List of attributes for use with `--attrs`, `--filter`, and '--sort'.
 
 
 .TP
@@ -95,6 +95,11 @@ Show tldr page if a client is installed.
 
 
 .TP
+\fB--workspace/-w string\fR
+Workspace to use for all commands. Overrides the backend.
+
+
+.TP
 \fB--yaml-into string\fR
 secondary output path to write YAML output to.
 
@@ -104,13 +109,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Display organizations and include Created At information.
+Display state file history for current directory and include Created At information.
 .IP
-tfctl oq --attrs created-at
+tfq svq --attrs created-at
 
 .TP
-Display organizations with "myorg" in their name.
+Display the five most recent state file versions and include the YYYY-MM-DD portion of the Created At information.
 .IP
-tfctl oq --filter 'name@myorg'
+tfq svq --limit 5 --attrs created-at::10
 
 

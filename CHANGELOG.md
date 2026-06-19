@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.0.0 - 2026-06-17
+
+### Added
+
+- Name changed to `tfq` to avoid confusion with hashicorp/tfctl-cli.
+
+### Fixed
+
+- Absolute IAC root dir paths failed on Windows.
+
+### Chores
+
+- Lint cleanup.
+
 ## v1.5.1 - 2026-06-09
 
 ### Fixed
@@ -13,6 +27,8 @@
 - Lint cleanup.
 
 ## v1.5.0 - 2026-06-09
+
+### Added
 
 - Added aggregated states for --sq. Multiple IAC roots can now be specified and the results of each will be aggregated into one result set.  For example - `tfctl sq ./iacdir1 ./iacdir2`.
 
