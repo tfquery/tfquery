@@ -1,6 +1,6 @@
 # NAME
 
-tfctl ps — Plan summary
+tfq ps — Plan summary
 
 # DESCRIPTION
 

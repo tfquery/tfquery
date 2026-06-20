@@ -1,6 +1,6 @@
 # NAME
 
-tfctl oq — HCP/TFE Organization Query
+tfq oq — HCP/TFE Organization Query
 
 # DESCRIPTION
 

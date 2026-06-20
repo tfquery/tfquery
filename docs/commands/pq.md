@@ -1,6 +1,6 @@
 # NAME
 
-tfctl pq — HCP/TFE Project Query
+tfq pq — HCP/TFE Project Query
 
 # DESCRIPTION
 

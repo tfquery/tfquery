@@ -1,7 +1,7 @@
-# tfctl-svq
+# tfq-svq
 
 > Query Terraform state version history.
-> Also available as: `tfctl state-version`
+> Also available as: `tfq state-version`
 
 - Display state file history for current directory and include Created At information.
 

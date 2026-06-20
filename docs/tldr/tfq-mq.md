@@ -1,7 +1,7 @@
-# tfctl-mq
+# tfq-mq
 
 > Query HCP/TFE modules.
-> Also available as: `tfctl module`
+> Also available as: `tfq module`
 
 - Display modules and include Created At information.
 

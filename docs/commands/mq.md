@@ -1,6 +1,6 @@
 # NAME
 
-tfctl mq — HCP/TFE Module Query
+tfq mq — HCP/TFE Module Query
 
 # DESCRIPTION
 

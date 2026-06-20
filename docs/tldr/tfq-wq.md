@@ -1,7 +1,7 @@
-# tfctl-wq
+# tfq-wq
 
 > Query HCP/TFE workspaces.
-> Also available as: `tfctl workspace`
+> Also available as: `tfq workspace`
 
 - Display workspaces and include Created At information.
 

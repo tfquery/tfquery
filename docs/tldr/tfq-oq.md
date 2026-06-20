@@ -1,7 +1,7 @@
-# tfctl-oq
+# tfq-oq
 
 > Query HCP/TFE organizations.
-> Also available as: `tfctl org`
+> Also available as: `tfq org`
 
 - Display organizations and include Created At information.
 

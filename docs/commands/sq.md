@@ -1,6 +1,6 @@
 # NAME
 
-tfctl sq — State Query
+tfq sq — State Query
 
 # DESCRIPTION
 

@@ -1,6 +1,6 @@
 # NAME
 
-tfctl rq — HCP/TFE Run Query
+tfq rq — HCP/TFE Run Query
 
 # DESCRIPTION
 

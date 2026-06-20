@@ -1,7 +1,7 @@
-# tfctl-sq
+# tfq-sq
 
 > Query Terraform state files.
-> Also available as: `tfctl state`
+> Also available as: `tfq state`
 
 - Display state file in current directory and include Created At information.
 

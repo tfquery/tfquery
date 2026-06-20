@@ -1,6 +1,6 @@
 # NAME
 
-tfctl svq — State Version Query
+tfq svq — State Version Query
 
 # DESCRIPTION
 

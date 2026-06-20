@@ -1,6 +1,6 @@
 # NAME
 
-tfctl wq — HCP/TFE Workspace Query
+tfq wq — HCP/TFE Workspace Query
 
 # DESCRIPTION
 

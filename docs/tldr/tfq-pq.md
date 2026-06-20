@@ -1,7 +1,7 @@
-# tfctl-pq
+# tfq-pq
 
 > Query HCP/TFE projects.
-> Also available as: `tfctl project`
+> Also available as: `tfq project`
 
 - Display projects and include Updated At information.
 
