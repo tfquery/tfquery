@@ -2,6 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // no-cloc
 
-// Package command defines the CLI command set for tfctl. It wires flags,
+// Package command defines the CLI command set for tfquery. It wires flags,
 // validators, actions, and shell completion for subcommands.
 package command

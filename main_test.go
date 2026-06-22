@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 func TestDeduplicateFlags(t *testing.T) {
@@ -24,63 +24,63 @@ func TestDeduplicateFlags(t *testing.T) {
 		},
 		{
 			name:     "only program and command",
-			args:     []string{"tfctl", "sq"},
-			expected: []string{"tfctl", "sq"},
+			args:     []string{"tfquery", "sq"},
+			expected: []string{"tfquery", "sq"},
 		},
 		{
 			name:     "no duplicates",
-			args:     []string{"tfctl", "sq", "--output", "text", "--titles"},
-			expected: []string{"tfctl", "sq", "--output", "text", "--titles"},
+			args:     []string{"tfquery", "sq", "--output", "text", "--titles"},
+			expected: []string{"tfquery", "sq", "--output", "text", "--titles"},
 		},
 		{
 			name:     "duplicate flag with value - last wins",
-			args:     []string{"tfctl", "sq", "--output", "json", "--titles", "--output", "text"},
-			expected: []string{"tfctl", "sq", "--titles", "--output", "text"},
+			args:     []string{"tfquery", "sq", "--output", "json", "--titles", "--output", "text"},
+			expected: []string{"tfquery", "sq", "--titles", "--output", "text"},
 		},
 		{
 			name:     "duplicate boolean flag",
-			args:     []string{"tfctl", "sq", "--titles", "--debug", "--titles"},
-			expected: []string{"tfctl", "sq", "--debug", "--titles"},
+			args:     []string{"tfquery", "sq", "--titles", "--debug", "--titles"},
+			expected: []string{"tfquery", "sq", "--debug", "--titles"},
 		},
 		{
 			name:     "duplicate flag with equals syntax",
-			args:     []string{"tfctl", "sq", "--output=json", "--titles", "--output=text"},
-			expected: []string{"tfctl", "sq", "--titles", "--output=text"},
+			args:     []string{"tfquery", "sq", "--output=json", "--titles", "--output=text"},
+			expected: []string{"tfquery", "sq", "--titles", "--output=text"},
 		},
 		{
 			name:     "mixed equals and space syntax - same flag",
-			args:     []string{"tfctl", "sq", "--output=json", "--output", "text"},
-			expected: []string{"tfctl", "sq", "--output", "text"},
+			args:     []string{"tfquery", "sq", "--output=json", "--output", "text"},
+			expected: []string{"tfquery", "sq", "--output", "text"},
 		},
 		{
 			name:     "multiple different flags with duplicates",
-			args:     []string{"tfctl", "mq", "--host", "a.b.c", "--org", "foo", "--host", "x.y.z", "--org", "bar"},
-			expected: []string{"tfctl", "mq", "--host", "x.y.z", "--org", "bar"},
+			args:     []string{"tfquery", "mq", "--host", "a.b.c", "--org", "foo", "--host", "x.y.z", "--org", "bar"},
+			expected: []string{"tfquery", "mq", "--host", "x.y.z", "--org", "bar"},
 		},
 		{
 			name:     "positional args preserved",
-			args:     []string{"tfctl", "sq", "/path/to/iac", "--output", "json", "--output", "text"},
-			expected: []string{"tfctl", "sq", "/path/to/iac", "--output", "text"},
+			args:     []string{"tfquery", "sq", "/path/to/iac", "--output", "json", "--output", "text"},
+			expected: []string{"tfquery", "sq", "/path/to/iac", "--output", "text"},
 		},
 		{
 			name:     "short flags deduplicated",
-			args:     []string{"tfctl", "sq", "-o", "json", "-o", "text"},
-			expected: []string{"tfctl", "sq", "-o", "text"},
+			args:     []string{"tfquery", "sq", "-o", "json", "-o", "text"},
+			expected: []string{"tfquery", "sq", "-o", "text"},
 		},
 		{
 			name:     "different flags not affected",
-			args:     []string{"tfctl", "sq", "--color", "--no-color"},
-			expected: []string{"tfctl", "sq", "--color", "--no-color"},
+			args:     []string{"tfquery", "sq", "--color", "--no-color"},
+			expected: []string{"tfquery", "sq", "--color", "--no-color"},
 		},
 		{
 			name:     "triple duplicate",
-			args:     []string{"tfctl", "sq", "--output", "a", "--output", "b", "--output", "c"},
-			expected: []string{"tfctl", "sq", "--output", "c"},
+			args:     []string{"tfquery", "sq", "--output", "a", "--output", "b", "--output", "c"},
+			expected: []string{"tfquery", "sq", "--output", "c"},
 		},
 		{
 			name:     "flag at end with no value treated as boolean",
-			args:     []string{"tfctl", "sq", "--titles", "--debug", "--titles"},
-			expected: []string{"tfctl", "sq", "--debug", "--titles"},
+			args:     []string{"tfquery", "sq", "--titles", "--debug", "--titles"},
+			expected: []string{"tfquery", "sq", "--debug", "--titles"},
 		},
 	}
 
@@ -96,9 +96,9 @@ func TestDeduplicateFlags(t *testing.T) {
 
 func TestDeduplicateFlagsPreservesOrder(t *testing.T) {
 	// Ensure non-duplicate flags maintain their relative order.
-	args := []string{"tfctl", "sq", "--alpha", "--beta", "--gamma"}
+	args := []string{"tfquery", "sq", "--alpha", "--beta", "--gamma"}
 	result := deduplicateFlags(args)
-	expected := []string{"tfctl", "sq", "--alpha", "--beta", "--gamma"}
+	expected := []string{"tfquery", "sq", "--alpha", "--beta", "--gamma"}
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Order not preserved: got %v, want %v", result, expected)
@@ -107,9 +107,9 @@ func TestDeduplicateFlagsPreservesOrder(t *testing.T) {
 
 func TestDeduplicateFlagsWithPositionalAfterFlags(t *testing.T) {
 	// Positional args after flags should be preserved.
-	args := []string{"tfctl", "sq", "--output", "json", "/path", "--output", "text"}
+	args := []string{"tfquery", "sq", "--output", "json", "/path", "--output", "text"}
 	result := deduplicateFlags(args)
-	expected := []string{"tfctl", "sq", "/path", "--output", "text"}
+	expected := []string{"tfquery", "sq", "/path", "--output", "text"}
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("got %v, want %v", result, expected)
@@ -127,51 +127,51 @@ func TestInjectConfigSet(t *testing.T) {
 	}{
 		{
 			name:      "empty config returns args unchanged",
-			args:      []string{"tfctl", "sq", "--titles"},
+			args:      []string{"tfquery", "sq", "--titles"},
 			key:       "defaults",
 			insertIdx: 2,
 			configVal: nil,
-			expected:  []string{"tfctl", "sq", "--titles"},
+			expected:  []string{"tfquery", "sq", "--titles"},
 		},
 		{
 			name:      "single entry injected",
-			args:      []string{"tfctl", "sq", "--titles"},
+			args:      []string{"tfquery", "sq", "--titles"},
 			key:       "defaults",
 			insertIdx: 2,
 			configVal: []string{"--debug"},
-			expected:  []string{"tfctl", "sq", "--debug", "--titles"},
+			expected:  []string{"tfquery", "sq", "--debug", "--titles"},
 		},
 		{
 			name:      "multi-word entry split",
-			args:      []string{"tfctl", "sq", "--titles"},
+			args:      []string{"tfquery", "sq", "--titles"},
 			key:       "defaults",
 			insertIdx: 2,
 			configVal: []string{"--output text"},
-			expected:  []string{"tfctl", "sq", "--output", "text", "--titles"},
+			expected:  []string{"tfquery", "sq", "--output", "text", "--titles"},
 		},
 		{
 			name:      "multiple entries",
-			args:      []string{"tfctl", "sq"},
+			args:      []string{"tfquery", "sq"},
 			key:       "defaults",
 			insertIdx: 2,
 			configVal: []string{"--debug", "--output json"},
-			expected:  []string{"tfctl", "sq", "--debug", "--output", "json"},
+			expected:  []string{"tfquery", "sq", "--debug", "--output", "json"},
 		},
 		{
 			name:      "insert at index 3",
-			args:      []string{"tfctl", "sq", "/path/to/iac", "--titles"},
+			args:      []string{"tfquery", "sq", "/path/to/iac", "--titles"},
 			key:       "defaults",
 			insertIdx: 3,
 			configVal: []string{"--debug"},
-			expected:  []string{"tfctl", "sq", "/path/to/iac", "--debug", "--titles"},
+			expected:  []string{"tfquery", "sq", "/path/to/iac", "--debug", "--titles"},
 		},
 		{
 			name:      "complex multi-word entries",
-			args:      []string{"tfctl", "mq"},
+			args:      []string{"tfquery", "mq"},
 			key:       "mq.defaults",
 			insertIdx: 2,
 			configVal: []string{"--host app.terraform.io", "--org myorg"},
-			expected:  []string{"tfctl", "mq", "--host", "app.terraform.io", "--org", "myorg"},
+			expected:  []string{"tfquery", "mq", "--host", "app.terraform.io", "--org", "myorg"},
 		},
 	}
 
@@ -234,37 +234,37 @@ func TestShouldSkipExplicitSetToken(t *testing.T) {
 	}{
 		{
 			name:     "skip for long attrs flag",
-			args:     []string{"tfctl", "sq", "--attrs", "@full"},
+			args:     []string{"tfquery", "sq", "--attrs", "@full"},
 			tokenIdx: 3,
 			want:     true,
 		},
 		{
 			name:     "skip for short attrs flag",
-			args:     []string{"tfctl", "sq", "-a", "@full"},
+			args:     []string{"tfquery", "sq", "-a", "@full"},
 			tokenIdx: 3,
 			want:     true,
 		},
 		{
 			name:     "skip for long filter flag",
-			args:     []string{"tfctl", "sq", "--filter", "@pink"},
+			args:     []string{"tfquery", "sq", "--filter", "@pink"},
 			tokenIdx: 3,
 			want:     true,
 		},
 		{
 			name:     "skip for short filter flag",
-			args:     []string{"tfctl", "sq", "-f", "@pink"},
+			args:     []string{"tfquery", "sq", "-f", "@pink"},
 			tokenIdx: 3,
 			want:     true,
 		},
 		{
 			name:     "skip for jq flag",
-			args:     []string{"tfctl", "sq", "--jq", "@query1"},
+			args:     []string{"tfquery", "sq", "--jq", "@query1"},
 			tokenIdx: 3,
 			want:     true,
 		},
 		{
 			name:     "do not skip standalone explicit set",
-			args:     []string{"tfctl", "sq", "@full"},
+			args:     []string{"tfquery", "sq", "@full"},
 			tokenIdx: 2,
 			want:     false,
 		},
@@ -294,9 +294,9 @@ func TestProcessCommandArgs_PsSkipsExplicitSet(t *testing.T) {
 		},
 	}
 
-	args := []string{"tfctl", "ps", "@full"}
+	args := []string{"tfquery", "ps", "@full"}
 	got := processCommandArgs(args)
-	want := []string{"tfctl", "ps", "-", "@full"}
+	want := []string{"tfquery", "ps", "-", "@full"}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("processCommandArgs(%v) = %v, want %v", args, got, want)
@@ -392,50 +392,50 @@ func TestExpandFlagValuePresets(t *testing.T) {
 	}{
 		{
 			name: "long flag with separate value",
-			args: []string{"tfctl", "mq", "--attrs", "@set1"},
-			want: []string{"tfctl", "mq", "--attrs", "arn,name"},
+			args: []string{"tfquery", "mq", "--attrs", "@set1"},
+			want: []string{"tfquery", "mq", "--attrs", "arn,name"},
 		},
 		{
 			name: "short flag with separate value",
-			args: []string{"tfctl", "mq", "-a", "@set1"},
-			want: []string{"tfctl", "mq", "-a", "arn,name"},
+			args: []string{"tfquery", "mq", "-a", "@set1"},
+			want: []string{"tfquery", "mq", "-a", "arn,name"},
 		},
 		{
 			name: "long flag equals syntax",
-			args: []string{"tfctl", "mq", "--attrs=@set1"},
-			want: []string{"tfctl", "mq", "--attrs=arn,name"},
+			args: []string{"tfquery", "mq", "--attrs=@set1"},
+			want: []string{"tfquery", "mq", "--attrs=arn,name"},
 		},
 		{
 			name: "mixed literal and preset",
-			args: []string{"tfctl", "mq", "--attrs", "created-at,@set1"},
-			want: []string{"tfctl", "mq", "--attrs", "created-at,arn,name"},
+			args: []string{"tfquery", "mq", "--attrs", "created-at,@set1"},
+			want: []string{"tfquery", "mq", "--attrs", "created-at,arn,name"},
 		},
 		{
 			name: "unknown preset unchanged",
-			args: []string{"tfctl", "mq", "--attrs", "@unknown"},
-			want: []string{"tfctl", "mq", "--attrs", "@unknown"},
+			args: []string{"tfquery", "mq", "--attrs", "@unknown"},
+			want: []string{"tfquery", "mq", "--attrs", "@unknown"},
 		},
 		{
 			name: "multiple presets",
-			args: []string{"tfctl", "mq", "--attrs", "@set1,@set2"},
-			want: []string{"tfctl", "mq", "--attrs", "arn,name,created-at,workspace"},
+			args: []string{"tfquery", "mq", "--attrs", "@set1,@set2"},
+			want: []string{"tfquery", "mq", "--attrs", "arn,name,created-at,workspace"},
 		},
 		{
 			name: "multiple presets with literal",
-			args: []string{"tfctl", "mq", "--attrs", "@set1,@set2,created-at"},
-			want: []string{"tfctl", "mq", "--attrs", "arn,name,created-at,workspace,created-at"},
+			args: []string{"tfquery", "mq", "--attrs", "@set1,@set2,created-at"},
+			want: []string{"tfquery", "mq", "--attrs", "arn,name,created-at,workspace,created-at"},
 		},
 		{
 			name: "multiple presets with transform spec",
-			args: []string{"tfctl", "mq", "--attrs", "@set1,name::U"},
-			want: []string{"tfctl", "mq", "--attrs", "arn,name,name::U"},
+			args: []string{"tfquery", "mq", "--attrs", "@set1,name::U"},
+			want: []string{"tfquery", "mq", "--attrs", "arn,name,name::U"},
 		},
 		{
 			// The trailing comma should be kept here as the stripping of it doesn't
 			// occur until after preset expansion.
 			name: "preset with trailing comma maintained",
-			args: []string{"tfctl", "mq", "--attrs", "@set3"},
-			want: []string{"tfctl", "mq", "--attrs", "workspace,"},
+			args: []string{"tfquery", "mq", "--attrs", "@set3"},
+			want: []string{"tfquery", "mq", "--attrs", "workspace,"},
 		},
 	}
 
@@ -479,33 +479,33 @@ func TestExpandFlagValuePresets_Filter(t *testing.T) {
 	}{
 		{
 			name: "long flag with separate value",
-			args: []string{"tfctl", "mq", "--filter", "@set1"},
-			want: []string{"tfctl", "mq", "--filter", "_organization@prod"},
+			args: []string{"tfquery", "mq", "--filter", "@set1"},
+			want: []string{"tfquery", "mq", "--filter", "_organization@prod"},
 		},
 		{
 			name: "short flag with separate value",
-			args: []string{"tfctl", "mq", "-f", "@set1"},
-			want: []string{"tfctl", "mq", "-f", "_organization@prod"},
+			args: []string{"tfquery", "mq", "-f", "@set1"},
+			want: []string{"tfquery", "mq", "-f", "_organization@prod"},
 		},
 		{
 			name: "long flag equals syntax",
-			args: []string{"tfctl", "mq", "--filter=@set1"},
-			want: []string{"tfctl", "mq", "--filter=_organization@prod"},
+			args: []string{"tfquery", "mq", "--filter=@set1"},
+			want: []string{"tfquery", "mq", "--filter=_organization@prod"},
 		},
 		{
 			name: "mixed literal and preset",
-			args: []string{"tfctl", "mq", "--filter", "name@prod,@set1"},
-			want: []string{"tfctl", "mq", "--filter", "name@prod,_organization@prod"},
+			args: []string{"tfquery", "mq", "--filter", "name@prod,@set1"},
+			want: []string{"tfquery", "mq", "--filter", "name@prod,_organization@prod"},
 		},
 		{
 			name: "multiple presets",
-			args: []string{"tfctl", "mq", "--filter", "@set1,@set2"},
-			want: []string{"tfctl", "mq", "--filter", "_organization@prod,_workspace@dev,status@applied"},
+			args: []string{"tfquery", "mq", "--filter", "@set1,@set2"},
+			want: []string{"tfquery", "mq", "--filter", "_organization@prod,_workspace@dev,status@applied"},
 		},
 		{
 			name: "unknown preset unchanged",
-			args: []string{"tfctl", "mq", "--filter", "@unknown"},
-			want: []string{"tfctl", "mq", "--filter", "@unknown"},
+			args: []string{"tfquery", "mq", "--filter", "@unknown"},
+			want: []string{"tfquery", "mq", "--filter", "@unknown"},
 		},
 	}
 
@@ -544,13 +544,13 @@ func TestExpandFlagValuePresets_Filter_CustomDelimiter(t *testing.T) {
 	}
 
 	got := expandFlagValuePresets(
-		[]string{"tfctl", "mq", "--filter", "name@prod|@set1"},
+		[]string{"tfquery", "mq", "--filter", "name@prod|@set1"},
 		"--filter",
 		"-f",
 		"presets.filters",
 		filterDelimiter(),
 	)
-	want := []string{"tfctl", "mq", "--filter", "name@prod|status@applied"}
+	want := []string{"tfquery", "mq", "--filter", "name@prod|status@applied"}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("custom delimiter filter expansion got %v, want %v", got, want)
@@ -573,8 +573,8 @@ func TestProcessCommandArgs_ExpandsAttrsPreset(t *testing.T) {
 		},
 	}
 
-	got := processCommandArgs([]string{"tfctl", "mq", "--attrs", "created-at,@set1"})
-	want := []string{"tfctl", "mq", "--attrs", "created-at,arn,name"}
+	got := processCommandArgs([]string{"tfquery", "mq", "--attrs", "created-at,@set1"})
+	want := []string{"tfquery", "mq", "--attrs", "created-at,arn,name"}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("processCommandArgs attrs expansion got %v, want %v", got, want)
@@ -597,8 +597,8 @@ func TestProcessCommandArgs_ExpandsFilterPreset(t *testing.T) {
 		},
 	}
 
-	got := processCommandArgs([]string{"tfctl", "mq", "--filter", "name@prod,@set1"})
-	want := []string{"tfctl", "mq", "--filter", "name@prod,_organization@prod"}
+	got := processCommandArgs([]string{"tfquery", "mq", "--filter", "name@prod,@set1"})
+	want := []string{"tfquery", "mq", "--filter", "name@prod,_organization@prod"}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("processCommandArgs filter expansion got %v, want %v", got, want)
@@ -627,10 +627,10 @@ func TestProcessCommandArgs_ExpandsAttrsAndFilterPresets_WithRootDir(t *testing.
 	rootDir := t.TempDir()
 
 	got := processCommandArgs(
-		[]string{"tfctl", "sq", rootDir, "--attrs", "@set1", "--filter", "@set2"},
+		[]string{"tfquery", "sq", rootDir, "--attrs", "@set1", "--filter", "@set2"},
 	)
 	want := []string{
-		"tfctl",
+		"tfquery",
 		"sq",
 		rootDir,
 		"--attrs",
@@ -661,8 +661,8 @@ func TestProcessCommandArgs_SqMultiRoot_InsertsAfterRoots(t *testing.T) {
 	root1 := t.TempDir()
 	root2 := t.TempDir()
 
-	got := processCommandArgs([]string{"tfctl", "sq", root1, root2, "--titles"})
-	want := []string{"tfctl", "sq", root1, root2, "--debug", "--titles"}
+	got := processCommandArgs([]string{"tfquery", "sq", root1, root2, "--titles"})
+	want := []string{"tfquery", "sq", root1, root2, "--debug", "--titles"}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("processCommandArgs sq multi-root got %v, want %v", got, want)
@@ -693,23 +693,23 @@ func TestExpandFlagSingleValuePreset(t *testing.T) {
 	}{
 		{
 			name: "long flag with separate value",
-			args: []string{"tfctl", "wq", "--jq", "@query1"},
-			want: []string{"tfctl", "wq", "--jq", `.updated > "2025-06-01"`},
+			args: []string{"tfquery", "wq", "--jq", "@query1"},
+			want: []string{"tfquery", "wq", "--jq", `.updated > "2025-06-01"`},
 		},
 		{
 			name: "long flag equals syntax",
-			args: []string{"tfctl", "wq", `--jq=@query2`},
-			want: []string{"tfctl", "wq", `--jq=.name | contains("cloud")`},
+			args: []string{"tfquery", "wq", `--jq=@query2`},
+			want: []string{"tfquery", "wq", `--jq=.name | contains("cloud")`},
 		},
 		{
 			name: "non preset value unchanged",
-			args: []string{"tfctl", "wq", `--jq=.name | contains("cloud")`},
-			want: []string{"tfctl", "wq", `--jq=.name | contains("cloud")`},
+			args: []string{"tfquery", "wq", `--jq=.name | contains("cloud")`},
+			want: []string{"tfquery", "wq", `--jq=.name | contains("cloud")`},
 		},
 		{
 			name: "unknown preset unchanged",
-			args: []string{"tfctl", "wq", "--jq", "@unknown"},
-			want: []string{"tfctl", "wq", "--jq", "@unknown"},
+			args: []string{"tfquery", "wq", "--jq", "@unknown"},
+			want: []string{"tfquery", "wq", "--jq", "@unknown"},
 		},
 	}
 
@@ -744,8 +744,8 @@ func TestProcessCommandArgs_ExpandsJQPreset(t *testing.T) {
 		},
 	}
 
-	got := processCommandArgs([]string{"tfctl", "wq", "--jq", "@query1"})
-	want := []string{"tfctl", "wq", "--jq", `.updated > "2025-06-01"`}
+	got := processCommandArgs([]string{"tfquery", "wq", "--jq", "@query1"})
+	want := []string{"tfquery", "wq", "--jq", `.updated > "2025-06-01"`}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("processCommandArgs jq expansion got %v, want %v", got, want)

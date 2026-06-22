@@ -14,11 +14,11 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/backend/cloud"
-	"github.com/tfctl/tfctl/internal/backend/local"
-	"github.com/tfctl/tfctl/internal/backend/remote"
-	"github.com/tfctl/tfctl/internal/backend/s3"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/backend/cloud"
+	"github.com/tfquery/tfquery/internal/backend/local"
+	"github.com/tfquery/tfquery/internal/backend/remote"
+	"github.com/tfquery/tfquery/internal/backend/s3"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 // Type holds common backend resolution context and flags.

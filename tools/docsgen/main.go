@@ -93,7 +93,7 @@ func main() {
 		version = os.Args[2]
 	}
 
-	file := filepath.Join(docs, "templates", "docs-tfq.yaml")
+	file := filepath.Join(docs, "templates", "docs-tfquery.yaml")
 	data, _ := os.ReadFile(filepath.Clean(file))
 	var config Config
 	if err := yaml.Unmarshal(data, &config); err != nil {
@@ -103,7 +103,7 @@ func main() {
 	date := time.Now().Format("January 2, 2006")
 
 	if err := renderOutput(
-		Outputs{Template: docs + "/templates/tfq.root.man.tmpl", Folder: docs + "/./man/share/man1/", Prefix: "", Suffix: ".1"},
+		Outputs{Template: docs + "/templates/tfquery.root.man.tmpl", Folder: docs + "/./man/share/man1/", Prefix: "", Suffix: ".1"},
 		config.Root.Name,
 		RootTemplateData{Root: config.Root, Date: date, Version: version},
 	); err != nil {
@@ -131,9 +131,9 @@ func main() {
 		}
 
 		types := []Outputs{
-			{Template: docs + "/templates/tfq.md.tmpl", Folder: docs + "/commands/", Suffix: ".md"},
-			{Template: docs + "/templates/tfq.man.tmpl", Folder: docs + "/./man/share/man1/", Prefix: "tfq-", Suffix: ".1"},
-			{Template: docs + "/templates/tfq.tldr.tmpl", Folder: docs + "/./tldr/", Prefix: "tfq-", Suffix: ".md"},
+			{Template: docs + "/templates/tfquery.md.tmpl", Folder: docs + "/commands/", Suffix: ".md"},
+			{Template: docs + "/templates/tfquery.man.tmpl", Folder: docs + "/./man/share/man1/", Prefix: "tfquery-", Suffix: ".1"},
+			{Template: docs + "/templates/tfquery.tldr.tmpl", Folder: docs + "/./tldr/", Prefix: "tfquery-", Suffix: ".md"},
 		}
 
 		for _, t := range types {
@@ -181,16 +181,16 @@ func getVersion() string {
 	return strings.TrimPrefix(version, "v")
 }
 
-// usageWithAlias rewrites the first "tfq <id>" segment in a usage string to
-// "tfq <alias>". It returns an empty string when alias is blank or when the
+// usageWithAlias rewrites the first "tfquery <id>" segment in a usage string to
+// "tfquery <alias>". It returns an empty string when alias is blank or when the
 // usage string does not contain the required format.
 func usageWithAlias(usage string, id string, alias string) string {
 	if alias == "" {
 		return ""
 	}
 
-	short := "tfq " + id
-	aliased := "tfq " + alias
+	short := "tfquery " + id
+	aliased := "tfquery " + alias
 
 	if !strings.Contains(usage, short) {
 		return ""

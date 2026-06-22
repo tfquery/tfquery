@@ -13,7 +13,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 
-	"github.com/tfctl/tfctl/internal/log"
+	"github.com/tfquery/tfquery/internal/log"
 )
 
 // Attr represents each of the keys to be included in the output. These are

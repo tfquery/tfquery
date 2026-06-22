@@ -12,9 +12,9 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/meta"
-	"github.com/tfctl/tfctl/internal/util"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/meta"
+	"github.com/tfquery/tfquery/internal/util"
 )
 
 func InitApp(ctx context.Context, args []string) (*cli.Command, error) {
@@ -26,7 +26,7 @@ func InitApp(ctx context.Context, args []string) (*cli.Command, error) {
 		}
 	}()
 
-	// The arg[1] immediately following the binary (arg[0]) is the tfctl
+	// The arg[1] immediately following the binary (arg[0]) is the tfquery
 	// subcommand and also represents the namespace key to be used when retrieving
 	// config values. arg[1] could be -h/--help, so ignore it if it appears to be
 	// a flag.
@@ -63,20 +63,20 @@ func InitApp(ctx context.Context, args []string) (*cli.Command, error) {
 	}
 
 	app := &cli.Command{
-		Name:            "tfctl",
-		Usage:           "Terraform Control",
+		Name:            "tfquery",
+		Usage:           "Terraform Query",
 		HideHelp:        true,
 		HideHelpCommand: true,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:        "help",
-				Usage:       "show tfctl command help",
+				Usage:       "show tfquery command help",
 				HideDefault: true,
 			},
 			&cli.BoolFlag{
 				Name:        "version",
 				Aliases:     []string{"v"},
-				Usage:       "tfctl version info",
+				Usage:       "tfquery version info",
 				HideDefault: true,
 			},
 		},

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 
-	"github.com/tfctl/tfctl/internal/attrs"
+	"github.com/tfquery/tfquery/internal/attrs"
 )
 
 func TestFilterDatasetJQ(t *testing.T) {
@@ -81,7 +81,7 @@ func TestFilterDatasetJQ(t *testing.T) {
 func TestFilterDatasetJQ_UsesOutputKeys(t *testing.T) {
 	testData := `[
 		{"id":"1","attributes":{"name":"staranto"}},
-		{"id":"2","attributes":{"name":"tfctl"}}
+		{"id":"2","attributes":{"name":"tfquery"}}
 	]`
 
 	attrList := attrs.AttrList{

@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 // rqDefaultAttrs specifies the default attributes displayed for runs in
@@ -78,7 +78,7 @@ func rqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "rq",
 		Alias:     "run",
 		Usage:     "run query",
-		UsageText: "tfctl rq [RootDir] [options]",
+		UsageText: "tfquery rq [RootDir] [options]",
 		Flags: []cli.Flag{
 			&cli.IntFlag{
 				Name:    "limit",

@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 // TestDir_WithTFCTL_CACHE_DIR verifies Dir() respects TFCTL_CACHE_DIR
@@ -42,7 +42,7 @@ func TestDir_WithEmptyTFCTL_CACHE_DIR(t *testing.T) {
 }
 
 // TestDir_WithoutTFCTL_CACHE_DIR verifies Dir() falls back to
-// os.UserCacheDir/tfctl when env var not set.
+// os.UserCacheDir/tfquery when env var not set.
 func TestDir_WithoutTFCTL_CACHE_DIR(t *testing.T) {
 	t.Setenv("TFCTL_CACHE_DIR", "")
 

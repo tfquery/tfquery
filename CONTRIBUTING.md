@@ -1,6 +1,6 @@
-# Contributing to tfctl
+# Contributing to
 
-Thanks for your interest in improving `tfctl`! All contributions are welcome:
+Thanks for your interest in improving `tfquery`. All contributions are welcome:
 
 - Bug reports & fixes
 - New features & enhancements
@@ -242,4 +242,4 @@ go run tools/docgen/main.go -root .
 ```
 
 
-Your contributions help make infrastructure automation easier. Thank you for helping improve `tfctl`.
+Your contributions help make infrastructure automation easier. Thank you for helping improve ``.

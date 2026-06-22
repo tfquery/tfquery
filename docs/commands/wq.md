@@ -1,6 +1,8 @@
 # NAME
 
-tfq wq — HCP/TFE Workspace Query
+tfquery wq — HCP/TFE Workspace Query
+
+tfquery workspace
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query HCP/TFE workspaces.
 
 # USAGE
 
-`tfq wq [options]`
+`tfquery wq [options]`
 
 
 # OPTIONS
@@ -53,14 +55,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display workspaces and include Created At information.**
 
 ```sh
-tfq wq --attrs created-at
+tfquery wq --attrs created-at
 ```
 
 
 **Display workspaces in the "hr" org with "prod" in their name.**
 
 ```sh
-tfq wq --org hr --filter 'name@prod'
+tfquery wq --org hr --filter 'name@prod'
 ```
 
 

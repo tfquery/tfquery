@@ -24,9 +24,9 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	awsx "github.com/tfctl/tfctl/internal/aws"
-	"github.com/tfctl/tfctl/internal/differ"
-	"github.com/tfctl/tfctl/internal/svutil"
+	awsx "github.com/tfquery/tfquery/internal/aws"
+	"github.com/tfquery/tfquery/internal/differ"
+	"github.com/tfquery/tfquery/internal/svutil"
 )
 
 // BackendS3 represents an S3-backed Terraform state backend configuration. It

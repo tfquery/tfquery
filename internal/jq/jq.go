@@ -9,8 +9,8 @@ import (
 	"github.com/itchyny/gojq"
 	"github.com/tidwall/gjson"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/driller"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/driller"
 )
 
 // FilterDatasetJQ applies a jq expression to each candidate row and returns

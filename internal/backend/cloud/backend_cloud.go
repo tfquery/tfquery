@@ -12,14 +12,14 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/backend/remote"
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/backend/remote"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 // BackendCloud represents a Terraform Cloud or Enterprise backend
 // configuration, which is a specific type of remote backend. It contains the
 // necessary fields to configure and authenticate with TFC/TFE, and provides a
-// method to transform itself into a BackendRemote for use by tfctl.
+// method to transform itself into a BackendRemote for use by tfquery.
 type BackendCloud struct {
 	// Runtime context
 	Cmd *cli.Command
@@ -123,11 +123,11 @@ func (be *BackendCloud) Transform2Remote(ctx context.Context, cmd *cli.Command) 
 	}
 	beRemote.Backend.Config.Hostname = host
 
-	// Organization precedence: --org > terraform.backend{} > tfctl.yaml
-	// Detect if --org is explicitly set to a value different from tfctl.yaml
-	// config so tfctl.yaml doesn't override backend values.
+	// Organization precedence: --org > terraform.backend{} > tfquery.yaml
+	// Detect if --org is explicitly set to a value different from tfquery.yaml
+	// config so tfquery.yaml doesn't override backend values.
 	flagOrg := cmd.String("org")
-	// Attempt to read namespaced and global org from tfctl.yaml to infer defaults
+	// Attempt to read namespaced and global org from tfquery.yaml to infer defaults
 	var cfgOrg string
 	if ns := cmd.Name; ns != "" {
 		if v, err := config.GetString(ns + ".org"); err == nil {

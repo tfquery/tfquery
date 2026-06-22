@@ -1,6 +1,8 @@
 # NAME
 
-tfq rq — HCP/TFE Run Query
+tfquery rq — HCP/TFE Run Query
+
+tfquery run
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query HCP/TFE runs for the given workspace.
 
 # USAGE
 
-`tfq rq [options]`
+`tfquery rq [options]`
 
 
 # OPTIONS
@@ -54,14 +56,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display runs and include Created At and Status information.**
 
 ```sh
-tfq rq --attrs created-at,status
+tfquery rq --attrs created-at,status
 ```
 
 
 **Display errored runs in the "prod" workspace of the "hr" org.**
 
 ```sh
-tfq rq --org hr --workspace prod --filter 'status@errored'
+tfquery rq --org hr --workspace prod --filter 'status@errored'
 ```
 
 

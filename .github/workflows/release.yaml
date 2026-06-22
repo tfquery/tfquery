@@ -81,15 +81,15 @@ jobs:
 
           tag="${{ github.ref_name }}"
 
-          if gh release view "$tag" --repo tfctl/homebrew-tfctl >/dev/null 2>&1; then
+          if gh release view "$tag" --repo tfquery/homebrew-tfquery >/dev/null 2>&1; then
             gh release edit "$tag" \
-              --repo tfctl/homebrew-tfctl \
+              --repo tfquery/homebrew-tfquery \
               --title "$tag" \
               --notes "Release $tag for Homebrew tap." \
               --prerelease
           else
             gh release create "$tag" \
-              --repo tfctl/homebrew-tfctl \
+              --repo tfquery/homebrew-tfquery \
               --title "$tag" \
               --notes "Release $tag for Homebrew tap." \
               --prerelease \
@@ -108,16 +108,16 @@ jobs:
           # Upload archives
           gh release upload "${{ github.ref_name }}" \
             dist/*.{tar.gz,zip,tar.xz,tgz} \
-            --repo tfctl/homebrew-tfctl --clobber || true
+            --repo tfquery/homebrew-tfquery --clobber || true
 
           # Upload detached signatures
           gh release upload "${{ github.ref_name }}" \
             dist/*.{tar.gz.sig,zip.sig,tar.xz.sig,tgz.sig} \
-            --repo tfctl/homebrew-tfctl --clobber || true
+            --repo tfquery/homebrew-tfquery --clobber || true
 
           # Upload docs
           gh release upload "${{ github.ref_name }}" \
             README.md LICENSE \
-            --repo tfctl/homebrew-tfctl --clobber
+            --repo tfquery/homebrew-tfquery --clobber
         env:
           GH_TOKEN: ${{ secrets.GH_GORELEASER_PAT }}

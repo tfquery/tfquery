@@ -1,12 +1,12 @@
-.TH tfq-sq 1 "June 20, 2026" "tfq v2.0.0" "tfq"
+.TH tfquery-wq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfq\-sq \- State Query
+tfquery\-wq \- HCP/TFE Workspace Query
 .SH SYNOPSIS
-tfq sq [RootDir...] [options]
+tfquery wq [options]
 .br
-tfq state [RootDir...] [options]
+tfquery workspace [options]
 .SH DESCRIPTION
-Query Terraform state files.
+Query HCP/TFE workspaces.
 
 .SH OPTIONS
 
@@ -22,27 +22,8 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 
 
 .TP
-\fB--chop/--no-chop\fR
-Chop common resource prefix from names.
-
-
-.TP
 \fB--color/--no-color\fR
 Colorize text output.
-
-
-.TP
-\fB--concrete/-k\fR
-Only include concrete resources.
-
-
-.TP
-\fB--diff [ old[:new] \| + ]\fR
-Find differences between state versions.
-
-.fi
-The `old` and `new` parameters can be version numbers, `latest`, or `earliest`. If `+` is provided, compares the latest version to the previous version.
-.nf
 
 
 .TP
@@ -63,6 +44,11 @@ jq query string to apply to results.
 .TP
 \fB--json-into string\fR
 secondary output path to write JSON output to.
+
+
+.TP
+\fB--limit int\fR
+Limit the result set to `int` results.
 
 
 .TP
@@ -90,13 +76,8 @@ Number of spaces to pad columns in text output.
 
 
 .TP
-\fB--passphrase string\fR
-OpenTofu encrypted state passphrase.
-
-
-.TP
-\fB--short/--no-short\fR
-Shorten full resource name paths.
+\fB--schema\fR
+List of attributes for use with `--attrs`, `--filter`, and '--sort'.
 
 
 .TP
@@ -105,15 +86,6 @@ Comma-separated list of fields to sort by.
 
 .fi
 Prefix field names with `-` to sort in descending order.  For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
-.nf
-
-
-.TP
-\fB--sv string\fR
-State version to query.  Can be a version number, `latest`, or `earliest`.
-
-.fi
-Can also be relativative. For example, `-1` is the previous version, `-2` is two versions ago, `+1` is the next version, and so on.
 .nf
 
 
@@ -128,11 +100,6 @@ Show tldr page if a client is installed.
 
 
 .TP
-\fB--workspace/-w string\fR
-Workspace to use for all commands. Overrides the backend.
-
-
-.TP
 \fB--yaml-into string\fR
 secondary output path to write YAML output to.
 
@@ -142,32 +109,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Display state file in current directory and include Created At information.
+Display workspaces and include Created At information.
 .IP
-tfq sq --attrs created-at
+tfquery wq --attrs created-at
 
 .TP
-Aggregates the state files in the `iac1/` and `iac2/` directories and displays combined results.
+Display workspaces in the "hr" org with "prod" in their name.
 .IP
-tfq sq iac1/ iac2/
+tfquery wq --org hr --filter 'name@prod'
 
-.TP
-Display only concrete resources with "vpc" in their type or name.
-.IP
-tfq sq --concrete --filter 'resource@vpc'
-
-.TP
-Display the third most recent state file version in JSON format.
-.IP
-tfq sq --sv -3 --output json
-
-
-
-.SH NOTES
-
-.IP
-`sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided.
-
-.IP
-When using encrypted state, `sq` will prompt for a passphrase or use `TF_VAR_passphrase`.
 

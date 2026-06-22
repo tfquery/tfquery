@@ -12,9 +12,9 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/filters"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/filters"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 // mqDefaultAttrs specifies the default attributes displayed for registry
@@ -106,7 +106,7 @@ func mqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "mq",
 		Alias:     "module",
 		Usage:     "module registry query",
-		UsageText: "tfctl mq [RootDir] [options]",
+		UsageText: "tfquery mq [RootDir] [options]",
 		Flags: []cli.Flag{
 			NewHostFlag("mq", meta.Config.Source),
 			NewOrgFlag("mq", meta.Config.Source),

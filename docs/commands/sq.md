@@ -1,6 +1,8 @@
 # NAME
 
-tfq sq — State Query
+tfquery sq — State Query
+
+tfquery state
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query Terraform state files.
 
 # USAGE
 
-`tfq sq [RootDir...] [options]`
+`tfquery sq [RootDir...] [options]`
 
 
 # OPTIONS
@@ -71,28 +73,28 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display state file in current directory and include Created At information.**
 
 ```sh
-tfq sq --attrs created-at
+tfquery sq --attrs created-at
 ```
 
 
 **Aggregates the state files in the `iac1/` and `iac2/` directories and displays combined results.**
 
 ```sh
-tfq sq iac1/ iac2/
+tfquery sq iac1/ iac2/
 ```
 
 
 **Display only concrete resources with "vpc" in their type or name.**
 
 ```sh
-tfq sq --concrete --filter 'resource@vpc'
+tfquery sq --concrete --filter 'resource@vpc'
 ```
 
 
 **Display the third most recent state file version in JSON format.**
 
 ```sh
-tfq sq --sv -3 --output json
+tfquery sq --sv -3 --output json
 ```
 
 

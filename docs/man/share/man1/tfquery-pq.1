@@ -1,14 +1,25 @@
-.TH tfq-ps 1 "June 20, 2026" "tfq v2.0.0" "tfq"
+.TH tfquery-pq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfq\-ps \- Plan summary
+tfquery\-pq \- HCP/TFE Project Query
 .SH SYNOPSIS
-tfq ps [planfile] [options]
+tfquery pq [options]
 .br
-tfq summarize [planfile] [options]
+tfquery project [options]
 .SH DESCRIPTION
-Show a summary of the given plan.
+Query HCP/TFE projects.
 
 .SH OPTIONS
+
+.TP
+\fB--attrs/-a string\fR
+Comma-separated list of attributes to include in results.
+
+.fi
+There are many possible attributes depending on the command. Common attributes include: `id`, `type`, `name`, `created-at`, `updated-at`, etc. But, each command has it's own schema. Other than the `sq` command, use the `--schema` flag to see the full list of available attributes.
+
+There is also a feature-rich syntax for transforming attribute values. See [Attributes](../attrs.md) for details.
+.nf
+
 
 .TP
 \fB--color/--no-color\fR
@@ -18,6 +29,11 @@ Colorize text output.
 .TP
 \fB--filter/-f string\fR
 Comma-separated list of filters to apply to results
+
+
+.TP
+\fB--host/-h string\fR
+HCP/TFE host to use. Overrides the backend.
 
 
 .TP
@@ -31,8 +47,18 @@ secondary output path to write JSON output to.
 
 
 .TP
+\fB--limit int\fR
+Limit the result set to `int` results.
+
+
+.TP
 \fB--local/--no-local\fR
 Show timestamps in local time according to your OS.
+
+
+.TP
+\fB--org string\fR
+Organization to use for all commands. Overrides the backend.
 
 
 .TP
@@ -47,6 +73,11 @@ The `text` output format is a human-friendly table format. The `json`, `yaml`, a
 .TP
 \fB--padding int\fR
 Number of spaces to pad columns in text output.
+
+
+.TP
+\fB--schema\fR
+List of attributes for use with `--attrs`, `--filter`, and '--sort'.
 
 
 .TP
@@ -78,13 +109,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Show only a summary of a Terraform plan.
+Display projects and include Updated At information.
 .IP
-terraform plan | tfq ps
+tfquery pq --attrs updated-at
 
 .TP
-Show the full plan output while also including a summary.
+Display projects in the "hr" org with "prod" in their name.
 .IP
-terraform plan | tee >(tfq ps)
+tfquery pq --org hr --filter 'name@prod'
 
 

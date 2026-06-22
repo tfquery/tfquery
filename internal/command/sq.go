@@ -16,14 +16,14 @@ import (
 	"github.com/apex/log"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/backend"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/differ"
-	"github.com/tfctl/tfctl/internal/meta"
-	"github.com/tfctl/tfctl/internal/output"
-	"github.com/tfctl/tfctl/internal/state"
-	"github.com/tfctl/tfctl/internal/util"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/backend"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/differ"
+	"github.com/tfquery/tfquery/internal/meta"
+	"github.com/tfquery/tfquery/internal/output"
+	"github.com/tfquery/tfquery/internal/state"
+	"github.com/tfquery/tfquery/internal/util"
 )
 
 // sqCommandAction is the action handler for the "sq" subcommand. It reads
@@ -219,7 +219,7 @@ func sqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "sq",
 		Aliases:   []string{"state"},
 		Usage:     "state query",
-		UsageText: "tfctl sq [RootDir] [options]",
+		UsageText: "tfquery sq [RootDir] [options]",
 		Metadata: map[string]any{
 			"meta": meta,
 		},

@@ -51,7 +51,7 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/tfctl/tfctl
+        - github.com/tfquery/tfquery
   exclusions:
     generated: lax
     paths:

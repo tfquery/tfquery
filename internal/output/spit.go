@@ -21,10 +21,10 @@ import (
 	"github.com/urfave/cli/v3"
 	"gopkg.in/yaml.v2"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/filters"
-	"github.com/tfctl/tfctl/internal/jq"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/filters"
+	"github.com/tfquery/tfquery/internal/jq"
 )
 
 // InterfaceToString converts supported primitive or composite values to a

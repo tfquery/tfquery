@@ -10,8 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	s3v2 "github.com/aws/aws-sdk-go-v2/service/s3"
 
-	tfcfg "github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/log"
+	tfcfg "github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/log"
 )
 
 // options holds optional overrides for AWS config loading.

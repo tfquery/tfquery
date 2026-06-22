@@ -1,6 +1,8 @@
 # NAME
 
-tfq svq — State Version Query
+tfquery svq — State Version Query
+
+tfquery state-version
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query Terraform state version history.
 
 # USAGE
 
-`tfq svq [RootDir] [options]`
+`tfquery svq [RootDir] [options]`
 
 
 # OPTIONS
@@ -53,14 +55,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display state file history for current directory and include Created At information.**
 
 ```sh
-tfq svq --attrs created-at
+tfquery svq --attrs created-at
 ```
 
 
 **Display the five most recent state file versions and include the YYYY-MM-DD portion of the Created At information.**
 
 ```sh
-tfq svq --limit 5 --attrs created-at::10
+tfquery svq --limit 5 --attrs created-at::10
 ```
 
 

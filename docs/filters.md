@@ -1,4 +1,4 @@
-# tfq Filters
+# tfquery Filters
 
 The `--filter` flag narrows query results using a small, expressive syntax. This page documents the syntax and gives examples.
 
@@ -32,7 +32,7 @@ For existence checks, `key!?` means field is missing.
 ## Special filters
 
 - `hungarian` : Detects resources following Hungarian notation naming conventions (applies to `sq` command only)
-  - Example: `tfq sq --filter hungarian=true` — shows only resources with names following Hungarian notation
+  - Example: `tfquery sq --filter hungarian=true` — shows only resources with names following Hungarian notation
   - Supported values: `true`, `false`, or bare `hungarian` (equivalent to `hungarian=true`)
   - The filter analyzes resource type and name to detect common prefix patterns (e.g., `s3Bucket`, `ec2Instance`, `iamRole`)
   - Case-insensitive and supports underscores and dashes in names
@@ -54,83 +54,83 @@ If a target contains the delimiter character, quote the whole filter or choose a
   - The field value is `null`.
   - The field value is an empty string (`""`).
 - Filters are evaluated before attribute transformations are applied (so transformations in `--attrs` won't affect filter matching).
-- When using `sq` with `--concrete`, tfq automatically appends `mode=managed` to the filter set.
+- When using `sq` with `--concrete`, tfquery automatically appends `mode=managed` to the filter set.
 
 ## Examples
 
 **jq filtering (experimental):**
 ```bash
 # Match a single value
-tfq wq --jq '.name == "my-resource"'
+tfquery wq --jq '.name == "my-resource"'
 
 # Logical AND
-tfq wq --jq '.name == "my-resource" and .id == "res-123"'
+tfquery wq --jq '.name == "my-resource" and .id == "res-123"'
 
 # Logical OR
-tfq wq --jq '.name == "my-resource" or .id == "res-123"'
+tfquery wq --jq '.name == "my-resource" or .id == "res-123"'
 
 # Grouping
-tfq wq --jq '(.name == "my-resource" and .id == "res-123") or .type == "aws_instance"'
+tfquery wq --jq '(.name == "my-resource" and .id == "res-123") or .type == "aws_instance"'
 
 # Nested field checks
-tfq wq --jq '.nested.inner != null and .nested.inner != ""'
+tfquery wq --jq '.nested.inner != null and .nested.inner != ""'
 ```
 
-`--jq` and `--filter` are mutually exclusive. If both are provided, tfq
+`--jq` and `--filter` are mutually exclusive. If both are provided, tfquery
 returns an error.
 
 **Basic filtering:**
 ```bash
 # Simple contains
-tfq oq --filter 'name@prod'
+tfquery oq --filter 'name@prod'
 
 # Negation (not contains)
-tfq oq --filter 'name!@prod'
+tfquery oq --filter 'name!@prod'
 
 # Exact match
-tfq wq --filter 'status=applied'
+tfquery wq --filter 'status=applied'
 
 # Case-insensitive equality
-tfq oq --filter 'email~admin'
+tfquery oq --filter 'email~admin'
 
 # Starts with
-tfq wq --filter 'name^prod'
+tfquery wq --filter 'name^prod'
 ```
 
 **Regular expression filtering:**
 ```bash
 # Find workspaces matching a naming pattern (prod-001, prod-002, etc.)
-tfq wq --filter 'name/^prod-\d{3}$'
+tfquery wq --filter 'name/^prod-\d{3}$'
 
 # Find resources with version numbers
-tfq sq --filter 'version/^\d+\.\d+\.\d+$'
+tfquery sq --filter 'version/^\d+\.\d+\.\d+$'
 
 # Match email addresses in organization attributes
-tfq oq --filter 'email/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+tfquery oq --filter 'email/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 ```
 
 **Complex filtering:**
 ```bash
 # Multiple filters (comma-delimited)
-tfq oq --filter 'name@prod,created-at>2024-01-01'
+tfquery oq --filter 'name@prod,created-at>2024-01-01'
 
 # Find items that do not have a given tag
-tfq mq --filter 'tags!@deprecated'
+tfquery mq --filter 'tags!@deprecated'
 
 # Combine different operators
-tfq wq --filter 'name^prod,status=applied,!description='
+tfquery wq --filter 'name^prod,status=applied,!description='
 
 # Field exists
-tfq wq --filter 'name?'
+tfquery wq --filter 'name?'
 
 # Field missing
-tfq wq --filter 'description!?'
+tfquery wq --filter 'description!?'
 
 # Find resources with Hungarian notation naming (sq only)
-tfq sq --filter 'hungarian=true'
+tfquery sq --filter 'hungarian=true'
 
 # Find resources NOT using Hungarian notation (sq only)
-tfq sq --filter 'hungarian=false'
+tfquery sq --filter 'hungarian=false'
 ```
 
 For implementation details, see the `FilterDataset` and `BuildFilters`

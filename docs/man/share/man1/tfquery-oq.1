@@ -1,10 +1,10 @@
-.TH tfq-oq 1 "June 20, 2026" "tfq v2.0.0" "tfq"
+.TH tfquery-oq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfq\-oq \- HCP/TFE Organization Query
+tfquery\-oq \- HCP/TFE Organization Query
 .SH SYNOPSIS
-tfq oq [options]
+tfquery oq [options]
 .br
-tfq org [options]
+tfquery org [options]
 .SH DESCRIPTION
 Query HCP/TFE organizations.
 
@@ -106,11 +106,11 @@ secondary output path to write YAML output to.
 .TP
 Display organizations and include Created At information.
 .IP
-tfq oq --attrs created-at
+tfquery oq --attrs created-at
 
 .TP
 Display organizations with "myorg" in their name.
 .IP
-tfq oq --filter 'name@myorg'
+tfquery oq --filter 'name@myorg'
 
 

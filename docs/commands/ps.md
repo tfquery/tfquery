@@ -1,6 +1,8 @@
 # NAME
 
-tfq ps — Plan summary
+tfquery ps — Plan summary
+
+tfquery summarize
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Show a summary of the given plan.
 
 # USAGE
 
-`tfq ps [planfile] [options]`
+`tfquery ps [planfile] [options]`
 
 
 # OPTIONS
@@ -43,14 +45,14 @@ Show a summary of the given plan.
 **Show only a summary of a Terraform plan.**
 
 ```sh
-terraform plan | tfq ps
+terraform plan | tfquery ps
 ```
 
 
 **Show the full plan output while also including a summary.**
 
 ```sh
-terraform plan | tee >(tfq ps)
+terraform plan | tee >(tfquery ps)
 ```
 
 

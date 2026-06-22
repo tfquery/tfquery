@@ -10,8 +10,8 @@ before:
     - go mod tidy
 
 builds:
-  - id: tfctl
-    binary: tfctl
+  - id: tfq
+    binary: tfq
     env:
       - CGO_ENABLED=0
     goarch:
@@ -25,7 +25,7 @@ builds:
       - -trimpath
     ldflags:
       - '-s -w -extldflags "-static"'
-      - '-X "github.com/tfctl/tfctl/internal/version.Version={{ .Version }}"'
+      - '-X "github.com/tfquery/tfquery/internal/version.Version={{ .Version }}"'
 
 archives:
   - id: archive
@@ -51,8 +51,8 @@ changelog:
 
 release:
   github:
-    owner: tfctl
-    name: tfctl
+    owner: tfquery
+    name: tfquery
   draft: true
   mode: replace
   footer: >-
@@ -64,30 +64,30 @@ release:
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
 
 brews:
-  - name: tfctl
+  - name: tfquery
     ids: [archive]
     repository:
-      owner: tfctl
-      name: homebrew-tfctl
-    homepage: https://github.com/tfctl/tfctl
+      owner: tfquery
+      name: homebrew-tfquery
+    homepage: https://github.com/tfquery/tfquery
     description: CLI to query Terraform/OpenTofu state across backends
     license: Apache-2.0
-    url_template: "https://github.com/tfctl/homebrew-tfctl/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    url_template: "https://github.com/tfquery/homebrew-tfquery/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     install: |
-      bin.install "tfctl"
+      bin.install "tfq"
       man1.install Dir["docs/man/share/man1/*"] if File.directory?("docs/man/share/man1")
     test: |
-      system "#{bin}/tfctl", "--version"
+      system "#{bin}/tfq", "--version"
 
 nfpms:
-  - id: tfctl-deb
-    ids: [tfctl]
-    package_name: tfctl
+  - id: tfquery-deb
+    ids: [tfquery]
+    package_name: tfquery
     file_name_template: '{{ .Binary }}_{{ .Version }}_{{- if eq .Arch "amd64" }}amd64{{ else }}{{ .Arch }}{{ end }}{{ .ConventionalExtension }}'
     vendor: Steve Taranto
     maintainer: Steve Taranto staranto@gmail.com
-    homepage: https://github.com/tfctl/tfctl
-    description: CLI for Terraform query and control
+    homepage: https://github.com/tfquery/tfquery
+    description: CLI for Terraform query
     license: Apache-2.0
     bindir: /usr/local/bin
     formats:
@@ -96,11 +96,11 @@ nfpms:
       - src: docs/man/share/man1/*
         dst: /usr/share/man/man1/
       - src: LICENSE*
-        dst: /usr/share/doc/tfctl/
+        dst: /usr/share/doc/tfquery/
       - src: README.md
-        dst: /usr/share/doc/tfctl/
+        dst: /usr/share/doc/tfquery/
       - src: docs/tldr/*
-        dst: /usr/share/doc/tfctl/tldr/
+        dst: /usr/share/doc/tfquery/tldr/
 
 signs:
   - artifacts: all

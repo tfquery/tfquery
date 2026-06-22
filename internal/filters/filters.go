@@ -13,9 +13,9 @@ import (
 	"github.com/apex/log"
 	"github.com/tidwall/gjson"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/driller"
-	"github.com/tfctl/tfctl/internal/hungarian"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/driller"
+	"github.com/tfquery/tfquery/internal/hungarian"
 )
 
 // filterRegex is the pattern used to parse filter expressions into key,

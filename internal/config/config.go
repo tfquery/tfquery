@@ -251,7 +251,7 @@ func (cfg *Type) get(kspec string) (any, error) {
 // getConfigFile returns the absolute path to the YAML config file. If the
 // TFCTL_CFG_FILE environment variable is set, it is treated as the full path to
 // the config file. Otherwise, the OS-specific user configuration directory
-// returned by os.UserConfigDir is used with the filename "tfctl.yaml". The file
+// returned by os.UserConfigDir is used with the filename "tfquery.yaml". The file
 // must exist and not be a directory.
 func getConfigFile() (string, error) {
 	// Check for TFCTL_CFG_FILE environment variable first
@@ -272,7 +272,7 @@ func getConfigFile() (string, error) {
 		return "", err
 	}
 
-	file := filepath.Join(dir, "tfctl.yaml")
+	file := filepath.Join(dir, "tfquery.yaml")
 	if fileInfo, err := os.Stat(file); err == nil {
 		if !fileInfo.IsDir() {
 			log.Debugf("using config file: %s", file)

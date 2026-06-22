@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 func TestBuildAttrs_UsesCommandPresetDefaults(t *testing.T) {

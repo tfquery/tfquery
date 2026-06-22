@@ -14,7 +14,7 @@ import (
 	"github.com/apex/log"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 type BackendRemoteOption = func(ctx context.Context, cmd *cli.Command, be *BackendRemote) error

@@ -11,10 +11,10 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/backend/remote"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/filters"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/backend/remote"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/filters"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 var oqDefaultAttrs = []string{"external-id:id", ".id:name"}
@@ -94,7 +94,7 @@ func oqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "oq",
 		Alias:     "org",
 		Usage:     "organization query",
-		UsageText: "tfctl oq [RootDir] [options]",
+		UsageText: "tfquery oq [RootDir] [options]",
 		Flags: []cli.Flag{
 			NewHostFlag("oq", meta.Config.Source),
 		},

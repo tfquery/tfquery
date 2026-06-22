@@ -1,22 +1,22 @@
 # Configuration
 
-tfq configuration is made in a YAML file. Environment variables can override certain settings at runtime.
+tfquery configuration is made in a YAML file. Environment variables can override certain settings at runtime.
 
 ## Configuration File
 
-tfq reads its configuration from a YAML file. The file location is determined by the following precedence:
+tfquery reads its configuration from a YAML file. The file location is determined by the following precedence:
 
 1. `TFQ_CFG_FILE` environment variable (if set and non-empty)
 2. OS-specific user config directory:
-   - Linux/Unix: `$HOME/.config/tfq/tfq.yaml`
-   - macOS: `$HOME/Library/Application Support/tfq/tfq.yaml`
-   - Windows: `%APPDATA%\tfq\tfq.yaml`
+   - Linux/Unix: `$HOME/.config/tfquery/tfquery.yaml`
+   - macOS: `$HOME/Library/Application Support/tfquery/tfquery.yaml`
+   - Windows: `%APPDATA%\tfquery\tfquery.yaml`
 
-If the specified file is not found or cannot be parsed, tfq will error.
+If the specified file is not found or cannot be parsed, tfquery will error.
 
 ### Configuration Structure
 
-See [tfq.yaml](tfq.yaml) for a complete reference of all available configuration options, including command-specific settings and defaults.
+See [tfquery.yaml](tfquery.yaml) for a complete reference of all available configuration options, including command-specific settings and defaults.
 
 Preset references used by `--attrs`, `--filter`, and `--jq` are defined under
 the top-level `presets` key (`presets.attrs`, `presets.filters`,
@@ -28,17 +28,17 @@ The following environment variables override configuration file settings at runt
 
 ### `TFQ_CFG_FILE`
 
-Specifies the full path to a tfq configuration file in YAML format.
+Specifies the full path to a tfquery configuration file in YAML format.
 
 **Usage:**
 ```bash
-export TFQ_CFG_FILE=$HOME/.config/tfq/prod.yaml
-tfq sq
+export TFQ_CFG_FILE=$HOME/.config/tfquery/prod.yaml
+tfquery sq
 ```
 
 ### `TFQ_CACHE`
 
-Controls whether tfq caches query results. Caching is enabled by default.
+Controls whether tfquery caches query results. Caching is enabled by default.
 
 **Valid values:**
 - Not set or empty: Caching enabled.
@@ -48,7 +48,7 @@ Controls whether tfq caches query results. Caching is enabled by default.
 **Usage:**
 ```bash
 # Disable caching for this invocation
-TFQ_CACHE=0 tfq sq
+TFQ_CACHE=0 tfquery sq
 
 # Re-enable caching
 unset TFQ_CACHE
@@ -60,8 +60,8 @@ Specifies a custom directory for storing cached query results.
 
 **Usage:**
 ```bash
-export TFQ_CACHE_DIR=/mnt/fast-storage/tfq-cache
-tfq sq
+export TFQ_CACHE_DIR=/mnt/fast-storage/tfquery-cache
+tfquery sq
 ```
 
 **Precedence:**
@@ -73,28 +73,28 @@ tfq sq
 ### Use a custom config file and cache directory
 
 ```bash
-export TFQ_CFG_FILE=$HOME/.tfq-prod.yaml
-export TFQ_CACHE_DIR=$HOME/.cache/tfq-prod
-tfq oq
+export TFQ_CFG_FILE=$HOME/.tfquery-prod.yaml
+export TFQ_CACHE_DIR=$HOME/.cache/tfquery-prod
+tfquery oq
 ```
 
 ### Disable caching for a single command
 
 ```bash
-TFQ_CACHE=0 tfq sq --attrs arn
+TFQ_CACHE=0 tfquery sq --attrs arn
 ```
 
 ### Use a shared cache on a network drive
 
 ```bash
-export TFQ_CACHE_DIR=/mnt/shared/tfq-cache
-tfq wq
+export TFQ_CACHE_DIR=/mnt/shared/tfquery-cache
+tfquery wq
 ```
 
 ### Override all settings
 
 ```bash
-TFQ_CFG_FILE=/etc/tfq/production.yaml \
+TFQ_CFG_FILE=/etc/tfquery/production.yaml \
 TFQ_CACHE=0 \
-tfq pq --sort created-at
+tfquery pq --sort created-at
 ```

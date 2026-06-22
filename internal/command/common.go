@@ -15,11 +15,11 @@ import (
 	"github.com/hashicorp/jsonapi"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/backend/remote"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/meta"
-	"github.com/tfctl/tfctl/internal/output"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/backend/remote"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/meta"
+	"github.com/tfquery/tfquery/internal/output"
 )
 
 // DefaultListOptions provides the standard pagination starting point for all
@@ -165,11 +165,11 @@ func RemoteQueryFetcherFactory[T, O any](
 }
 
 // ShortCircuitTLDR checks the --tldr flag and, if present and available,
-// runs `tldr tfctl <subcmd>` and returns true so the caller can exit early.
+// runs `tldr tfquery <subcmd>` and returns true so the caller can exit early.
 func ShortCircuitTLDR(ctx context.Context, cmd *cli.Command, subcmd string) bool {
 	if cmd.Bool("tldr") {
 		if _, err := exec.LookPath("tldr"); err == nil {
-			c := exec.CommandContext(ctx, "tldr", "tfctl", subcmd)
+			c := exec.CommandContext(ctx, "tldr", "tfquery", subcmd)
 			c.Stdout = os.Stdout
 			c.Stderr = os.Stderr
 			_ = c.Run()

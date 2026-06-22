@@ -1,17 +1,17 @@
-# tfq configuration is made in this document. It should be placed in one of
+# tfquery configuration is made in this document. It should be placed in one of
 # the directories as specified in configuration.md.  There are two sections -
 # GLOBAL and COMMAND-SPECIFIC.
 
 #
-# TFQ GLOBAL CONFIGURATION
+# tfquery GLOBAL CONFIGURATION
 #
 
 # The top-level `defaults`` argument set is reserved and defines arguments that
 # are added into every command line. For example, with the configuration below,
-# the command `tfq sq --color` will effectively become `tfq sq --padding 1
+# the command `tfquery sq --color` will effectively become `tfquery sq --padding 1
 # --titles --color`. Note that global defaults arguments are the least
 # precedent and are overridden by both command-specific config and command line
-# arguments. So, for example, `tfq sq --no-titles` would "cancel out" the
+# arguments. So, for example, `tfquery sq --no-titles` would "cancel out" the
 # global `--titles` argument, but `--padding 1` would still be in effect.
 defaults:
   - --local
@@ -24,7 +24,7 @@ defaults:
 # therefore, have these arguments injected. Note that these arguments have a
 # higher precedent than "global" arguments, but lower than command-specific
 # arguments and command line arguments. For example, with the configuration
-# below, the command `tfq oq` will effectively become `tfq oq --host
+# below, the command `tfquery oq` will effectively become `tfquery oq --host
 # app.terraform.io`.
 nostate:
   - --host app.terraform.io
@@ -57,18 +57,18 @@ sq:
   #
   # In this example, all sq command lines will automatically be injected with
   # the `--padding 1` and `--short` options. So, the entered command line
-  # `tfq sq` will effectively become `tfq sq --padding 1 --short`.  If the
-  # user enters, for example, `tfq sq --padding 4`, the effective command line
-  # will be `tfq sq --padding 4 --short`, since command line arguments
+  # `tfquery sq` will effectively become `tfquery sq --padding 1 --short`.  If the
+  # user enters, for example, `tfquery sq --padding 4`, the effective command line
+  # will be `tfquery sq --padding 4 --short`, since command line arguments
   # override set arguments.
   defaults:
     - --padding 1
     - --short
 
   # Alternate argument sets can be specified using the '@set' syntax on the
-  # command line. For example, `tfq sq @example` will inject the arguments
-  # from the `example` set in addition to the `defaults`` set. So, `tfq sq`
-  # will become `tfq sq --padding 1 --short --color --sort id`.
+  # command line. For example, `tfquery sq @example` will inject the arguments
+  # from the `example` set in addition to the `defaults`` set. So, `tfquery sq`
+  # will become `tfquery sq --padding 1 --short --color --sort id`.
   #
   # Note that argument sets can be specified as YAML collections (`defaults`) or
   # as a single string (`example`).
@@ -81,21 +81,21 @@ sq:
 presets:
   attrs:
     # Global presets that can be used in any command's --attrs arguement.
-    # For example, with the configuration below, the command `tfq sq --attrs
-    # set1` will effectively become `tfq sq --attrs region,tags_all.layer`.
-    # Not that these presets are additive, so `tfq sq --attrs "arn,@set1"`
-    # will become `tfq sq --attrs arn,region,tags_all.layer`. Multiple presets
-    # can be used as well. For example, `tfq sq --attrs "@set1,@set2"` will
-    # become `tfq sq --attrs region,tags_all.layer,arn:ARN:u`.
+    # For example, with the configuration below, the command `tfquery sq --attrs
+    # set1` will effectively become `tfquery sq --attrs region,tags_all.layer`.
+    # Not that these presets are additive, so `tfquery sq --attrs "arn,@set1"`
+    # will become `tfquery sq --attrs arn,region,tags_all.layer`. Multiple presets
+    # can be used as well. For example, `tfquery sq --attrs "@set1,@set2"` will
+    # become `tfquery sq --attrs region,tags_all.layer,arn:ARN:u`.
     set1: region,tags_all.layer
     set2: arn:ARN:u
 
   filters:
     # Global presets that can be used in any command's --filter arguement. For
-    # example, with the configuration below, the command `tfq sq --filter
-    # set1` will effectively become `tfq sq --filter region=us-west-2`.
-    # Multiple presets can be used as well. For example, `tfq sq --filter
-    # "@set1,@set2"` will become `tfq sq --filter region=us-west-2,
+    # example, with the configuration below, the command `tfquery sq --filter
+    # set1` will effectively become `tfquery sq --filter region=us-west-2`.
+    # Multiple presets can be used as well. For example, `tfquery sq --filter
+    # "@set1,@set2"` will become `tfquery sq --filter region=us-west-2,
     # tags_all.layer=prod`.
     set1: region=us-east-12
     set2: layer=myapp

@@ -1,12 +1,12 @@
-.TH tfq-wq 1 "June 20, 2026" "tfq v2.0.0" "tfq"
+.TH tfquery-rq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfq\-wq \- HCP/TFE Workspace Query
+tfquery\-rq \- HCP/TFE Run Query
 .SH SYNOPSIS
-tfq wq [options]
+tfquery rq [options]
 .br
-tfq workspace [options]
+tfquery run [options]
 .SH DESCRIPTION
-Query HCP/TFE workspaces.
+Query HCP/TFE runs for the given workspace.
 
 .SH OPTIONS
 
@@ -100,6 +100,11 @@ Show tldr page if a client is installed.
 
 
 .TP
+\fB--workspace/-w string\fR
+Workspace to use for all commands. Overrides the backend.
+
+
+.TP
 \fB--yaml-into string\fR
 secondary output path to write YAML output to.
 
@@ -109,13 +114,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Display workspaces and include Created At information.
+Display runs and include Created At and Status information.
 .IP
-tfq wq --attrs created-at
+tfquery rq --attrs created-at,status
 
 .TP
-Display workspaces in the "hr" org with "prod" in their name.
+Display errored runs in the "prod" workspace of the "hr" org.
 .IP
-tfq wq --org hr --filter 'name@prod'
+tfquery rq --org hr --workspace prod --filter 'status@errored'
 
 

@@ -19,10 +19,10 @@ import (
 	"github.com/apex/log"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/command/si"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/meta"
-	"github.com/tfctl/tfctl/internal/state"
+	"github.com/tfquery/tfquery/internal/command/si"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/meta"
+	"github.com/tfquery/tfquery/internal/state"
 )
 
 func siCommandAction(ctx context.Context, cmd *cli.Command) error {
@@ -323,7 +323,7 @@ func siCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "si",
 		Hidden:    true,
 		Usage:     "state inspector",
-		UsageText: "tfctl si [RootDir] [options]",
+		UsageText: "tfquery si [RootDir] [options]",
 		Metadata: map[string]any{
 			"meta": meta,
 		},

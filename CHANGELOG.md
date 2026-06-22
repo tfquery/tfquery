@@ -4,7 +4,7 @@
 
 ### Added
 
-- Name changed to `tfq` to avoid confusion with hashicorp/tfctl-cli.
+- Name changed to `tfquery` to avoid confusion with hashicorp/tfctl-cli.
 
 ### Fixed
 

@@ -11,10 +11,10 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
-const bashCompletionScript = `# bash completion for tfctl
+const bashCompletionScript = `# bash completion for tfquery
 # Fallback if bash-completion is not installed
 if ! declare -F _get_comp_words_by_ref >/dev/null 2>&1; then
   _get_comp_words_by_ref() {
@@ -101,10 +101,10 @@ _tfctl()
   return 0
 }
 
-complete -F _tfctl tfctl
+complete -F _tfquery tfquery
 `
 
-const zshCompletionScript = `#compdef tfctl
+const zshCompletionScript = `#compdef tfquery
 
 _tfctl() {
   local -a cmds
@@ -132,7 +132,7 @@ _tfctl() {
   )
 
   if (( CURRENT == 2 )); then
-    _describe -t commands 'tfctl commands' cmds
+    _describe -t commands 'tfquery commands' cmds
     return
   fi
 
@@ -224,7 +224,7 @@ _tfctl() {
 if ! typeset -f compdef >/dev/null 2>&1; then
   autoload -Uz compinit && compinit -i
 fi
-compdef _tfctl tfctl tfctl
+compdef _tfctl tfquery tfquery
 `
 
 func completionCommandAction(ctx context.Context, cmd *cli.Command) error {
@@ -248,7 +248,7 @@ func completionCommandAction(ctx context.Context, cmd *cli.Command) error {
 			case strings.HasSuffix(sh, "bash"):
 				fmt.Fprint(os.Stdout, bashCompletionScript)
 			default:
-				fmt.Fprintln(os.Stderr, "usage: tfctl completion [bash|zsh]")
+				fmt.Fprintln(os.Stderr, "usage: tfquery completion [bash|zsh]")
 				return nil
 			}
 		}
@@ -261,7 +261,7 @@ func completionCommandBuilder(meta meta.Meta) *cli.Command {
 	return &cli.Command{
 		Name:      "completion",
 		Usage:     "generate shell completion script",
-		UsageText: "tfctl completion [bash|zsh]",
+		UsageText: "tfquery completion [bash|zsh]",
 		Metadata: map[string]any{
 			"meta": meta,
 		},

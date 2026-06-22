@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/attrs"
+	"github.com/tfquery/tfquery/internal/attrs"
 )
 
 func TestFormatIacrootForOutput(t *testing.T) {
@@ -204,32 +204,32 @@ func TestParseSqRootArgs(t *testing.T) {
 	}{
 		{
 			name: "no_args",
-			args: []string{"tfctl", "sq"},
+			args: []string{"tfquery", "sq"},
 			want: nil,
 		},
 		{
 			name: "flag_immediately_after_sq",
-			args: []string{"tfctl", "sq", "--attrs", "arn"},
+			args: []string{"tfquery", "sq", "--attrs", "arn"},
 			want: []string{},
 		},
 		{
 			name: "single_root_then_flag",
-			args: []string{"tfctl", "sq", "dir1", "--attrs", "arn"},
+			args: []string{"tfquery", "sq", "dir1", "--attrs", "arn"},
 			want: []string{"dir1"},
 		},
 		{
 			name: "multiple_roots_then_flag",
-			args: []string{"tfctl", "sq", "dir1", "dir2", "~/dir3", "--attrs", "arn"},
+			args: []string{"tfquery", "sq", "dir1", "dir2", "~/dir3", "--attrs", "arn"},
 			want: []string{"dir1", "dir2", "~/dir3"},
 		},
 		{
 			name: "stops_at_double_dash",
-			args: []string{"tfctl", "sq", "dir1", "--", "--attrs", "arn"},
+			args: []string{"tfquery", "sq", "dir1", "--", "--attrs", "arn"},
 			want: []string{"dir1"},
 		},
 		{
 			name: "alias_state_still_parses",
-			args: []string{"tfctl", "state", "dir1", "--attrs", "arn"},
+			args: []string{"tfquery", "state", "dir1", "--attrs", "arn"},
 			want: []string{"dir1"},
 		},
 	}
