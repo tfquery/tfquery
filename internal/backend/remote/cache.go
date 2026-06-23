@@ -6,8 +6,8 @@ package remote
 import (
 	"os"
 
-	"github.com/tfctl/tfctl/internal/cacheutil"
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/cacheutil"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 // CacheEntry is provided by cacheutil.Entry; local alias removed to avoid

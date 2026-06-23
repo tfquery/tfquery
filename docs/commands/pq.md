@@ -1,6 +1,8 @@
 # NAME
 
-tfctl pq — HCP/TFE Project Query
+tfquery pq — HCP/TFE Project Query
+
+tfquery project
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query HCP/TFE projects.
 
 # USAGE
 
-`tfctl pq [options]`
+`tfquery pq [options]`
 
 
 # OPTIONS
@@ -53,14 +55,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display projects and include Updated At information.**
 
 ```sh
-tfctl pq --attrs updated-at
+tfquery pq --attrs updated-at
 ```
 
 
 **Display projects in the "hr" org with "prod" in their name.**
 
 ```sh
-tfctl pq --org hr --filter 'name@prod'
+tfquery pq --org hr --filter 'name@prod'
 ```
 
 

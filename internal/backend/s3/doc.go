@@ -2,6 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // no-cloc
 
-// Package s3 implements tfctl's Terraform backend support for S3-backed
+// Package s3 implements tfquery's Terraform backend support for S3-backed
 // Terraform state.
 package s3

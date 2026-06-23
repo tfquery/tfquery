@@ -11,8 +11,8 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 // svqDefaultAttrs specifies the default attributes displayed for state
@@ -67,7 +67,7 @@ func svqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "svq",
 		Alias:     "state-version",
 		Usage:     "state version query",
-		UsageText: "tfctl svq [RootDir] [options]",
+		UsageText: "tfquery svq [RootDir] [options]",
 		Flags: []cli.Flag{
 			&cli.IntFlag{
 				Name:    "limit",

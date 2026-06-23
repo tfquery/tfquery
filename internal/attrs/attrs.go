@@ -13,7 +13,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 
-	"github.com/tfctl/tfctl/internal/log"
+	"github.com/tfquery/tfquery/internal/log"
 )
 
 // Attr represents each of the keys to be included in the output. These are
@@ -114,6 +114,8 @@ func (a *Attr) Transform(value interface{}) interface{} {
 type AttrList []Attr
 
 // Set parses each spec from --attrs and adds it to the AttrList.
+// NOTE The current implementation always returns nil. This may be changed to be
+// more meaningful in the future.
 func (a *AttrList) Set(value string) error {
 	if value == "" || value == "*" {
 		log.Debugf("early return: value=%s", value)
@@ -126,13 +128,11 @@ func (a *AttrList) Set(value string) error {
 		transformIdx
 	)
 
-	// There are three : delimited fields in each spec. The first is the key to
-	// extract from the JSON object. The second is the key to use in the output.
-	// The third is the transformation spec to apply to the output value. The
-	// latter two are optional. The output key defaults to the last
-	// section of the JSON key.
+	// Multiple attrs specs can be included by --attrs and are separated by
+	// commas.
 	specs := strings.Split(value, ",")
 	log.Debugf("specs split: specs=%v", specs)
+
 specloop:
 	for _, spec := range specs {
 		// Default to including the attribute, assuming it is a child of the
@@ -141,10 +141,18 @@ specloop:
 			Include: true,
 		}
 
+		// There are three ':' delimited fields in each spec. The first is the key
+		// to extract from the JSON object. The second is the key to use in the
+		// output. The third is the transformation spec to apply to the output
+		// value. The latter two are optional. The output key defaults to the last
+		// section of the JSON key.
 		fields := strings.Split(spec, ":")
 
 		// The first field is the key to extract from the JSON payload. If it
-		// begins with a !, it is excluded from the output.
+		// begins with a !, it is excluded from the output and may, instead, be used
+		// to build the value of an actual output field or for filtering and
+		// sorting. If it is *, it is a global transform spec and applies to all
+		// fields.
 		attr.Key = strings.TrimSpace(fields[jsonIdx])
 		if strings.HasPrefix(attr.Key, "!") {
 			attr.Include = false
@@ -181,7 +189,6 @@ specloop:
 		// If the attr already exists in the list (because it is a default for
 		// a command or the user double-entered it), apply the OutputKey, Include
 		// and TransformSpec to the existing Attr.
-
 		for i := range *a {
 			if (*a)[i].Key == attr.Key || (*a)[i].OutputKey == attr.Key {
 				(*a)[i].Include = attr.Include
@@ -193,8 +200,8 @@ specloop:
 		}
 
 		// Fix up the key field. If it begins with '.', we are working off the root
-		// of the JSON objects. If it does not, we are working off the
-		// .attributes of the JSON objects.
+		// of the JSON payload. If it does not, we are working off the .attributes
+		// of the objects in the payload.
 		if strings.HasPrefix(attr.Key, ".") {
 			attr.Key = attr.Key[1:]
 		} else if attr.Key != "*" {

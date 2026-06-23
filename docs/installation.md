@@ -1,27 +1,27 @@
 # Installation
 
-This guide covers all supported ways to install tfctl and related documentation (man pages and TLDR pages).
+This guide covers all supported ways to install tfquery and related documentation (man pages and TLDR pages).
 
 ## Homebrew (macOS and Linux)
 
 The simplest way to install on macOS/Linux with Homebrew:
 
 ```bash
-brew tap tfctl/tfctl
-brew install tfctl
+brew tap tfquery/tfquery
+brew install tfquery
 ```
 
 Notes:
-- The Homebrew formula installs man pages. Try: `man tfctl`, `man tfctl-sq`.
+- The Homebrew formula installs man pages. Try: `man tfquery`, `man tfquery-sq`.
 
 ## Debian/Ubuntu (.deb package)
 
-Download the latest .deb release packages for your platform from the [releases page](https://github.com/tfctl/tfctl/releases).
+Download the latest .deb release packages for your platform from the [releases page](https://github.com/tfquery/tfquery/releases).
 
 ```bash
 # Example for amd64; adjust the filename for the architecture and release you
 # downloaded.
-sudo dpkg -i /path/to/tfctl_1.2.1_amd64.deb
+sudo dpkg -i /path/to/tfq_1.2.1_amd64.deb
 ```
 
 Notes:
@@ -29,13 +29,13 @@ Notes:
 
 ## Pre-built tarball (manual install)
 
-Download the latest release for your platform from the [releases page](https://github.com/tfctl/tfctl/releases).
+Download the latest release for your platform from the [releases page](https://github.com/tfquery/tfquery/releases).
 
 Extract and move the binary to your PATH:
 
 ```bash
-tar xvzf tfctl_*.tar.gz
-sudo mv tfctl /usr/local/bin
+tar xvzf tfq_*.tar.gz
+sudo mv tfquery /usr/local/bin
 ```
 
 ### Install man pages (from tarball)
@@ -93,9 +93,9 @@ sudo /usr/libexec/makewhatis "$MANPREFIX" || true
 #### Verify installation
 
 ```bash
-man -w tfctl     # shows the file path if the page is found
-man tfctl        # opens the main tfctl page
-man tfctl-sq     # opens the sq subcommand page
+man -w tfquery     # shows the file path if the page is found
+man tfquery        # opens the main tfquery page
+man tfquery-sq     # opens the sq subcommand page
 ```
 
 #### Helpful references (how man finds pages)
@@ -107,9 +107,9 @@ man tfctl-sq     # opens the sq subcommand page
 
 ### Install TLDR pages (from tarball)
 
-Tip: Most tfctl query commands support `--tldr` to show a short usage page, for
-example: `tfctl oq --tldr`. This requires a TLDR client to be installed and the
-tfctl pages to be available to that client (either via upstream pages or local
+Tip: Most tfquery query commands support `--tldr` to show a short usage page, for
+example: `tfquery oq --tldr`. This requires a TLDR client to be installed and the
+tfquery pages to be available to that client (either via upstream pages or local
 pages configured as below).
 
 The tarball also includes TLDR pages under `docs/tldr`. These are compatible with common TLDR clients (e.g., `tldr`, `tlrc`), but clients don’t auto-load third-party pages by default. You have two options:
@@ -154,8 +154,8 @@ cp -a docs/tldr/* "$TLDR_CACHE_DIR/pages/"
 Then try:
 
 ```bash
-tldr tfctl
-tldr tfctl sq
+tldr tfquery
+tldr tfquery sq
 ```
 
 #### macOS
@@ -176,8 +176,8 @@ The steps are the same as Linux; adjust any paths for Homebrew conventions. For 
 ## Build from source
 
 ```bash
-git clone https://github.com/tfctl/tfctl.git
-cd tfctl && go build -o tfctl
+git clone https://github.com/tfquery/tfquery.git
+cd tfquery && go build -o tfquery
 ```
 
 ## Build with GoReleaser

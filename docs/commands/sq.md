@@ -1,6 +1,8 @@
 # NAME
 
-tfctl sq — State Query
+tfquery sq — State Query
+
+tfquery state
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query Terraform state files.
 
 # USAGE
 
-`tfctl sq [RootDir] [options]`
+`tfquery sq [RootDir...] [options]`
 
 
 # OPTIONS
@@ -59,7 +61,7 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 
 ## NOTES
 
-- `sq` operates against an IaC root directory (defaults to CWD when not provided).
+- `sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided.
 
 - When using encrypted state, `sq` will prompt for a passphrase or use `TF_VAR_passphrase`.
 
@@ -71,28 +73,28 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display state file in current directory and include Created At information.**
 
 ```sh
-tfctl sq --attrs created-at
+tfquery sq --attrs created-at
 ```
 
 
-**Display state file in current directory and include column headings.**
+**Aggregates the state files in the `iac1/` and `iac2/` directories and displays combined results.**
 
 ```sh
-tfctl sq --titles
+tfquery sq iac1/ iac2/
 ```
 
 
 **Display only concrete resources with "vpc" in their type or name.**
 
 ```sh
-tfctl sq --concrete --filter 'resource@vpc'
+tfquery sq --concrete --filter 'resource@vpc'
 ```
 
 
 **Display the third most recent state file version in JSON format.**
 
 ```sh
-tfctl sq --sv -3 --output json
+tfquery sq --sv -3 --output json
 ```
 
 

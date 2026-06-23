@@ -1,12 +1,12 @@
-# tfctl-svq
+# tfquery-svq
 
 > Query Terraform state version history.
-> Also available as: `tfctl state-version`
+> Also available as: `tfquery state-version`
 
 - Display state file history for current directory and include Created At information.
 
-`tfctl svq --attrs created-at`
+`tfquery svq --attrs created-at`
 
 - Display the five most recent state file versions and include the YYYY-MM-DD portion of the Created At information.
 
-`tfctl svq --limit 5 --attrs created-at::10`
+`tfquery svq --limit 5 --attrs created-at::10`

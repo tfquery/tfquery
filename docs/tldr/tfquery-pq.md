@@ -1,12 +1,12 @@
-# tfctl-pq
+# tfquery-pq
 
 > Query HCP/TFE projects.
-> Also available as: `tfctl project`
+> Also available as: `tfquery project`
 
 - Display projects and include Updated At information.
 
-`tfctl pq --attrs updated-at`
+`tfquery pq --attrs updated-at`
 
 - Display projects in the "hr" org with "prod" in their name.
 
-`tfctl pq --org hr --filter 'name@prod'`
+`tfquery pq --org hr --filter 'name@prod'`

@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tfctl/tfctl/internal/cacheutil"
-	"github.com/tfctl/tfctl/internal/command"
-	"github.com/tfctl/tfctl/internal/log"
+	"github.com/tfquery/tfquery/internal/cacheutil"
+	"github.com/tfquery/tfquery/internal/command"
+	"github.com/tfquery/tfquery/internal/log"
 )
 
 var ctx = context.Background()

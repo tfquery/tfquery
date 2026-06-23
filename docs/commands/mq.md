@@ -1,6 +1,8 @@
 # NAME
 
-tfctl mq — HCP/TFE Module Query
+tfquery mq — HCP/TFE Module Query
+
+tfquery module
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query HCP/TFE modules.
 
 # USAGE
 
-`tfctl mq [options]`
+`tfquery mq [options]`
 
 
 # OPTIONS
@@ -53,14 +55,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display modules and include Created At information.**
 
 ```sh
-tfctl mq --attrs created-at
+tfquery mq --attrs created-at
 ```
 
 
 **Display modules in the "hr" org with "iam" in their name.**
 
 ```sh
-tfctl mq --org hr --filter 'name@iam'
+tfquery mq --org hr --filter 'name@iam'
 ```
 
 

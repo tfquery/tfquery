@@ -130,7 +130,7 @@ func TestLoad(t *testing.T) {
 
 func TestLoad_NoConfigFile(t *testing.T) {
 	// Set TFCTL_CFG_FILE to non-existent file
-	t.Setenv("TFCTL_CFG_FILE", "/nonexistent/path/tfctl.yaml")
+	t.Setenv("TFCTL_CFG_FILE", "/nonexistent/path/tfquery.yaml")
 	Config = Type{}
 
 	_, err := Load()

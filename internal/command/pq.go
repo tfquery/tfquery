@@ -12,10 +12,10 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/backend/remote"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/filters"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/backend/remote"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/filters"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 var pqDefaultAttrs = []string{".id", "name"}

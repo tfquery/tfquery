@@ -1,12 +1,12 @@
-# tfctl-oq
+# tfquery-oq
 
 > Query HCP/TFE organizations.
-> Also available as: `tfctl org`
+> Also available as: `tfquery org`
 
 - Display organizations and include Created At information.
 
-`tfctl oq --attrs created-at`
+`tfquery oq --attrs created-at`
 
 - Display organizations with "myorg" in their name.
 
-`tfctl oq --filter 'name@myorg'`
+`tfquery oq --filter 'name@myorg'`

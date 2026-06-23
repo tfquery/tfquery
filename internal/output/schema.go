@@ -46,7 +46,7 @@ func DumpSchema(prefix string, typ reflect.Type, w io.Writer) {
 	fmt.Fprintln(w,
 		`Resource level attributes that are directly available to the --attrs flag.
 For a complete schema, including relationships, use --output=raw and see the
-attrs help in the documentation or man tfctl-attrs.`)
+attrs help in the documentation or man tfquery-attrs.`)
 	fmt.Fprintln(w, "")
 
 	tags := dumpSchemaWalker(prefix, typ, 0)

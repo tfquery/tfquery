@@ -2,7 +2,7 @@
 
 CLEAN_DAYS=30
 INSTALL_DIR=${HOME}/bin
-OUT=/tmp/tfctl
+OUT=/tmp/tfquery
 
 define RELEASE_SHARED_CHECKS
 	@if ! echo "$(VERSION)" | grep --extended-regexp --quiet '^v[0-9]+\.[0-9]+\.[0-9]+$$'; then \
@@ -30,7 +30,7 @@ define RELEASE_SHARED_CHECKS
 		exit 1; \
 	fi
 
-	@if gh release view "$(VERSION)" --repo tfctl/tfctl >/dev/null 2>&1; then \
+	@if gh release view "$(VERSION)" --repo tfquery/tfquery >/dev/null 2>&1; then \
 		echo "=== ERROR: GitHub release $(VERSION) already exists."; \
 		exit 1; \
 	fi
@@ -90,7 +90,7 @@ release:
 	git push origin --delete "$(VERSION)" || true
 	git tag --delete "$(VERSION)" || true
 	git tag "$(VERSION)" --message "Release $(VERSION)."
-	git push origin
+	git push origin HEAD
 	git push origin "$(VERSION)"
 
 release-check:

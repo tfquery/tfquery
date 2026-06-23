@@ -1,17 +1,31 @@
 <div align="center">
 
-# tfctl
+#
 
 **Supercharge your Terraform workflow with powerful CLI queries**
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/tfctl/tfctl)](https://golang.org/)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tfctl/tfctl)](https://goreportcard.com/report/github.com/tfctl/tfctl)
-[![Release](https://img.shields.io/github/v/release/tfctl/tfctl?include_prereleases)](https://github.com/tfctl/tfctl/releases)
+[![Go Version](https://img.shields.io/github/go-mod/go-version//)](https://golang.org/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tfquery/tfquery)](https://goreportcard.com/report/github.com/tfquery/tfquery)
+[![Release](https://img.shields.io/github/v/release//?include_prereleases)](https://github.com/tfquery/tfquery/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 </div>
 
-**tfctl** is a command-line tool for querying Terraform and OpenTofu infrastructure. State querying of multiple backends is a main use-case, but tfctl can also query the broader Terraform ecosystem - modules, organizations, workspaces, etc - to power reporting and automation.
+`tfquery` is a command-line tool for querying Terraform and OpenTofu infrastructure. State querying of multiple backend types is a main use-case,. But you can also query the broader Terraform ecosystem - modules, organizations, workspaces, etc - to power reporting and automation.
+
+## Rebrand
+
+`tfquery` was originally released as `tfctl`.
+
+In June 2026, HashiCorp [released](https://www.hashicorp.com/en/blog/introducing-tfctl-the-cli-for-hcp-terraform-and-tfe) its own CLI tool, [`tfctl-cli`](https://github.com/hashicorp/tfctl-cli).
+
+To avoid confusion between the two projects, I have rebranded this project as **`tfquery`**.
+
+The first `tfquery` release (`v2.0.0`) contains a minor Windows-specific fix and some lint cleanup, but is otherwise functionally identical to the final `tfctl` release (`v1.5.1`).
+
+While HashiCorp's `tfctl-cli` and `tfquery` have some overlapping capabilities—particularly around querying HCP Terraform and Terraform Enterprise resources—they are designed with different goals in mind.
+
+HashiCorp's `tfctl-cli` focuses on managing HashiCorp platforms and services. `tfquery` focuses on querying, reporting, and exploring Terraform-related resources and metadata. Users may find value in using both tools together, depending on their workflow.
 
 ## Key Features
 
@@ -43,36 +57,36 @@
 
 <a href="docs/asciinema/queries.gif" target="_blank" rel="noopener noreferrer">jq Queries</a>
 
-## Why tfctl?
+## Why ?
 
 The native Terraform CLI provides essential IAC tooling for managing the lifecycle of resources it creates. But it lacks powerful state querying tools and offers no easily accessible way to query other elements of the Terraform ecosystem like workspaces, organizations, or module registries. This is especially problematic for automation use cases, when you need programmatic access to infrastructure metadata, state history, or cross-workspace insights.
 
-**tfctl fills these gaps** by providing a unified, high-performance CLI for deep querying and analysis of the Terraform ecosystem, enabling better automation, reporting, and operational workflows.
+** fills these gaps** by providing a unified, high-performance CLI for deep querying and analysis of the Terraform ecosystem, enabling better automation, reporting, and operational workflows.
 
 ## Installation
 
 ### Pre-built binaries
 
-Download the latest release for your platform from the [releases page](https://github.com/tfctl/tfctl/releases).
+Download the latest release for your platform from the [releases page](https://github.com/tfquery/tfquery/releases).
 
 Extract and move the binary to your PATH:
 
 ```bash
 tar xvzf tfctl_*.tar.gz
-sudo mv tfctl /usr/local/bin
+sudo mv  /usr/local/bin
 ```
 
 ### Go package install
 
 ```bash
-go install github.com/tfctl/tfctl@latest
+go install github.com/tfquery/tfquery@latest
 ```
 
 ### Homebrew
 
 ```bash
-brew tap tfctl/tfctl
-brew install tfctl
+brew tap /
+brew install
 ```
 
 **See the full [Installation Guide](docs/installation.md) for other options, plus installing man and TLDR pages.**
@@ -81,38 +95,38 @@ brew install tfctl
 
 ```bash
 # Find all workspaces containing "prod" across your organization
-tfctl wq --filter 'name@prod'
+ wq --filter 'name@prod'
 
 # Compare state versions to see what changed
-tfctl sq --diff
+ sq --diff
 
 # Summarize changes from a Terraform plan, only showing those resources that
 # would be created.
-terraform plan | tfctl ps plan.out --filter 'action=created'
+terraform plan |  ps plan.out --filter 'action=created'
 
 # List modules by popularity across registries
-tfctl mq --sort -downloads
+ mq --sort -downloads
 
 # Export workspace data for automation
-tfctl wq --attrs created-at,updated-at --output json
+ wq --attrs created-at,updated-at --output json
 
 # All "short-style" queries have aliases. Functionality is identical.
-tfctl mq --color
-tfctl module --color
+ mq --color
+ module --color
 ```
 
 ## Available Commands
 
 | Command | Alias | Purpose | Example |
 |---------| ----- | ------- |---------|
-| **`mq`** | `module` | Module query | `tfctl mq --filter 'name@aws'` |
-| **`oq`** | `org` | Organization query | `tfctl oq --attrs email` |
-| **`pq`** | `project` | Project query | `tfctl pq --sort created-at` |
-| **`ps`** | `summarize` | Plan summary | `terraform plan \| tfctl ps` |
-| **`rq`** | `run` |Run query | `tfctl rq --attrs status` |
-| **`sq`** | `state` | State query | `tfctl sq --attrs arn --sort arn` |
-| **`svq`** | `state-version` | State version query | `tfctl svq --limit 10` |
-| **`wq`** | `workspace` | Workspace query | `tfctl wq --filter 'status@applied'` |
+| **`mq`** | `module` | Module query | ` mq --filter 'name@aws'` |
+| **`oq`** | `org` | Organization query | ` oq --attrs email` |
+| **`pq`** | `project` | Project query | ` pq --sort created-at` |
+| **`ps`** | `summarize` | Plan summary | `terraform plan \|  ps` |
+| **`rq`** | `run` |Run query | ` rq --attrs status` |
+| **`sq`** | `state` | State query | ` sq --attrs arn --sort arn` |
+| **`svq`** | `state-version` | State version query | ` svq --limit 10` |
+| **`wq`** | `workspace` | Workspace query | ` wq --filter 'status@applied'` |
 
 ## Documentation
 
@@ -125,14 +139,14 @@ tfctl module --color
 
 ## Roadmap
 
-**tfctl** is currently read-only and focused on querying. Version 1.x provides stable query functionality for local, TFE/HCP and S3 backends.
+**** is currently read-only and focused on querying. Version 1.x provides stable query functionality for local, TFE/HCP and S3 backends.
 
 **Planned features:**
 - Workspace and state manipulation.
 - Enhanced S3 backend configuration options.
 - Advanced reporting and dashboards.
 
-*Want a feature? [Open an issue](https://github.com/tfctl/tfctl/issues) and help us prioritize!*
+*Want a feature? [Open an issue](https://github.com/tfquery/tfquery/issues) and help us prioritize!*
 
 ## Contributing
 
@@ -142,7 +156,7 @@ Contributions are welcome! Whether it's:
 - Documentation improvements
 - Ideas and feedback
 
-**Get started:** Fork the repo, make your changes, and submit a PR. Check out our [issues](https://github.com/tfctl/tfctl/issues) for good first contributions.
+**Get started:** Fork the repo, make your changes, and submit a PR. Check out our [issues](https://github.com/tfquery/tfquery/issues) for good first contributions.
 
 ## AI Acknowledgment
 
@@ -159,11 +173,11 @@ We sign release artifacts with GPG. To verify the integrity and authenticity of 
 **Download and verify**
 ```bash
 # Download the artifact and its signature
-curl -L https://github.com/tfctl/tfctl/releases/latest/download/tfctl_linux_amd64.tar.gz -o tfctl_linux_amd64.tar.gz
-curl -L https://github.com/tfctl/tfctl/releases/latest/download/tfctl_linux_amd64.tar.gz.sig -o tfctl_linux_amd64.tar.gz.sig
+curl -L https://github.com/tfquery/tfquery/releases/latest/download/tfctl_linux_amd64.tar.gz -o tfctl_linux_amd64.tar.gz
+curl -L https://github.com/tfquery/tfquery/releases/latest/download/tfctl_linux_amd64.tar.gz.sig -o tfctl_linux_amd64.tar.gz.sig
 
 # Import the public key (one-time setup)
-curl -L https://raw.githubusercontent.com/tfctl/tfctl/master/KEYS | gpg --import
+curl -L https://raw.githubusercontent.com///master/KEYS | gpg --import
 
 # Verify the signature
 gpg --verify tfctl_linux_amd64.tar.gz.sig tfctl_linux_amd64.tar.gz
@@ -172,7 +186,7 @@ gpg --verify tfctl_linux_amd64.tar.gz.sig tfctl_linux_amd64.tar.gz
 **Expected output**
 ```
 gpg: Signature made [date] using RSA key [key-id]
-gpg: Good signature from "tfctl Release Key"
+gpg: Good signature from " Release Key"
 ```
 
 If the signature verification fails or shows warnings, do not use the artifact and report the issue.
@@ -183,7 +197,7 @@ If the signature verification fails or shows warnings, do not use the artifact a
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
-*Questions? [Open an issue](https://github.com/tfctl/tfctl/issues)*
+*Questions? [Open an issue](https://github.com/tfquery/tfquery/issues)*
 
 ## Trademarks
 

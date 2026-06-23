@@ -1,6 +1,8 @@
 # NAME
 
-tfctl oq — HCP/TFE Organization Query
+tfquery oq — HCP/TFE Organization Query
+
+tfquery org
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Query HCP/TFE organizations.
 
 # USAGE
 
-`tfctl oq [options]`
+`tfquery oq [options]`
 
 
 # OPTIONS
@@ -52,14 +54,14 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 **Display organizations and include Created At information.**
 
 ```sh
-tfctl oq --attrs created-at
+tfquery oq --attrs created-at
 ```
 
 
 **Display organizations with "myorg" in their name.**
 
 ```sh
-tfctl oq --filter 'name@myorg'
+tfquery oq --filter 'name@myorg'
 ```
 
 

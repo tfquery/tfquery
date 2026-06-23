@@ -1,14 +1,25 @@
-.TH tfctl-ps 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfquery-oq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfctl\-ps \- Plan summary
+tfquery\-oq \- HCP/TFE Organization Query
 .SH SYNOPSIS
-tfctl ps [planfile] [options]
+tfquery oq [options]
 .br
-tfctl summarize [planfile] [options]
+tfquery org [options]
 .SH DESCRIPTION
-Show a summary of the given plan.
+Query HCP/TFE organizations.
 
 .SH OPTIONS
+
+.TP
+\fB--attrs/-a string\fR
+Comma-separated list of attributes to include in results.
+
+.fi
+There are many possible attributes depending on the command. Common attributes include: `id`, `type`, `name`, `created-at`, `updated-at`, etc. But, each command has it's own schema. Other than the `sq` command, use the `--schema` flag to see the full list of available attributes.
+
+There is also a feature-rich syntax for transforming attribute values. See [Attributes](../attrs.md) for details.
+.nf
+
 
 .TP
 \fB--color/--no-color\fR
@@ -21,6 +32,11 @@ Comma-separated list of filters to apply to results
 
 
 .TP
+\fB--host/-h string\fR
+HCP/TFE host to use. Overrides the backend.
+
+
+.TP
 \fB--jq string\fR
 jq query string to apply to results.
 
@@ -28,6 +44,11 @@ jq query string to apply to results.
 .TP
 \fB--json-into string\fR
 secondary output path to write JSON output to.
+
+
+.TP
+\fB--limit int\fR
+Limit the result set to `int` results.
 
 
 .TP
@@ -47,6 +68,11 @@ The `text` output format is a human-friendly table format. The `json`, `yaml`, a
 .TP
 \fB--padding int\fR
 Number of spaces to pad columns in text output.
+
+
+.TP
+\fB--schema\fR
+List of attributes for use with `--attrs`, `--filter`, and '--sort'.
 
 
 .TP
@@ -78,13 +104,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Show only a summary of a Terraform plan.
+Display organizations and include Created At information.
 .IP
-terraform plan | tfctl ps
+tfquery oq --attrs created-at
 
 .TP
-Show the full plan output while also including a summary.
+Display organizations with "myorg" in their name.
 .IP
-terraform plan | tee >(tfctl ps)
+tfquery oq --filter 'name@myorg'
 
 

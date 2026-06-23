@@ -1,4 +1,4 @@
-# tfctl Filters
+# tfquery Filters
 
 The `--filter` flag narrows query results using a small, expressive syntax. This page documents the syntax and gives examples.
 
@@ -7,7 +7,7 @@ It is experimental and cannot be combined with `--filter`.
 
 ## Overview
 
-- The default delimiter between multiple filters is a comma (`,`). You can override the delimiter by setting the environment variable `TFCTL_FILTER_DELIM`.
+- The default delimiter between multiple filters is a comma (`,`). You can override the delimiter by setting the environment variable `TFQ_FILTER_DELIM`.
 - Each filter has the form `key<operator>value` for binary filters, or
   `key?` / `key!?` for existence checks.
 - Prefixing an operator with `!` negates that operator (for example
@@ -32,14 +32,14 @@ For existence checks, `key!?` means field is missing.
 ## Special filters
 
 - `hungarian` : Detects resources following Hungarian notation naming conventions (applies to `sq` command only)
-  - Example: `tfctl sq --filter hungarian=true` — shows only resources with names following Hungarian notation
+  - Example: `tfquery sq --filter hungarian=true` — shows only resources with names following Hungarian notation
   - Supported values: `true`, `false`, or bare `hungarian` (equivalent to `hungarian=true`)
   - The filter analyzes resource type and name to detect common prefix patterns (e.g., `s3Bucket`, `ec2Instance`, `iamRole`)
   - Case-insensitive and supports underscores and dashes in names
 
 ## Delimiter and quoting
 
-If a target contains the delimiter character, quote the whole filter or choose a different delimiter with `TFCTL_FILTER_DELIM`.
+If a target contains the delimiter character, quote the whole filter or choose a different delimiter with `TFQ_FILTER_DELIM`.
 
 ## Behavior notes and edge cases
 
@@ -54,83 +54,83 @@ If a target contains the delimiter character, quote the whole filter or choose a
   - The field value is `null`.
   - The field value is an empty string (`""`).
 - Filters are evaluated before attribute transformations are applied (so transformations in `--attrs` won't affect filter matching).
-- When using `sq` with `--concrete`, tfctl automatically appends `mode=managed` to the filter set.
+- When using `sq` with `--concrete`, tfquery automatically appends `mode=managed` to the filter set.
 
 ## Examples
 
 **jq filtering (experimental):**
 ```bash
 # Match a single value
-tfctl wq --jq '.name == "my-resource"'
+tfquery wq --jq '.name == "my-resource"'
 
 # Logical AND
-tfctl wq --jq '.name == "my-resource" and .id == "res-123"'
+tfquery wq --jq '.name == "my-resource" and .id == "res-123"'
 
 # Logical OR
-tfctl wq --jq '.name == "my-resource" or .id == "res-123"'
+tfquery wq --jq '.name == "my-resource" or .id == "res-123"'
 
 # Grouping
-tfctl wq --jq '(.name == "my-resource" and .id == "res-123") or .type == "aws_instance"'
+tfquery wq --jq '(.name == "my-resource" and .id == "res-123") or .type == "aws_instance"'
 
 # Nested field checks
-tfctl wq --jq '.nested.inner != null and .nested.inner != ""'
+tfquery wq --jq '.nested.inner != null and .nested.inner != ""'
 ```
 
-`--jq` and `--filter` are mutually exclusive. If both are provided, tfctl
+`--jq` and `--filter` are mutually exclusive. If both are provided, tfquery
 returns an error.
 
 **Basic filtering:**
 ```bash
 # Simple contains
-tfctl oq --filter 'name@prod'
+tfquery oq --filter 'name@prod'
 
 # Negation (not contains)
-tfctl oq --filter 'name!@prod'
+tfquery oq --filter 'name!@prod'
 
 # Exact match
-tfctl wq --filter 'status=applied'
+tfquery wq --filter 'status=applied'
 
 # Case-insensitive equality
-tfctl oq --filter 'email~admin'
+tfquery oq --filter 'email~admin'
 
 # Starts with
-tfctl wq --filter 'name^prod'
+tfquery wq --filter 'name^prod'
 ```
 
 **Regular expression filtering:**
 ```bash
 # Find workspaces matching a naming pattern (prod-001, prod-002, etc.)
-tfctl wq --filter 'name/^prod-\d{3}$'
+tfquery wq --filter 'name/^prod-\d{3}$'
 
 # Find resources with version numbers
-tfctl sq --filter 'version/^\d+\.\d+\.\d+$'
+tfquery sq --filter 'version/^\d+\.\d+\.\d+$'
 
 # Match email addresses in organization attributes
-tfctl oq --filter 'email/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+tfquery oq --filter 'email/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 ```
 
 **Complex filtering:**
 ```bash
 # Multiple filters (comma-delimited)
-tfctl oq --filter 'name@prod,created-at>2024-01-01'
+tfquery oq --filter 'name@prod,created-at>2024-01-01'
 
 # Find items that do not have a given tag
-tfctl mq --filter 'tags!@deprecated'
+tfquery mq --filter 'tags!@deprecated'
 
 # Combine different operators
-tfctl wq --filter 'name^prod,status=applied,!description='
+tfquery wq --filter 'name^prod,status=applied,!description='
 
 # Field exists
-tfctl wq --filter 'name?'
+tfquery wq --filter 'name?'
 
 # Field missing
-tfctl wq --filter 'description!?'
+tfquery wq --filter 'description!?'
 
 # Find resources with Hungarian notation naming (sq only)
-tfctl sq --filter 'hungarian=true'
+tfquery sq --filter 'hungarian=true'
 
 # Find resources NOT using Hungarian notation (sq only)
-tfctl sq --filter 'hungarian=false'
+tfquery sq --filter 'hungarian=false'
 ```
 
 For implementation details, see the `FilterDataset` and `BuildFilters`

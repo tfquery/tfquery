@@ -140,7 +140,7 @@ func NewOrgFlag(params ...string) *cli.StringFlag {
 		),
 	}
 
-	// params[0] is the TFCTL config file. We only want to refer to it in non-
+	// params[0] is the tfquery config file. We only want to refer to it in non-
 	// state commands, such as mq. For state commands, such as sq, we don't want
 	// to infer a value and instead derive it from the .terraform/
 	// terraform.tfstate.

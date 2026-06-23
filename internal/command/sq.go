@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,14 +16,14 @@ import (
 	"github.com/apex/log"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/backend"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/differ"
-	"github.com/tfctl/tfctl/internal/meta"
-	"github.com/tfctl/tfctl/internal/output"
-	"github.com/tfctl/tfctl/internal/state"
-	"github.com/tfctl/tfctl/internal/util"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/backend"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/differ"
+	"github.com/tfquery/tfquery/internal/meta"
+	"github.com/tfquery/tfquery/internal/output"
+	"github.com/tfquery/tfquery/internal/state"
+	"github.com/tfquery/tfquery/internal/util"
 )
 
 // sqCommandAction is the action handler for the "sq" subcommand. It reads
@@ -121,6 +122,9 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	var combined []map[string]interface{}
+	rawOutput := cmd.String("output") == "raw"
+	aggregateRawOutput := multiRoot && rawOutput
+	singleRawOutput := !multiRoot && rawOutput
 	resolvedPassphrase := ""
 
 	// Iterate over all the roots, combining each state into the common dataset.
@@ -152,6 +156,24 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 		doc, resolvedPassphrase, err = decryptStateIfNeeded(cmd, doc, resolvedPassphrase)
 		if err != nil {
 			return err
+		}
+
+		// We're problably most commonly in single-root mode when using raw, so
+		// check for that and bail out early if so.
+		if outputSingleRootRaw(singleRawOutput, doc, attrs, cmd, postProcess, os.Stdout) {
+			return nil
+		}
+
+		if aggregateRawOutput {
+			iacroot := transformIacroot(wd, m.StartingDir, relativeIacroot)
+
+			rawRow, err := buildAggregatedRawRow(doc, iacroot)
+			if err != nil {
+				return err
+			}
+
+			combined = append(combined, rawRow)
+			continue
 		}
 
 		rows, err := output.FlattenTerraformState(doc, !cmd.Bool("short"))
@@ -197,7 +219,7 @@ func sqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "sq",
 		Aliases:   []string{"state"},
 		Usage:     "state query",
-		UsageText: "tfctl sq [RootDir] [options]",
+		UsageText: "tfquery sq [RootDir] [options]",
 		Metadata: map[string]any{
 			"meta": meta,
 		},
@@ -408,7 +430,7 @@ func includeIacrootAttribute(all *attrs.AttrList) {
 	}
 
 	// If iacroot isn't already present, add a root-level accessor.
-	//nolint:errcheck // AttrList.Set errors are logged internally
+	//nolint:errcheck,gosec // AttrList.Set errors are logged internally
 	all.Set(".iacroot")
 }
 
@@ -441,4 +463,34 @@ func transformIacroot(iacroot string, baseDir string, relative bool) string {
 	}
 
 	return rel
+}
+
+// buildAggregatedRawRow takes the raw JSON document and iacroot for a each
+// root and builds a single row for the aggregated raw output. We do this to
+// ensure that the final aggregated output has identity built in and also a
+// consistent structure with the non-raw output, which allows us to use the same
+// output formatting logic for both.
+func buildAggregatedRawRow(doc []byte, iacroot string) (map[string]interface{}, error) {
+	var stateDoc interface{}
+	if err := json.Unmarshal(doc, &stateDoc); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal aggregated raw state: %w", err)
+	}
+
+	return map[string]interface{}{
+		"iacroot": iacroot,
+		"state":   stateDoc,
+	}, nil
+}
+
+func outputSingleRootRaw(singleRawOutput bool, doc []byte, attrs attrs.AttrList,
+	cmd *cli.Command, postProcess func([]map[string]interface{}) error, w io.Writer) bool {
+	if !singleRawOutput {
+		return false
+	}
+
+	var raw bytes.Buffer
+	raw.Write(doc)
+	output.SliceDiceSpit(raw, attrs, cmd, "", w, postProcess)
+
+	return true
 }

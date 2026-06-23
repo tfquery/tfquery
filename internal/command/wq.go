@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/filters"
-	"github.com/tfctl/tfctl/internal/meta"
+	"github.com/tfquery/tfquery/internal/filters"
+	"github.com/tfquery/tfquery/internal/meta"
 )
 
 // wqDefaultAttrs specifies the default attributes displayed for workspaces
@@ -109,7 +109,7 @@ func wqCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "wq",
 		Alias:     "workspace",
 		Usage:     "workspace query",
-		UsageText: "tfctl wq [RootDir] [options]",
+		UsageText: "tfquery wq [RootDir] [options]",
 		Flags: []cli.Flag{
 			&cli.IntFlag{
 				Name:    "limit",

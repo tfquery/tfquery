@@ -18,9 +18,9 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/differ"
-	"github.com/tfctl/tfctl/internal/svutil"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/differ"
+	"github.com/tfquery/tfquery/internal/svutil"
 )
 
 // BackendRemote represents a remote Terraform backend configuration, which is
@@ -151,8 +151,8 @@ func (be *BackendRemote) DiffStates(ctx context.Context, cmd *cli.Command) ([][]
 // Host returns the TFE/HCP host following this precedence:
 // 1. --host flag value
 // 2. hostname from terraform config backend remote block
-// 3. namespaced host entry from tfctl config file (backend.remote.host)
-// 4. non-namespaced host entry from tfctl config file (host)
+// 3. namespaced host entry from tfquery config file (backend.remote.host)
+// 4. non-namespaced host entry from tfquery config file (host)
 // 5. If no host is provided, defaults to app.terraform.io.
 func (be *BackendRemote) Host() string {
 	var host string
@@ -184,8 +184,8 @@ func (be *BackendRemote) Host() string {
 // Organization returns the organization name following this precedence:
 // 1. --org flag value
 // 2. organization from terraform config backend remote block
-// 3. namespaced org entry from tfctl config file (backend.remote.org)
-// 4. non-namespaced org entry from tfctl config file (org)
+// 3. namespaced org entry from tfquery config file (backend.remote.org)
+// 4. non-namespaced org entry from tfquery config file (org)
 func (be *BackendRemote) Organization() (string, error) {
 	var org string
 
@@ -209,7 +209,7 @@ func (be *BackendRemote) Organization() (string, error) {
 		return org, nil
 	}
 
-	return "", fmt.Errorf("organization is not set (precedence: --org flag > backend.config.organization > tfctl.yaml org). Set --org or backend.config.organization: %w", ErrOrganizationNotSet)
+	return "", fmt.Errorf("organization is not set (precedence: --org flag > backend.config.organization > tfquery.yaml org). Set --org or backend.config.organization: %w", ErrOrganizationNotSet)
 }
 
 func (be *BackendRemote) Runs() ([]*tfe.Run, error) {

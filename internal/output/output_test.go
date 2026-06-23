@@ -18,7 +18,7 @@ import (
 	"github.com/urfave/cli/v3"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/tfctl/tfctl/internal/attrs"
+	"github.com/tfquery/tfquery/internal/attrs"
 )
 
 func TestSortDataset(t *testing.T) {

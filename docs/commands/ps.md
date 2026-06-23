@@ -1,6 +1,8 @@
 # NAME
 
-tfctl ps — Plan summary
+tfquery ps — Plan summary
+
+tfquery summarize
 
 # DESCRIPTION
 
@@ -8,7 +10,7 @@ Show a summary of the given plan.
 
 # USAGE
 
-`tfctl ps [planfile] [options]`
+`tfquery ps [planfile] [options]`
 
 
 # OPTIONS
@@ -43,14 +45,14 @@ Show a summary of the given plan.
 **Show only a summary of a Terraform plan.**
 
 ```sh
-terraform plan | tfctl ps
+terraform plan | tfquery ps
 ```
 
 
 **Show the full plan output while also including a summary.**
 
 ```sh
-terraform plan | tee >(tfctl ps)
+terraform plan | tee >(tfquery ps)
 ```
 
 

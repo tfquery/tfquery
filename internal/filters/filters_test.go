@@ -13,7 +13,7 @@ import (
 	"github.com/tidwall/gjson"
 	"gopkg.in/yaml.v3"
 
-	"github.com/tfctl/tfctl/internal/attrs"
+	"github.com/tfquery/tfquery/internal/attrs"
 )
 
 //go:embed testdata/*.yaml

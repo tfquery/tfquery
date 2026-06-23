@@ -17,10 +17,10 @@ import (
 	"github.com/apex/log"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/attrs"
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/meta"
-	"github.com/tfctl/tfctl/internal/output"
+	"github.com/tfquery/tfquery/internal/attrs"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/meta"
+	"github.com/tfquery/tfquery/internal/output"
 )
 
 // ansiColorRegex matches ANSI escape sequences used for coloring terminal
@@ -77,7 +77,12 @@ func psCommandAction(ctx context.Context, cmd *cli.Command) error {
 		if err != nil {
 			return fmt.Errorf("failed to open plan file: %w", err)
 		}
-		defer input.Close()
+		defer func() {
+			if cerr := input.Close(); cerr != nil {
+				log.Errorf("failed to close plan file: %v", cerr)
+				err = cerr
+			}
+		}()
 	}
 
 	// Parse the plan output and get resource actions
@@ -186,7 +191,7 @@ func psCommandBuilder(meta meta.Meta) *cli.Command {
 		Name:      "ps",
 		Aliases:   []string{"summarize"},
 		Usage:     "plan summary",
-		UsageText: "tfctl ps [plan-file]",
+		UsageText: "tfquery ps [plan-file]",
 		Metadata:  map[string]any{"meta": meta},
 		Flags: append(ps, []cli.Flag{
 			&cli.BoolFlag{

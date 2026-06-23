@@ -6,7 +6,7 @@ package meta
 import (
 	"context"
 
-	"github.com/tfctl/tfctl/internal/config"
+	"github.com/tfquery/tfquery/internal/config"
 )
 
 // RootDirSpec holds the resolved root directory and optional environment

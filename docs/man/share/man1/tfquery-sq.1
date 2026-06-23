@@ -1,10 +1,10 @@
-.TH tfctl-sq 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfquery-sq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfctl\-sq \- State Query
+tfquery\-sq \- State Query
 .SH SYNOPSIS
-tfctl sq [RootDir] [options]
+tfquery sq [RootDir...] [options]
 .br
-tfctl state [RootDir] [options]
+tfquery state [RootDir...] [options]
 .SH DESCRIPTION
 Query Terraform state files.
 
@@ -144,29 +144,29 @@ secondary output path to write YAML output to.
 .TP
 Display state file in current directory and include Created At information.
 .IP
-tfctl sq --attrs created-at
+tfquery sq --attrs created-at
 
 .TP
-Display state file in current directory and include column headings.
+Aggregates the state files in the `iac1/` and `iac2/` directories and displays combined results.
 .IP
-tfctl sq --titles
+tfquery sq iac1/ iac2/
 
 .TP
 Display only concrete resources with "vpc" in their type or name.
 .IP
-tfctl sq --concrete --filter 'resource@vpc'
+tfquery sq --concrete --filter 'resource@vpc'
 
 .TP
 Display the third most recent state file version in JSON format.
 .IP
-tfctl sq --sv -3 --output json
+tfquery sq --sv -3 --output json
 
 
 
 .SH NOTES
 
 .IP
-`sq` operates against an IaC root directory (defaults to CWD when not provided).
+`sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided.
 
 .IP
 When using encrypted state, `sq` will prompt for a passphrase or use `TF_VAR_passphrase`.

@@ -21,7 +21,7 @@ import (
 	"github.com/apex/log"
 	"github.com/urfave/cli/v3"
 
-	"github.com/tfctl/tfctl/internal/backend"
+	"github.com/tfquery/tfquery/internal/backend"
 )
 
 // DecryptOpenTofuState decrypts an encrypted OpenTofu state file using the

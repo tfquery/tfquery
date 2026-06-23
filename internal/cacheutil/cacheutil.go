@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/log"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/log"
 )
 
 // Entry describes a cached artifact we keep on disk.
@@ -32,7 +32,7 @@ type Entry struct {
 // honor TFCTL_CACHE_DIR, and then we fall back to the user cache directory.
 // Precedence:
 //  1. TFCTL_CACHE_DIR, if set and non-empty
-//  2. os.UserCacheDir()/tfctl
+//  2. os.UserCacheDir()/tfquery
 //
 // Returns ("", false) if we cannot resolve a base path, which we treat as
 // disabled.
@@ -41,7 +41,7 @@ func ResolveCacheDir() (string, bool) {
 		return c, true
 	}
 	if dir, err := os.UserCacheDir(); err == nil && dir != "" {
-		return filepath.Join(dir, "tfctl"), true
+		return filepath.Join(dir, "tfquery"), true
 	}
 	return "", false
 }
@@ -94,12 +94,14 @@ func EntryPath(subdirs []string, clearKey string) (string, bool) {
 	if !ok {
 		return "", false
 	}
-	encoded := encodeKey(clearKey)
-	p := filepath.Join(append([]string{base}, append(subdirs, encoded)...)...)
-	if _, err := os.Stat(p); err == nil {
-		return p, true
-	}
-	return p, false
+
+	// Build the full cache entry path.
+	parts := append([]string{base}, append(subdirs, encodeKey(clearKey))...)
+	path := filepath.Join(parts...)
+
+	// If the path doesn't exist we'll treat it as a miss.
+	_, err := os.Stat(path)
+	return path, err == nil
 }
 
 // Purge removes stale cache files and then clears out empty directories.

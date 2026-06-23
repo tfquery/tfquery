@@ -1,4 +1,4 @@
-module github.com/tfctl/tfctl
+module github.com/tfquery/tfquery
 
 go 1.26
 

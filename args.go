@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tfctl/tfctl/internal/config"
-	"github.com/tfctl/tfctl/internal/version"
+	"github.com/tfquery/tfquery/internal/config"
+	"github.com/tfquery/tfquery/internal/version"
 )
 
 // deduplicateFlags removes duplicate flags from args, keeping the last

@@ -1,12 +1,12 @@
-.TH tfctl-svq 1 "June 9, 2026" "tfctl v1.5.0" "tfctl"
+.TH tfquery-rq 1 "June 23, 2026" "tfquery v2.0.0" "tfquery"
 .SH NAME
-tfctl\-svq \- State Version Query
+tfquery\-rq \- HCP/TFE Run Query
 .SH SYNOPSIS
-tfctl svq [RootDir] [options]
+tfquery rq [options]
 .br
-tfctl state-version [RootDir] [options]
+tfquery run [options]
 .SH DESCRIPTION
-Query Terraform state version history.
+Query HCP/TFE runs for the given workspace.
 
 .SH OPTIONS
 
@@ -76,6 +76,11 @@ Number of spaces to pad columns in text output.
 
 
 .TP
+\fB--schema\fR
+List of attributes for use with `--attrs`, `--filter`, and '--sort'.
+
+
+.TP
 \fB--sort/-s string\fR
 Comma-separated list of fields to sort by.
 
@@ -109,13 +114,13 @@ secondary output path to write YAML output to.
 .SH EXAMPLES
 
 .TP
-Display state file history for current directory and include Created At information.
+Display runs and include Created At and Status information.
 .IP
-tfctl svq --attrs created-at
+tfquery rq --attrs created-at,status
 
 .TP
-Display the five most recent state file versions and include the YYYY-MM-DD portion of the Created At information.
+Display errored runs in the "prod" workspace of the "hr" org.
 .IP
-tfctl svq --limit 5 --attrs created-at::10
+tfquery rq --org hr --workspace prod --filter 'status@errored'
 
 
