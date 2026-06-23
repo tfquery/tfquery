@@ -10,8 +10,8 @@ before:
     - go mod tidy
 
 builds:
-  - id: tfq
-    binary: tfq
+  - id: tfquery
+    binary: tfquery
     env:
       - CGO_ENABLED=0
     goarch:
@@ -74,10 +74,10 @@ brews:
     license: Apache-2.0
     url_template: "https://github.com/tfquery/homebrew-tfquery/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     install: |
-      bin.install "tfq"
+      bin.install "tfquery"
       man1.install Dir["docs/man/share/man1/*"] if File.directory?("docs/man/share/man1")
     test: |
-      system "#{bin}/tfq", "--version"
+      system "#{bin}/tfquery", "--version"
 
 nfpms:
   - id: tfquery-deb
