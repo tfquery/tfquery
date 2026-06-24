@@ -2,14 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Do not import any other tfquery packages to avoid import cycles.
-
 package version
 
 import "runtime/debug"
 
-var Version = func() string {
-	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "(devel)" {
-		return info.Main.Version
+var Version = "dev"
+
+func init() {
+	if Version != "dev" {
+		return
 	}
-	return "dev"
-}()
+
+	if info, ok := debug.ReadBuildInfo(); ok &&
+		info.Main.Version != "" &&
+		info.Main.Version != "(devel)" {
+		Version = info.Main.Version
+	}
+}
