@@ -19,9 +19,9 @@
 
 In June 2026, HashiCorp [released](https://www.hashicorp.com/en/blog/introducing-tfctl-the-cli-for-hcp-terraform-and-tfe) its own CLI tool, [`tfctl-cli`](https://github.com/hashicorp/tfctl-cli).
 
-To avoid confusion between the two projects, I have rebranded this project as **`tfquery`**.
+To avoid confusion between the two projects, this project has been rebranded as **`tfquery`**.
 
-The first `tfquery` release (`v2.0.0`) contains a minor Windows-specific fix and some lint cleanup, but is otherwise functionally identical to the final `tfctl` release (`v1.5.1`).
+The first `tfquery` branded release (`v1.6.0`) contains a minor Windows-specific fix and some lint cleanup, but is otherwise functionally identical to the final `tfctl` release (`v1.5.1`).
 
 While HashiCorp's `tfctl-cli` and `tfquery` have some overlapping capabilities—particularly around querying HCP Terraform and Terraform Enterprise resources—they are designed with different goals in mind.
 

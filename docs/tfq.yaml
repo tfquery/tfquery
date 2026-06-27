@@ -1,5 +1,5 @@
 # tfquery configuration is made in this document. It should be placed in one of
-# the directories as specified in configuration.md.  There are two sections -
+# the directories as specified in configuration.md. There are two sections -
 # GLOBAL and COMMAND-SPECIFIC.
 
 #
@@ -57,10 +57,10 @@ sq:
   #
   # In this example, all sq command lines will automatically be injected with
   # the `--padding 1` and `--short` options. So, the entered command line
-  # `tfquery sq` will effectively become `tfquery sq --padding 1 --short`.  If the
-  # user enters, for example, `tfquery sq --padding 4`, the effective command line
-  # will be `tfquery sq --padding 4 --short`, since command line arguments
-  # override set arguments.
+  # `tfquery sq` will effectively become `tfquery sq --padding 1 --short`. If
+  # the user enters, for example, `tfquery sq --padding 4`, the effective
+  # command line will be `tfquery sq --padding 4 --short`, since command line
+  # arguments override set arguments.
   defaults:
     - --padding 1
     - --short
@@ -121,7 +121,7 @@ cache:
   enabled: false
 
 # Colors to use for --output=text --colors. They must be set here and cannot be
-# changed on the command line.  Valid #rrggbb HTML codes only.
+# changed on the command line. Valid #rrggbb HTML codes only.
 # colors:
 #   title: "#b58900"
 #   even: "#ffffff"

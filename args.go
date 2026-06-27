@@ -14,7 +14,7 @@ import (
 )
 
 // deduplicateFlags removes duplicate flags from args, keeping the last
-// occurrence of each flag.  Flags are identified by the "--" or "-" prefix.
+// occurrence of each flag. Flags are identified by the "--" or "-" prefix.
 // For flags with values (e.g., "--output text"), we track by the flag name
 // and keep the last flag+value pair.
 func deduplicateFlags(args []string) []string {
@@ -334,7 +334,7 @@ func processCommandArgs(args []string) []string {
 		// so that RootDir args remain contiguous and flag override precedence
 		// remains intact.
 		//
-		// For most commands, RootDir is at args[2] (single positional).  For
+		// For most commands, RootDir is at args[2] (single positional). For
 		// sq, there can be multiple RootDir args, so we insert after the
 		// contiguous block of RootDir args (before the first flag/--).
 		if len(args) > 2 {
@@ -358,7 +358,7 @@ func processCommandArgs(args []string) []string {
 
 		// Inject sets in reverse precedence order (defaults → nostate →
 		// global) so that higher-precedence sets appear later and win on
-		// duplicates.  After injection, we deduplicate by keeping the last
+		// duplicates. After injection, we deduplicate by keeping the last
 		// occurrence of each flag.
 		args = injectConfigSet(args, args[1]+".defaults", insertIdx)
 

@@ -38,8 +38,14 @@ endef
 
 default: build
 
+
+BUILDVER := $(shell git describe --always --dirty --long --tags)
 build:
-	go build -o $(OUT)
+	go build \
+		-ldflags="-X github.com/tfquery/tfquery/internal/version.Version=$(BUILDVER)" \
+		-trimpath \
+		-o $(OUT)
+
 
 check:
 	@status=0; \

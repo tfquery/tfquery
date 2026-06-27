@@ -64,9 +64,9 @@ tfquery oq --attrs created-at
 # test-org       2023-02-20T14:45:00Z
 ```
 
-Unless a specific command's documentation notes otherwise, many of the flags (`--sort`, `--output`, etc) have identical usage across all commands.  See [Flags](flags.md) for detailed information about each.
+Unless a specific command's documentation notes otherwise, many of the flags (`--sort`, `--output`, etc) have identical usage across all commands. See [Flags](flags.md) for detailed information about each.
 
-The `--attrs/-a` flag deserves special mention and is documented in detail at [Attributes](attrs.md).  **tfquery** can query almost any attribute returned by the [Terraform API](https://developer.hashicorp.com/terraform/cloud-docs/api-docs).  Additionally, the results can be transformed in a variety of ways.
+The `--attrs/-a` flag deserves special mention and is documented in detail at [Attributes](attrs.md). **tfquery** can query almost any attribute returned by the [Terraform API](https://developer.hashicorp.com/terraform/cloud-docs/api-docs)Additionally, the results can be transformed in a variety of ways.
 
 Each command, except sq, includes a `--schema` flag that will list common attributes that might be used.
 

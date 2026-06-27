@@ -186,7 +186,7 @@ subcommands:
         default: !!str false
       - id: sv
         syntax: --sv string
-        description: State version to query.  Can be a version number, `latest`, or `earliest`.
+        description: State version to query. Can be a version number, `latest`, or `earliest`.
         default: latest
         more: >-
           Can also be relativative. For example, `-1` is the previous version,
@@ -202,7 +202,7 @@ subcommands:
       - command: tfquery sq --sv -3 --output json
         description: Display the third most recent state file version in JSON format.
     notes:
-      - "`sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided."
+      - "`sq` operates against one or more IaC root directories. When multiple [RootDir] values are provided, results are aggregatedDefaults to CWD when not provided."
       - "When using encrypted state, `sq` will prompt for a passphrase or use `TF_VAR_passphrase`."
 
   - id: svq
@@ -270,7 +270,7 @@ common:
       syntax: --sort/-s string
       description: Comma-separated list of fields to sort by.
       more: >-
-        Prefix field names with `-` to sort in descending order.  For example,
+        Prefix field names with `-` to sort in descending order. For example,
         `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
     - id: titles
       syntax: --titles/--no-titles

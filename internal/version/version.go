@@ -1,10 +1,10 @@
-// Copyright (c) 2026 Steve Taranto <staranto@gmail.com>.
-// SPDX-License-Identifier: Apache-2.0
-
-// Do not import any other tfquery packages to avoid import cycles.
 package version
 
-import "runtime/debug"
+import (
+	"fmt"
+	"runtime/debug"
+	"strings"
+)
 
 var Version = "dev"
 
@@ -13,9 +13,33 @@ func init() {
 		return
 	}
 
-	if info, ok := debug.ReadBuildInfo(); ok &&
-		info.Main.Version != "" &&
-		info.Main.Version != "(devel)" {
-		Version = info.Main.Version
+	var (
+		revision string
+		tag      string
+	)
+
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, s := range info.Settings {
+			if s.Key == "vcs.revision" {
+				revision = s.Value
+			}
+		}
+
+		// This is Go's best guess at the nearest semantic version tag.
+		tag = strings.TrimPrefix(info.Main.Version, "v")
+	}
+
+	if tag == "" || tag == "(devel)" {
+		tag = "dev"
+	}
+
+	if len(revision) > 7 {
+		revision = revision[:7]
+	}
+
+	if revision != "" {
+		Version = fmt.Sprintf("%s+%s", tag, revision)
+	} else {
+		Version = tag
 	}
 }
