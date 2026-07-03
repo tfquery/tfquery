@@ -33,7 +33,7 @@ Query Terraform state files.
 | --passphrase string |  | OpenTofu encrypted state passphrase. |
 | --short/--no-short | false | Shorten full resource name paths. |
 | --sort/-s string |  | Comma-separated list of fields to sort by. [More info](#sort)|
-| --sv string | latest | State version to query.  Can be a version number, `latest`, or `earliest`. [More info](#sv)|
+| --sv string | latest | State version to query. Can be a version number, `latest`, or `earliest`. [More info](#sv)|
 | --titles/--no-titles |  | Include column headings in text output. |
 | --tldr |  | Show tldr page if a client is installed. |
 | --workspace/-w string | default | Workspace to use for all commands. Overrides the backend. |
@@ -53,7 +53,7 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
   The `text` output format is a human-friendly table format. The `json`, `yaml`, and `csv` formats are machine-friendly and can be used for further processing.
 
   ## sort
-  Prefix field names with `-` to sort in descending order.  For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
+  Prefix field names with `-` to sort in descending order. For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
 
   ## sv
   Can also be relativative. For example, `-1` is the previous version, `-2` is two versions ago, `+1` is the next version, and so on.
@@ -61,7 +61,7 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
 
 ## NOTES
 
-- `sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided.
+- `sq` operates against one or more IaC root directories. When multiple [RootDir] values are provided, results are aggregatedDefaults to CWD when not provided.
 
 - When using encrypted state, `sq` will prompt for a passphrase or use `TF_VAR_passphrase`.
 

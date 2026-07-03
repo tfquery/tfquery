@@ -1,4 +1,4 @@
-.TH tfquery-sq 1 "June 24, 2026" "tfquery v1.6.0" "tfquery"
+.TH tfquery-sq 1 "July 3, 2026" "tfquery v1.7.0" "tfquery"
 .SH NAME
 tfquery\-sq \- State Query
 .SH SYNOPSIS
@@ -104,13 +104,13 @@ Shorten full resource name paths.
 Comma-separated list of fields to sort by.
 
 .fi
-Prefix field names with `-` to sort in descending order.  For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
+Prefix field names with `-` to sort in descending order. For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
 .nf
 
 
 .TP
 \fB--sv string\fR
-State version to query.  Can be a version number, `latest`, or `earliest`.
+State version to query. Can be a version number, `latest`, or `earliest`.
 
 .fi
 Can also be relativative. For example, `-1` is the previous version, `-2` is two versions ago, `+1` is the next version, and so on.
@@ -166,7 +166,7 @@ tfquery sq --sv -3 --output json
 .SH NOTES
 
 .IP
-`sq` operates against one or more IaC root directories.  When multiple [RootDir] values are provided, results are aggregated.  Defaults to CWD when not provided.
+`sq` operates against one or more IaC root directories. When multiple [RootDir] values are provided, results are aggregatedDefaults to CWD when not provided.
 
 .IP
 When using encrypted state, `sq` will prompt for a passphrase or use `TF_VAR_passphrase`.

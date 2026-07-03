@@ -46,7 +46,7 @@ There is also a feature-rich syntax for transforming attribute values. See [Attr
   The `text` output format is a human-friendly table format. The `json`, `yaml`, and `csv` formats are machine-friendly and can be used for further processing.
 
   ## sort
-  Prefix field names with `-` to sort in descending order.  For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
+  Prefix field names with `-` to sort in descending order. For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
 
 
 
