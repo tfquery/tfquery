@@ -59,7 +59,7 @@ clean:
 
 docs: recast
 	@if [ -z "$(VERSION)" ]; then echo "Usage: make docs VERSION=x.y.z"; exit 1; fi
-	@version="$(VERSION)"; version="$${version}"; go run ./tools/docsgen ./docs "$$version"
+	@version="$(VERSION)"; version="$${version}"; go run ./tools/docsgen/main.go ./docs "$$version"
 
 install: build
 	mv $(OUT) $(INSTALL_DIR)
