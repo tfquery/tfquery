@@ -15,9 +15,9 @@ import (
 var traceEnabled bool
 
 // InitLogger sets up Apex with a custom handler and a log level from the
-// TFCTL_LOG env variable.
+// TFQUERY_LOG env variable.
 func InitLogger() {
-	envLevel := strings.ToLower(os.Getenv("TFCTL_LOG"))
+	envLevel := strings.ToLower(os.Getenv("TFQUERY_LOG"))
 	if envLevel == "" {
 		envLevel = "error"
 	}

@@ -15,11 +15,11 @@ import (
 	"github.com/tfquery/tfquery/internal/config"
 )
 
-// TestDir_WithTFCTL_CACHE_DIR verifies Dir() respects TFCTL_CACHE_DIR
+// TestDir_WithTFQUERY_CACHE_DIR verifies Dir() respects TFQUERY_CACHE_DIR
 // environment variable with highest priority.
-func TestDir_WithTFCTL_CACHE_DIR(t *testing.T) {
+func TestDir_WithTFQUERY_CACHE_DIR(t *testing.T) {
 	customDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", customDir)
+	t.Setenv("TFQUERY_CACHE_DIR", customDir)
 
 	result, ok := ResolveCacheDir()
 
@@ -27,10 +27,10 @@ func TestDir_WithTFCTL_CACHE_DIR(t *testing.T) {
 	assert.Equal(t, customDir, result)
 }
 
-// TestDir_WithEmptyTFCTL_CACHE_DIR verifies empty TFCTL_CACHE_DIR is
+// TestDir_WithEmptyTFQUERY_CACHE_DIR verifies empty TFQUERY_CACHE_DIR is
 // treated as not set.
-func TestDir_WithEmptyTFCTL_CACHE_DIR(t *testing.T) {
-	t.Setenv("TFCTL_CACHE_DIR", "")
+func TestDir_WithEmptyTFQUERY_CACHE_DIR(t *testing.T) {
+	t.Setenv("TFQUERY_CACHE_DIR", "")
 	// Should fall back to os.UserCacheDir
 
 	result, ok := ResolveCacheDir()
@@ -41,10 +41,10 @@ func TestDir_WithEmptyTFCTL_CACHE_DIR(t *testing.T) {
 	}
 }
 
-// TestDir_WithoutTFCTL_CACHE_DIR verifies Dir() falls back to
+// TestDir_WithoutTFQUERY_CACHE_DIR verifies Dir() falls back to
 // os.UserCacheDir/tfquery when env var not set.
-func TestDir_WithoutTFCTL_CACHE_DIR(t *testing.T) {
-	t.Setenv("TFCTL_CACHE_DIR", "")
+func TestDir_WithoutTFQUERY_CACHE_DIR(t *testing.T) {
+	t.Setenv("TFQUERY_CACHE_DIR", "")
 
 	result, ok := ResolveCacheDir()
 
@@ -63,13 +63,13 @@ func TestEnabled_Default(t *testing.T) {
 	})
 
 	config.Config = config.Type{Data: map[string]interface{}{"dummy": true}}
-	t.Setenv("TFCTL_CACHE", "")
+	t.Setenv("TFQUERY_CACHE", "")
 
 	assert.True(t, Enabled())
 }
 
-// TestEnabled_With_TFCTL_CACHE_Set verifies TFCTL_CACHE override semantics.
-func TestEnabled_With_TFCTL_CACHE_Set(t *testing.T) {
+// TestEnabled_With_TFQUERY_CACHE_Set verifies TFQUERY_CACHE override semantics.
+func TestEnabled_With_TFQUERY_CACHE_Set(t *testing.T) {
 	originalConfig := config.Config
 	t.Cleanup(func() {
 		config.Config = originalConfig
@@ -99,7 +99,7 @@ func TestEnabled_With_TFCTL_CACHE_Set(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("TFCTL_CACHE", tt.value)
+			t.Setenv("TFQUERY_CACHE", tt.value)
 			assert.Equal(t, tt.expected, Enabled())
 		})
 	}
@@ -111,7 +111,7 @@ func TestEnabled_WithConfigFallback(t *testing.T) {
 		config.Config = originalConfig
 	})
 
-	t.Setenv("TFCTL_CACHE", "")
+	t.Setenv("TFQUERY_CACHE", "")
 
 	config.Config = config.Type{
 		Data: map[string]interface{}{
@@ -135,7 +135,7 @@ func TestEnabled_WithConfigFallback(t *testing.T) {
 // TestEnsureBaseDir_CachingDisabled verifies EnsureBaseDir returns empty
 // when caching is disabled.
 func TestEnsureBaseDir_CachingDisabled(t *testing.T) {
-	t.Setenv("TFCTL_CACHE", "0")
+	t.Setenv("TFQUERY_CACHE", "0")
 
 	base, ok, err := EnsureBaseDir()
 
@@ -147,11 +147,11 @@ func TestEnsureBaseDir_CachingDisabled(t *testing.T) {
 // TestEnsureBaseDir_NoDirResolvable verifies EnsureBaseDir returns empty
 // when Dir() returns false.
 func TestEnsureBaseDir_NoDirResolvable(t *testing.T) {
-	t.Setenv("TFCTL_CACHE_DIR", "")
+	t.Setenv("TFQUERY_CACHE_DIR", "")
 	// Mock UserCacheDir to return error by clearing env
 	// This depends on system state, but we can at least test the happy path
 
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE", "1")
 	// Attempt to resolve
 	base, ok, err := EnsureBaseDir()
 
@@ -170,8 +170,8 @@ func TestEnsureBaseDir_NoDirResolvable(t *testing.T) {
 func TestEnsureBaseDir_CreatesDirectory(t *testing.T) {
 	tmpDir := t.TempDir()
 	cacheDir := filepath.Join(tmpDir, "cache", "nested")
-	t.Setenv("TFCTL_CACHE_DIR", cacheDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", cacheDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	// Verify dir doesn't exist yet
 	assert.NoFileExists(t, cacheDir)
@@ -192,8 +192,8 @@ func TestEnsureBaseDir_ExistingDirectory(t *testing.T) {
 	err := os.MkdirAll(cacheDir, 0o750)
 	require.NoError(t, err)
 
-	t.Setenv("TFCTL_CACHE_DIR", cacheDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", cacheDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	base, ok, err := EnsureBaseDir()
 
@@ -206,8 +206,8 @@ func TestEnsureBaseDir_ExistingDirectory(t *testing.T) {
 // TestEntryPath_CachingDisabled verifies EntryPath returns empty path when
 // Dir() returns false (cache dir cannot be resolved).
 func TestEntryPath_CachingDisabled(t *testing.T) {
-	t.Setenv("TFCTL_CACHE_DIR", "")
-	t.Setenv("TFCTL_CACHE", "0")
+	t.Setenv("TFQUERY_CACHE_DIR", "")
+	t.Setenv("TFQUERY_CACHE", "0")
 	// Note: EntryPath still calls Dir(), so if Dir() resolves from
 	// os.UserCacheDir, the path will be returned. We can't fully
 	// disable this test without being able to mock Dir().
@@ -225,7 +225,7 @@ func TestEntryPath_CachingDisabled(t *testing.T) {
 // and false when file doesn't exist.
 func TestEntryPath_NonexistentEntry(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	path, exists := EntryPath([]string{"subdir1", "subdir2"}, "my-key")
 
@@ -238,7 +238,7 @@ func TestEntryPath_NonexistentEntry(t *testing.T) {
 // exists at computed path.
 func TestEntryPath_ExistingEntry(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	// Create subdirectory and file
 	subdir := filepath.Join(tmpDir, "subdir")
@@ -260,7 +260,7 @@ func TestEntryPath_ExistingEntry(t *testing.T) {
 // TestRead_CachingDisabled verifies Read returns false when caching is
 // disabled.
 func TestRead_CachingDisabled(t *testing.T) {
-	t.Setenv("TFCTL_CACHE", "0")
+	t.Setenv("TFQUERY_CACHE", "0")
 
 	entry, found := Read([]string{"subdir"}, "key")
 
@@ -271,8 +271,8 @@ func TestRead_CachingDisabled(t *testing.T) {
 // TestRead_FileNotFound verifies Read returns false when file doesn't exist.
 func TestRead_FileNotFound(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	entry, found := Read([]string{"subdir"}, "nonexistent-key")
 
@@ -284,8 +284,8 @@ func TestRead_FileNotFound(t *testing.T) {
 // exists.
 func TestRead_SuccessfulRead(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	// Create cache file
 	subdir := filepath.Join(tmpDir, "data")
@@ -314,8 +314,8 @@ func TestRead_SuccessfulRead(t *testing.T) {
 // from file content.
 func TestRead_TrimsWhitespace(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	// Create cache file with whitespace
 	subdir := filepath.Join(tmpDir, "data")
@@ -339,7 +339,7 @@ func TestRead_TrimsWhitespace(t *testing.T) {
 // TestWrite_CachingDisabled verifies Write is no-op when caching is
 // disabled.
 func TestWrite_CachingDisabled(t *testing.T) {
-	t.Setenv("TFCTL_CACHE", "0")
+	t.Setenv("TFQUERY_CACHE", "0")
 
 	err := Write([]string{"subdir"}, "key", []byte("data"))
 
@@ -350,8 +350,8 @@ func TestWrite_CachingDisabled(t *testing.T) {
 // subdirectories.
 func TestWrite_CreatesDirectories(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	subdir := filepath.Join(tmpDir, "level1", "level2", "level3")
 	assert.NoFileExists(t, subdir)
@@ -365,8 +365,8 @@ func TestWrite_CreatesDirectories(t *testing.T) {
 // TestWrite_SuccessfulWrite verifies Write stores data correctly.
 func TestWrite_SuccessfulWrite(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	testKey := "test-write-key"
 	testData := []byte("test write data content")
@@ -391,8 +391,8 @@ func TestWrite_SuccessfulWrite(t *testing.T) {
 // permissions (user read/write only).
 func TestWrite_FilePermissions(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	testKey := "perm-test-key"
 	testData := []byte("permission test data")
@@ -415,8 +415,8 @@ func TestWrite_FilePermissions(t *testing.T) {
 // files.
 func TestWrite_OverwritesExisting(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	testKey := "overwrite-key"
 	oldData := []byte("old data")
@@ -446,8 +446,8 @@ func TestWrite_OverwritesExisting(t *testing.T) {
 // TestWrite_EmptyData verifies Write handles empty data correctly.
 func TestWrite_EmptyData(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	testKey := "empty-data-key"
 	emptyData := []byte{}
@@ -467,7 +467,7 @@ func TestWrite_EmptyData(t *testing.T) {
 // TestPurge_DisabledWithZeroHours verifies Purge is no-op when hours <= 0.
 func TestPurge_DisabledWithZeroHours(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	// Create old file
 	oldPath := filepath.Join(tmpDir, "old_file.txt")
@@ -484,7 +484,7 @@ func TestPurge_DisabledWithZeroHours(t *testing.T) {
 // specified hours.
 func TestPurge_RemovesOldFiles(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	// Create old file (modify time to past)
 	oldPath := filepath.Join(tmpDir, "old_file.txt")
@@ -507,7 +507,7 @@ func TestPurge_RemovesOldFiles(t *testing.T) {
 // specified hours.
 func TestPurge_KeepsRecentFiles(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	// Create recent file
 	recentPath := filepath.Join(tmpDir, "recent_file.txt")
@@ -525,7 +525,7 @@ func TestPurge_KeepsRecentFiles(t *testing.T) {
 // criteria.
 func TestPurge_MixedAges(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	// Create old file
 	oldPath := filepath.Join(tmpDir, "old.txt")
@@ -553,7 +553,7 @@ func TestPurge_MixedAges(t *testing.T) {
 // directories.
 func TestPurge_NestedDirectories(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
 
 	// Create nested directory structure
 	nestedDir := filepath.Join(tmpDir, "level1", "level2")
@@ -641,8 +641,8 @@ func TestEncodeKey_SpecialCharacters(t *testing.T) {
 // TestIntegration_FullWorkflow verifies complete caching workflow.
 func TestIntegration_FullWorkflow(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv("TFCTL_CACHE_DIR", tmpDir)
-	t.Setenv("TFCTL_CACHE", "1")
+	t.Setenv("TFQUERY_CACHE_DIR", tmpDir)
+	t.Setenv("TFQUERY_CACHE", "1")
 
 	// 1. Verify caching is enabled
 	assert.True(t, Enabled())

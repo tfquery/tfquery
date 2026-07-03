@@ -225,7 +225,7 @@ func expandSinglePresetValue(value string, configRoot string) string {
 // filterDelimiter returns the delimiter used for --filter values.
 func filterDelimiter() string {
 	delim := ","
-	if d, ok := os.LookupEnv("TFCTL_FILTER_DELIM"); ok && d != "" {
+	if d, ok := os.LookupEnv("TFQUERY_FILTER_DELIM"); ok && d != "" {
 		delim = d
 	}
 

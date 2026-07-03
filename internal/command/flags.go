@@ -30,7 +30,7 @@ var (
 		Aliases: []string{"w"},
 		Usage:   "workspace to use for query. Overrides the backend",
 		Sources: cli.NewValueSourceChain(
-			cli.EnvVar("TFCTL_WORKSPACE"),
+			cli.EnvVar("TFQUERY_WORKSPACE"),
 		),
 		Value: "",
 	}
@@ -112,7 +112,7 @@ func NewHostFlag(params ...string) *cli.StringFlag {
 		Aliases: []string{"h"},
 		Usage:   "host to use for all commands. Overrides the backend",
 		Sources: cli.NewValueSourceChain(
-			cli.EnvVar("TFCTL_HOST"),
+			cli.EnvVar("TFQUERY_HOST"),
 			cli.EnvVar("TF_CLOUD_HOSTNAME"),
 		),
 		Value: "app.terraform.io",
@@ -135,7 +135,7 @@ func NewOrgFlag(params ...string) *cli.StringFlag {
 		Name:  "org",
 		Usage: "organization to use for all commands. Overrides the backend",
 		Sources: cli.NewValueSourceChain(
-			cli.EnvVar("TFCTL_ORG"),
+			cli.EnvVar("TFQUERY_ORG"),
 			cli.EnvVar("TF_CLOUD_ORGANIZATION"),
 		),
 	}

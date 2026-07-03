@@ -95,7 +95,7 @@ func TestBuildFilters(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
 			if tt.Delimiter != "" {
-				t.Setenv("TFCTL_FILTER_DELIM", tt.Delimiter)
+				t.Setenv("TFQUERY_FILTER_DELIM", tt.Delimiter)
 			}
 
 			got := BuildFilters(tt.Spec)

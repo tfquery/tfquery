@@ -531,7 +531,7 @@ func TestExpandFlagValuePresets_Filter_CustomDelimiter(t *testing.T) {
 		config.Config = originalConfig
 	})
 
-	t.Setenv("TFCTL_FILTER_DELIM", "|")
+	t.Setenv("TFQUERY_FILTER_DELIM", "|")
 
 	config.Config = config.Type{
 		Data: map[string]interface{}{

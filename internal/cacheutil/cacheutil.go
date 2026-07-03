@@ -29,15 +29,15 @@ type Entry struct {
 }
 
 // ResolveCacheDir resolves the base cache directory we use for cache entries.  We first
-// honor TFCTL_CACHE_DIR, and then we fall back to the user cache directory.
+// honor TFQUERY_CACHE_DIR, and then we fall back to the user cache directory.
 // Precedence:
-//  1. TFCTL_CACHE_DIR, if set and non-empty
+//  1. TFQUERY_CACHE_DIR, if set and non-empty
 //  2. os.UserCacheDir()/tfquery
 //
 // Returns ("", false) if we cannot resolve a base path, which we treat as
 // disabled.
 func ResolveCacheDir() (string, bool) {
-	if c, ok := os.LookupEnv("TFCTL_CACHE_DIR"); ok && c != "" {
+	if c, ok := os.LookupEnv("TFQUERY_CACHE_DIR"); ok && c != "" {
 		return c, true
 	}
 	if dir, err := os.UserCacheDir(); err == nil && dir != "" {
@@ -48,7 +48,7 @@ func ResolveCacheDir() (string, bool) {
 
 // Enabled reports whether we should use the cache at all.
 func Enabled() bool {
-	env, ok := os.LookupEnv("TFCTL_CACHE")
+	env, ok := os.LookupEnv("TFQUERY_CACHE")
 	if ok && strings.TrimSpace(env) != "" {
 		switch strings.ToLower(strings.TrimSpace(env)) {
 		case "0", "false", "no", "off":

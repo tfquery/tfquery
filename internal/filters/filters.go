@@ -55,7 +55,7 @@ func BuildFilters(spec string) []Filter {
 	// Default delimiter is ",", allow an override for situations where the value
 	// contains commas.
 	delim := ","
-	if d, ok := os.LookupEnv("TFCTL_FILTER_DELIM"); ok {
+	if d, ok := os.LookupEnv("TFQUERY_FILTER_DELIM"); ok {
 		delim = d
 	}
 

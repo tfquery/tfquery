@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// setupTestConfig sets TFCTL_CFG_FILE to point to a test config file.
+// setupTestConfig sets TFQUERY_CFG_FILE to point to a test config file.
 // Returns cleanup function that should be deferred.
 func setupTestConfig(t *testing.T, testdataFile string) (cleanup func()) {
 	t.Helper()
@@ -21,8 +21,8 @@ func setupTestConfig(t *testing.T, testdataFile string) (cleanup func()) {
 	absPath, err := filepath.Abs(configPath)
 	assert.NoError(t, err, "failed to get absolute path for test config")
 
-	// Set TFCTL_CFG_FILE environment variable
-	t.Setenv("TFCTL_CFG_FILE", absPath)
+	// Set TFQUERY_CFG_FILE environment variable
+	t.Setenv("TFQUERY_CFG_FILE", absPath)
 
 	// Reset the global Config to force reload
 	Config = Type{}
@@ -129,8 +129,8 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoad_NoConfigFile(t *testing.T) {
-	// Set TFCTL_CFG_FILE to non-existent file
-	t.Setenv("TFCTL_CFG_FILE", "/nonexistent/path/tfquery.yaml")
+	// Set TFQUERY_CFG_FILE to non-existent file
+	t.Setenv("TFQUERY_CFG_FILE", "/nonexistent/path/tfquery.yaml")
 	Config = Type{}
 
 	_, err := Load()
@@ -138,9 +138,9 @@ func TestLoad_NoConfigFile(t *testing.T) {
 	assert.Contains(t, err.Error(), "config file not found")
 }
 
-func TestLoad_TFCTL_CFG_FILE_IsDirectory(t *testing.T) {
-	// Set TFCTL_CFG_FILE to a directory instead of a file
-	t.Setenv("TFCTL_CFG_FILE", "testdata")
+func TestLoad_TFQUERY_CFG_FILE_IsDirectory(t *testing.T) {
+	// Set TFQUERY_CFG_FILE to a directory instead of a file
+	t.Setenv("TFQUERY_CFG_FILE", "testdata")
 	Config = Type{}
 
 	_, err := Load()
