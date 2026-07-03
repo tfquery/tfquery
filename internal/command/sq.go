@@ -58,12 +58,16 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	// Setup helper to be run after dataset is in its final form and simply needs
 	// final cosmetic transformations.
-	// THINK USe this style or traditional helper?
-	postProcess := func(dataset []map[string]interface{}) error {
+	postProcess := func(dataset []map[string]interface{}) ([]map[string]interface{}, error) {
+
+		if cmd.Bool("count") {
+			dataset = countResources(dataset)
+		}
+
 		if cmd.Bool("chop") {
 			chopPrefix(dataset)
 		}
-		return nil
+		return dataset, nil
 	}
 
 	// Make sure to add the concrete filter on --concrete.
@@ -85,12 +89,22 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 		relativeIacroot, _ = config.GetBool("relative_iacroot", false)
 	}
 
-	attrs := BuildAttrs(cmd, defaultAttrs...)
-	if multiRoot {
+	// If this is --count mode, we need to supply our own attrs and ignore any
+	// user-supplied values. The net effect will be that --count will cause
+	// --attrs to be silently ignored.
+	// THINK Emit an debug log for this condition?
+	isCount := cmd.Bool("count")
+	if isCount {
+		defaultAttrs = []string{".mode", ".type", ".count"}
+	}
+
+	attrs := BuildAttrs(cmd, !isCount, defaultAttrs...)
+	log.Debugf("built: defaultAttrs: %v; attrs: %v", defaultAttrs, attrs)
+	if multiRoot && !isCount {
 		includeIacrootAttribute(&attrs)
 	}
 
-	log.Debugf("attrs: %v", attrs)
+	log.Debugf("defaultAttrs: %v; attrs: %v", defaultAttrs, attrs)
 
 	// Save the original metadata so that we can transform it with root specific
 	// values as we iterate over the roots. This way, we keep the common or
@@ -235,6 +249,11 @@ func sqCommandBuilder(meta meta.Meta) *cli.Command {
 				Aliases: []string{"k"},
 				Usage:   "only include concrete resources",
 				Value:   false,
+			},
+			&cli.BoolFlag{
+				Name:  "count",
+				Usage: "summarize state by resource type",
+				Value: false,
 			},
 			&cli.BoolFlag{
 				Name:  "diff",
@@ -384,6 +403,44 @@ func chopPrefix(dataset []map[string]interface{}) {
 	}
 }
 
+type countKey struct {
+	Mode string
+	Type string
+}
+
+// countResources takes the resource records extracted from state file(s) and
+// counts them by mode and type, returning a new dataset.
+func countResources(dataset []map[string]interface{}) []map[string]interface{} {
+	counts := make(map[countKey]int)
+
+	// Count occurrences
+	for _, entry := range dataset {
+		mode, ok1 := entry["mode"].(string)
+		resourceType, ok2 := entry["type"].(string)
+		if !ok1 || !ok2 {
+			continue
+		}
+
+		key := countKey{
+			Mode: mode,
+			Type: resourceType,
+		}
+		counts[key]++
+	}
+
+	// Convert to output format
+	result := make([]map[string]interface{}, 0, len(counts))
+	for key, count := range counts {
+		result = append(result, map[string]interface{}{
+			"mode":  key.Mode,
+			"type":  key.Type,
+			"count": count,
+		})
+	}
+
+	return result
+}
+
 func decryptStateIfNeeded(cmd *cli.Command, doc []byte, passphrase string) ([]byte, string, error) {
 	var jsonData map[string]interface{}
 	if err := json.Unmarshal(doc, &jsonData); err != nil {
@@ -399,7 +456,7 @@ func decryptStateIfNeeded(cmd *cli.Command, doc []byte, passphrase string) ([]by
 
 		// Issue 14 - Next look in env and use it if found.
 		if passphrase == "" {
-			passphrase = os.Getenv("TFCTL_PASSPHRASE")
+			passphrase = os.Getenv("TFQUERY_PASSPHRASE")
 		}
 
 		// Finally, prompt for passphrase.
@@ -465,11 +522,11 @@ func transformIacroot(iacroot string, baseDir string, relative bool) string {
 	return rel
 }
 
-// buildAggregatedRawRow takes the raw JSON document and iacroot for a each
-// root and builds a single row for the aggregated raw output. We do this to
-// ensure that the final aggregated output has identity built in and also a
-// consistent structure with the non-raw output, which allows us to use the same
-// output formatting logic for both.
+// buildAggregatedRawRow takes the raw JSON document and iacroot for each root
+// and builds a single row for the aggregated raw output. We do this to ensure
+// that the final aggregated output has identity built in and also a consistent
+// structure with the non-raw output, which allows us to use the same output
+// formatting logic for both.
 func buildAggregatedRawRow(doc []byte, iacroot string) (map[string]interface{}, error) {
 	var stateDoc interface{}
 	if err := json.Unmarshal(doc, &stateDoc); err != nil {
@@ -482,8 +539,16 @@ func buildAggregatedRawRow(doc []byte, iacroot string) (map[string]interface{}, 
 	}, nil
 }
 
-func outputSingleRootRaw(singleRawOutput bool, doc []byte, attrs attrs.AttrList,
-	cmd *cli.Command, postProcess func([]map[string]interface{}) error, w io.Writer) bool {
+// outputSingleRootRaw handles the specific case of single-root raw output. If
+// the conditions are met, it will output the verbatim state and return true.
+func outputSingleRootRaw(
+	singleRawOutput bool,
+	doc []byte,
+	attrs attrs.AttrList,
+	cmd *cli.Command,
+	postProcess func([]map[string]interface{}) ([]map[string]interface{}, error),
+	w io.Writer) bool {
+
 	if !singleRawOutput {
 		return false
 	}

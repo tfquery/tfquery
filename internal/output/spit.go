@@ -122,7 +122,7 @@ func SliceDiceSpit(raw bytes.Buffer,
 	cmd *cli.Command,
 	parent string,
 	w io.Writer,
-	postProcess func([]map[string]interface{}) error,
+	postProcess func([]map[string]interface{}) ([]map[string]interface{}, error),
 ) {
 	// Default to stdout.
 	if w == nil {
@@ -191,8 +191,8 @@ func SliceDiceSpit(raw bytes.Buffer,
 			return
 		}
 	} else {
-		// FilterDataset() will trapp the filterSpec == "" case and just return
-		// the full dataset transformed into a []map[string]interface{} with the
+		// FilterDataset() will trap the filterSpec == "" case and just return the
+		// full dataset transformed into a []map[string]interface{} with the
 		// specified attributes included.
 		filteredDataset = filters.FilterDataset(fullDataset, attrs, filterSpec)
 	}
@@ -216,6 +216,16 @@ func SliceDiceSpit(raw bytes.Buffer,
 		}
 	}
 
+	// Apply command-specific post-processing.
+	var err error
+	if postProcess != nil {
+		if filteredDataset, err = postProcess(filteredDataset); err != nil {
+			log.Errorf("PostProcess: %v", err)
+		}
+	}
+
+	// Finally, let's sort it. This is done after all the other dataset processing
+	// so that we're sorting on the final values that will be displayed.
 	spec := cmd.String("sort")
 	SortDataset(filteredDataset, spec)
 
@@ -237,13 +247,6 @@ func SliceDiceSpit(raw bytes.Buffer,
 		}
 		os.Stdout.Write(yamlOutput)
 	default:
-		// We apply command-specific post-processing.
-		if postProcess != nil {
-			if err := postProcess(filteredDataset); err != nil {
-				log.Errorf("PostProcess: %v", err)
-			}
-		}
-
 		TableWriter(filteredDataset, attrs, cmd, w)
 	}
 

@@ -40,7 +40,7 @@ func (qar *QueryActionRunner[T]) Run(
 	}
 
 	// Step 3: BuildAttrs + debug.
-	attrs := BuildAttrs(cmd, qar.DefaultAttrs...)
+	attrs := BuildAttrs(cmd, true, qar.DefaultAttrs...)
 	log.Debugf("attrs: %v", attrs)
 
 	// Step 4: Fetch data.

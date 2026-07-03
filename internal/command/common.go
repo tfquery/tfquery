@@ -29,11 +29,16 @@ var DefaultListOptions = tfe.ListOptions{
 	PageSize:   100,
 }
 
-// BuildAttrs constructs an AttrList with defaults and optional extras from
-// --attrs, then applies the global transform spec.
-func BuildAttrs(cmd *cli.Command, defaults ...string) attrs.AttrList {
+// BuildAttrs constructs an AttrList with defaults AND optional extras from
+// --attrs, then applies the global transform spec. loadFromConfig allows for a
+// bypass to avoid loading the default attr list from the config file.
+func BuildAttrs(cmd *cli.Command, loadFromConfig bool, defaults ...string) attrs.AttrList {
 	var attrList attrs.AttrList
-	if cmd != nil {
+
+	// Skip loading default attrs from config. This is useful when you have a need
+	// (e.g. `tfquery sq --count`) to supply your own attrs that are completely
+	// removed from any defaults.
+	if loadFromConfig && cmd != nil {
 		if attrsFromConfig, err := config.GetStringSlice(cmd.Name + ".attrs"); err == nil && len(attrsFromConfig) > 0 {
 			defaults = attrsFromConfig
 		}

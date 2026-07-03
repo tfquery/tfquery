@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.7.0 - 2026-07-03
+
+## Added
+
+- State query (`sq`) now supports `--count` to provide a summary table of resources in the state(s).
+
+### Chores
+
+- Lint cleanup.
+- Corrected tests and env vars that were missed as part of `tfquery` name change.
+
 ## v1.6.0 - 2026-06-17
 
 ### Added
@@ -30,7 +41,7 @@
 
 ### Added
 
-- Added aggregated states for --sq. Multiple IAC roots can now be specified and the results of each will be aggregated into one result set.  For example - `tfctl sq ./iacdir1 ./iacdir2`.
+- Added aggregated states for --sq. Multiple IAC roots can now be specified and the results of each will be aggregated into one result set. For example - `tfctl sq ./iacdir1 ./iacdir2`.
 
 ### Chores
 
