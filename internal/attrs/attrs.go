@@ -30,11 +30,11 @@ type Attr struct {
 
 // Transform applies the attribute's transform spec to a value and returns the
 // transformed result.
-func (a *Attr) Transform(value interface{}) interface{} {
+func (a *Attr) Transform(value any) any {
 	// TODO Currently only string values can be transformed.
 	result, ok := value.(string)
 	if !ok {
-		if mapValue, ok := value.(map[string]interface{}); ok {
+		if mapValue, ok := value.(map[string]any); ok {
 			log.Tracef("map value: value=%v", value)
 			return mapValue
 		}

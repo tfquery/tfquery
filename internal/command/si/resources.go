@@ -6,21 +6,22 @@ package si
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"strconv"
 	"strings"
 )
 
 // findMatchingResources finds resources in state data matching the query
-func FindMatchingResources(stateData map[string]interface{}, query *ParsedQuery) []map[string]interface{} {
-	resources, ok := stateData["resources"].([]interface{})
+func FindMatchingResources(stateData map[string]any, query *ParsedQuery) []map[string]any {
+	resources, ok := stateData["resources"].([]any)
 	if !ok {
 		return nil
 	}
 
-	var matches []map[string]interface{}
+	var matches []map[string]any
 
 	for _, resource := range resources {
-		res, ok := resource.(map[string]interface{})
+		res, ok := resource.(map[string]any)
 		if !ok {
 			continue
 		}
@@ -54,11 +55,11 @@ func FindMatchingResources(stateData map[string]interface{}, query *ParsedQuery)
 		}
 
 		// If we have instances, check index
-		if instances, ok := res["instances"].([]interface{}); ok {
+		if instances, ok := res["instances"].([]any); ok {
 			if query.Index != nil {
 				// Find specific instance
 				for _, instance := range instances {
-					inst, ok := instance.(map[string]interface{})
+					inst, ok := instance.(map[string]any)
 					if !ok {
 						continue
 					}
@@ -69,7 +70,7 @@ func FindMatchingResources(stateData map[string]interface{}, query *ParsedQuery)
 			} else {
 				// Return all instances
 				for _, instance := range instances {
-					inst, ok := instance.(map[string]interface{})
+					inst, ok := instance.(map[string]any)
 					if !ok {
 						continue
 					}
@@ -83,7 +84,7 @@ func FindMatchingResources(stateData map[string]interface{}, query *ParsedQuery)
 }
 
 // matchesModule checks if a resource belongs to the specified module path
-func matchesModule(resource map[string]interface{}, moduleQuery []string) bool {
+func matchesModule(resource map[string]any, moduleQuery []string) bool {
 	if len(moduleQuery) == 0 {
 		// No module specified - match resources not in modules
 		return resource["module"] == nil
@@ -100,7 +101,7 @@ func matchesModule(resource map[string]interface{}, moduleQuery []string) bool {
 }
 
 // matchesIndex checks if an instance matches the specified index
-func matchesIndex(instance map[string]interface{}, queryIndex interface{}) bool {
+func matchesIndex(instance map[string]any, queryIndex any) bool {
 	indexKey, ok := instance["index_key"]
 	if !ok {
 		// No index key means this is the only instance (index 0)
@@ -137,9 +138,9 @@ func matchesIndex(instance map[string]interface{}, queryIndex interface{}) bool 
 }
 
 // createResourceMatch creates a flattened resource representation
-func createResourceMatch(resource map[string]interface{}, instance map[string]interface{}) map[string]interface{} {
+func createResourceMatch(resource map[string]any, instance map[string]any) map[string]any {
 	// Create a combined view of resource + instance
-	result := make(map[string]interface{})
+	result := make(map[string]any)
 
 	// Copy resource fields
 	for k, v := range resource {
@@ -149,15 +150,13 @@ func createResourceMatch(resource map[string]interface{}, instance map[string]in
 	}
 
 	// Copy instance fields
-	for k, v := range instance {
-		result[k] = v
-	}
+	maps.Copy(result, instance)
 
 	return result
 }
 
 // generateResourceAddresses creates Terraform addresses for matched resources
-func generateResourceAddresses(matches []map[string]interface{}) []string {
+func generateResourceAddresses(matches []map[string]any) []string {
 	var addresses []string
 
 	for _, match := range matches {
@@ -169,7 +168,7 @@ func generateResourceAddresses(matches []map[string]interface{}) []string {
 }
 
 // buildResourceAddress constructs a Terraform address from resource data
-func buildResourceAddress(resource map[string]interface{}) string {
+func buildResourceAddress(resource map[string]any) string {
 	var parts []string
 
 	// Add module prefix if present
@@ -210,9 +209,9 @@ func buildResourceAddress(resource map[string]interface{}) string {
 }
 
 // extractAttribute extracts the specified attribute from a resource, handling indices
-func ExtractAttribute(resource map[string]interface{}, parsed *ParsedQuery) interface{} {
+func ExtractAttribute(resource map[string]any, parsed *ParsedQuery) any {
 	// Check if this is a flattened resource match (has attributes directly)
-	if attributes, ok := resource["attributes"].(map[string]interface{}); ok {
+	if attributes, ok := resource["attributes"].(map[string]any); ok {
 		if attrValue, exists := attributes[parsed.Attribute]; exists {
 			return attrValue
 		}
@@ -220,17 +219,17 @@ func ExtractAttribute(resource map[string]interface{}, parsed *ParsedQuery) inte
 	}
 
 	// Fall back to original instances array logic for unflattened resources
-	instances, ok := resource["instances"].([]interface{})
+	instances, ok := resource["instances"].([]any)
 	if !ok || len(instances) == 0 {
 		return nil
 	}
 
 	// If no index specified, get attribute from all instances
 	if parsed.Index == nil {
-		var results []interface{}
+		var results []any
 		for _, instance := range instances {
-			if instanceMap, ok := instance.(map[string]interface{}); ok {
-				if attributes, ok := instanceMap["attributes"].(map[string]interface{}); ok {
+			if instanceMap, ok := instance.(map[string]any); ok {
+				if attributes, ok := instanceMap["attributes"].(map[string]any); ok {
 					if attrValue, exists := attributes[parsed.Attribute]; exists {
 						results = append(results, attrValue)
 					}
@@ -245,10 +244,10 @@ func ExtractAttribute(resource map[string]interface{}, parsed *ParsedQuery) inte
 
 	// Find the specific instance by index
 	for _, instance := range instances {
-		if instanceMap, ok := instance.(map[string]interface{}); ok {
+		if instanceMap, ok := instance.(map[string]any); ok {
 			if indexKey, exists := instanceMap["index_key"]; exists {
 				if indexMatchesValue(indexKey, parsed.Index) {
-					if attributes, ok := instanceMap["attributes"].(map[string]interface{}); ok {
+					if attributes, ok := instanceMap["attributes"].(map[string]any); ok {
 						if attrValue, exists := attributes[parsed.Attribute]; exists {
 							return attrValue
 						}
@@ -256,7 +255,7 @@ func ExtractAttribute(resource map[string]interface{}, parsed *ParsedQuery) inte
 				}
 			} else if parsed.Index == 0 || parsed.Index == "0" {
 				// No index_key means this is the first (and possibly only) instance
-				if attributes, ok := instanceMap["attributes"].(map[string]interface{}); ok {
+				if attributes, ok := instanceMap["attributes"].(map[string]any); ok {
 					if attrValue, exists := attributes[parsed.Attribute]; exists {
 						return attrValue
 					}
@@ -269,7 +268,7 @@ func ExtractAttribute(resource map[string]interface{}, parsed *ParsedQuery) inte
 }
 
 // formatAttributeValue formats an attribute value for string output
-func formatAttributeValue(value interface{}) string {
+func formatAttributeValue(value any) string {
 	switch v := value.(type) {
 	case string:
 		return v
@@ -284,7 +283,7 @@ func formatAttributeValue(value interface{}) string {
 }
 
 // indexMatchesValue checks if an index key matches the query index
-func indexMatchesValue(indexKey interface{}, queryIndex interface{}) bool {
+func indexMatchesValue(indexKey any, queryIndex any) bool {
 	switch qv := queryIndex.(type) {
 	case int:
 		if idx, ok := indexKey.(float64); ok {
@@ -308,7 +307,7 @@ func indexMatchesValue(indexKey interface{}, queryIndex interface{}) bool {
 }
 
 // printJSON outputs data as formatted JSON
-func printJSON(data interface{}) {
+func printJSON(data any) {
 	jsonBytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		fmt.Printf("Error formatting JSON: %s\n", err)

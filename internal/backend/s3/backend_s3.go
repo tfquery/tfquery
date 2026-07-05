@@ -290,7 +290,7 @@ func (be *BackendS3) StateVersions(augmenter ...func(context.Context, *cli.Comma
 			body = entry.Data
 		}
 
-		var doc map[string]interface{}
+		var doc map[string]any
 		_ = json.Unmarshal(body, &doc)
 		serial := doc["serial"]
 

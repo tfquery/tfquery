@@ -18,16 +18,16 @@ var testDataFS embed.FS
 
 // drillerTestCase represents a single test case for TestDriller.
 type drillerTestCase struct {
-	Name        string                 `yaml:"name"`
-	JSON        map[string]interface{} `yaml:"json"`
-	Path        string                 `yaml:"path"`
-	ExpectedStr string                 `yaml:"expectedStr"`
-	IsNil       bool                   `yaml:"isNil"`
-	IsArray     bool                   `yaml:"isArray"`
+	Name        string         `yaml:"name"`
+	JSON        map[string]any `yaml:"json"`
+	Path        string         `yaml:"path"`
+	ExpectedStr string         `yaml:"expectedStr"`
+	IsNil       bool           `yaml:"isNil"`
+	IsArray     bool           `yaml:"isArray"`
 }
 
 // loadTestData loads test data from embedded YAML files.
-func loadTestData(filename string, v interface{}) error {
+func loadTestData(filename string, v any) error {
 	data, err := testDataFS.ReadFile("testdata/" + filename)
 	if err != nil {
 		return err

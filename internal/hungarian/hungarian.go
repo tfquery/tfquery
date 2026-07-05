@@ -5,6 +5,7 @@ package hungarian
 
 import (
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -41,12 +42,9 @@ func IsHungarian(typ string, name string) bool {
 			continue
 		}
 
-		// If the token appears as a whole name part, it's Hungarian.
-		for _, p := range nameParts {
-			if p == tok {
-				// Hungarian - bail out.
-				return true
-			}
+		// If the token appears as a whole name part, it's Hungarian, so bail out.
+		if slices.Contains(nameParts, tok) {
+			return true
 		}
 
 		// Also treat any substring occurrence as a match covers cases like

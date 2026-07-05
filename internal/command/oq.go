@@ -60,7 +60,7 @@ func oqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	return NewQueryActionRunner(
 		"oq",
-		reflect.TypeOf((*tfe.Organization)(nil)).Elem(),
+		reflect.TypeFor[tfe.Organization](),
 		oqDefaultAttrs,
 		fn,
 	).Run(ctx, cmd)

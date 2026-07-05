@@ -33,9 +33,9 @@ type testSetCase struct {
 type testTransformCase struct {
 	Name          string            `yaml:"name"`
 	TransformSpec string            `yaml:"transformSpec"`
-	Input         interface{}       `yaml:"input"`
+	Input         any               `yaml:"input"`
 	EnvVars       map[string]string `yaml:"envVars"`
-	Want          interface{}       `yaml:"want"`
+	Want          any               `yaml:"want"`
 	Description   string            `yaml:"description"`
 }
 

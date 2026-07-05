@@ -36,7 +36,7 @@ func svqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	return NewQueryActionRunner(
 		"svq",
-		reflect.TypeOf((*tfe.StateVersion)(nil)).Elem(),
+		reflect.TypeFor[tfe.StateVersion](),
 		svqDefaultAttrs,
 		fn,
 	).Run(ctx, cmd)

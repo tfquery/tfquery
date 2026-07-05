@@ -71,9 +71,7 @@ attrs help in the documentation or man tfquery-attrs.`)
 func dumpSchemaWalker(holder string, typ reflect.Type, depth int) []schemaTag {
 	tags := []schemaTag{}
 
-	for i := 0; i < typ.NumField(); i++ {
-		field := typ.Field(i)
-
+	for field := range typ.Fields() {
 		log.Debugf("field: %s, type: %s in %s", field.Name, field.Type, field.PkgPath)
 
 		tagValue, ok := field.Tag.Lookup("jsonapi")

@@ -51,10 +51,10 @@ type siModel struct {
 	sessionHistory []string // Only commands from this session (matches with outputs)
 	histIndex      int
 	output         []string
-	stateData      map[string]interface{}
+	stateData      map[string]any
 }
 
-func initialSiModel(stateData map[string]interface{}) siModel {
+func initialSiModel(stateData map[string]any) siModel {
 	ti := textinput.New()
 	ti.Placeholder = ""
 	ti.Focus()
@@ -68,7 +68,7 @@ func initialSiModel(stateData map[string]interface{}) siModel {
 
 	// Add initial welcome message
 	var output []string
-	resources, ok := stateData["resources"].([]interface{})
+	resources, ok := stateData["resources"].([]any)
 	if ok {
 		output = append(output, fmt.Sprintf("Interactive state console loaded. %d resources found.", len(resources)))
 	}
@@ -254,7 +254,7 @@ func loadSiHistory(filename string) []string {
 	return history
 }
 
-func processSiQuery(stateData map[string]interface{}, query string) string {
+func processSiQuery(stateData map[string]any, query string) string {
 	var result strings.Builder
 
 	// Capture fmt.Print output by temporarily redirecting
@@ -289,7 +289,7 @@ func processSiQuery(stateData map[string]interface{}, query string) string {
 	return strings.TrimSuffix(output, "\n")
 }
 
-func runSiInteractiveConsole(stateData map[string]interface{}) error {
+func runSiInteractiveConsole(stateData map[string]any) error {
 	p := tea.NewProgram(initialSiModel(stateData))
 	_, err := p.Run()
 	return err

@@ -37,7 +37,7 @@ func Diff(ctx context.Context, cmd *cli.Command, states [][]byte) error {
 	}
 
 	if delta.Modified() {
-		var jdoc map[string]interface{}
+		var jdoc map[string]any
 		if err := json.Unmarshal(states[0], &jdoc); err != nil {
 			return fmt.Errorf("failed to unmarshal state: %w", err)
 		}

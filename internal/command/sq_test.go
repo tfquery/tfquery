@@ -61,13 +61,13 @@ func TestFormatIacrootForOutput(t *testing.T) {
 }
 
 func TestChopPrefix_EmptyDataset(t *testing.T) {
-	data := []map[string]interface{}{}
+	data := []map[string]any{}
 	chopPrefix(data)
 	assert.Equal(t, 0, len(data))
 }
 
 func TestChopPrefix_NoStringValues(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"count": 1},
 		{"count": 2},
 	}
@@ -78,7 +78,7 @@ func TestChopPrefix_NoStringValues(t *testing.T) {
 }
 
 func TestChopPrefix_SingleValueAllCommonSegments(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.bucket.prod"},
 	}
 	// Single entry: all its segments are trivially "common"
@@ -88,7 +88,7 @@ func TestChopPrefix_SingleValueAllCommonSegments(t *testing.T) {
 }
 
 func TestChopPrefix_TwoCommonLeadingSegments(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.bucket1.x"},
 		{"resource": "aws.s3.bucket2.x"},
 		{"resource": "aws.s3.bucket3.x"},
@@ -101,7 +101,7 @@ func TestChopPrefix_TwoCommonLeadingSegments(t *testing.T) {
 }
 
 func TestChopPrefix_DifferentThirdSegment(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.prod.server1"},
 		{"resource": "aws.s3.dev.server2"},
 		{"resource": "aws.s3.staging.server3"},
@@ -115,7 +115,7 @@ func TestChopPrefix_DifferentThirdSegment(t *testing.T) {
 }
 
 func TestChopPrefix_OneCommonSegmentOnly_NoChop(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.bucket"},
 		{"resource": "aws.ec2.instance"},
 		{"resource": "aws.rds.database"},
@@ -128,7 +128,7 @@ func TestChopPrefix_OneCommonSegmentOnly_NoChop(t *testing.T) {
 }
 
 func TestChopPrefix_NoCommonSegments_NoChop(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "a.b.c"},
 		{"resource": "x.y.z"},
 		{"resource": "m.n.o"},
@@ -141,7 +141,7 @@ func TestChopPrefix_NoCommonSegments_NoChop(t *testing.T) {
 }
 
 func TestChopPrefix_MultipleStringFields(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.bucket1.x", "type": "aws.s3.prod"},
 		{"resource": "aws.s3.bucket2.x", "type": "aws.s3.dev"},
 		{"resource": "aws.s3.bucket3.x", "type": "aws.s3.staging"},
@@ -158,7 +158,7 @@ func TestChopPrefix_MultipleStringFields(t *testing.T) {
 }
 
 func TestChopPrefix_MixedStringAndNonString(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.bucket1.prod", "id": 123},
 		{"resource": "aws.s3.bucket2.dev", "id": 456},
 	}
@@ -171,7 +171,7 @@ func TestChopPrefix_MixedStringAndNonString(t *testing.T) {
 }
 
 func TestChopPrefix_ExactMatchNoRemainder(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3"},
 		{"resource": "aws.s3"},
 	}
@@ -183,7 +183,7 @@ func TestChopPrefix_ExactMatchNoRemainder(t *testing.T) {
 }
 
 func TestChopPrefix_DifferentLengths_PartialMatch(t *testing.T) {
-	data := []map[string]interface{}{
+	data := []map[string]any{
 		{"resource": "aws.s3.x.y"},
 		{"resource": "aws.s3.prod.server1"},
 		{"resource": "aws.s3.dev.server2"},
@@ -249,11 +249,11 @@ func TestBuildAggregatedRawRow(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "/tmp/root-a", row["iacroot"])
 
-		stateDoc, ok := row["state"].(map[string]interface{})
+		stateDoc, ok := row["state"].(map[string]any)
 		assert.True(t, ok)
 		assert.Equal(t, float64(4), stateDoc["version"])
 
-		resources, ok := stateDoc["resources"].([]interface{})
+		resources, ok := stateDoc["resources"].([]any)
 		assert.True(t, ok)
 		assert.Equal(t, 1, len(resources))
 
@@ -276,7 +276,7 @@ func TestOutpuSingleRootRaw(t *testing.T) {
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "output", Value: "raw"},
 			},
-			Metadata: make(map[string]interface{}),
+			Metadata: make(map[string]any),
 		}
 
 		doc := []byte(`{"version":4,"serial":3}`)
@@ -300,7 +300,7 @@ func TestOutpuSingleRootRaw(t *testing.T) {
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "output", Value: "raw"},
 			},
-			Metadata: make(map[string]interface{}),
+			Metadata: make(map[string]any),
 		}
 
 		doc := []byte(`{"version":4,"serial":3}`)

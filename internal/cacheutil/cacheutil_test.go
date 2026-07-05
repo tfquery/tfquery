@@ -62,7 +62,7 @@ func TestEnabled_Default(t *testing.T) {
 		config.Config = originalConfig
 	})
 
-	config.Config = config.Type{Data: map[string]interface{}{"dummy": true}}
+	config.Config = config.Type{Data: map[string]any{"dummy": true}}
 	t.Setenv("TFQUERY_CACHE", "")
 
 	assert.True(t, Enabled())
@@ -76,8 +76,8 @@ func TestEnabled_With_TFQUERY_CACHE_Set(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"cache": map[string]interface{}{
+		Data: map[string]any{
+			"cache": map[string]any{
 				"enabled": false,
 			},
 		},
@@ -114,8 +114,8 @@ func TestEnabled_WithConfigFallback(t *testing.T) {
 	t.Setenv("TFQUERY_CACHE", "")
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"cache": map[string]interface{}{
+		Data: map[string]any{
+			"cache": map[string]any{
 				"enabled": true,
 			},
 		},
@@ -123,8 +123,8 @@ func TestEnabled_WithConfigFallback(t *testing.T) {
 	assert.True(t, Enabled())
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"cache": map[string]interface{}{
+		Data: map[string]any{
+			"cache": map[string]any{
 				"enabled": false,
 			},
 		},

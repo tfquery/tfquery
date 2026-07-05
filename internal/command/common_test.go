@@ -20,9 +20,9 @@ func TestBuildAttrs_UsesCommandPresetDefaults(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"mq": map[string]interface{}{
-				"attrs": []interface{}{".cfg"},
+		Data: map[string]any{
+			"mq": map[string]any{
+				"attrs": []any{".cfg"},
 			},
 		},
 		Namespace: "mq",
@@ -47,9 +47,9 @@ func TestBuildAttrs_SkipsCommandPresetDefaults(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"mq": map[string]interface{}{
-				"attrs": []interface{}{".cfg"},
+		Data: map[string]any{
+			"mq": map[string]any{
+				"attrs": []any{".cfg"},
 			},
 		},
 		Namespace: "mq",

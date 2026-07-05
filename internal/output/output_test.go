@@ -22,7 +22,7 @@ import (
 )
 
 func TestSortDataset(t *testing.T) {
-	testData := []map[string]interface{}{
+	testData := []map[string]any{
 		{"name": "zebra", "count": 3.0, "type": "aws_instance"},
 		{"name": "alpha", "count": 1.0, "type": "gcp_compute"},
 		{"name": "beta", "count": 2.0, "type": "azure_vm"},
@@ -72,7 +72,7 @@ func TestSortDataset(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			data := make([]map[string]interface{}, len(testData))
+			data := make([]map[string]any, len(testData))
 			copy(data, testData)
 			SortDataset(data, tt.spec)
 			for i, expectedName := range tt.wantOrder {
@@ -85,7 +85,7 @@ func TestSortDataset(t *testing.T) {
 func TestInterfaceToString(t *testing.T) {
 	tests := []struct {
 		name     string
-		value    interface{}
+		value    any
 		emptyVal string
 		want     string
 	}{
@@ -261,7 +261,7 @@ func TestDumpSchemaWalker(t *testing.T) {
 		{
 			name:   "simple struct",
 			prefix: "",
-			typ:    reflect.TypeOf(SimpleStruct{}),
+			typ:    reflect.TypeFor[SimpleStruct](),
 			checkLen: func(tags []schemaTag) bool {
 				return len(tags) >= 2
 			},
@@ -269,7 +269,7 @@ func TestDumpSchemaWalker(t *testing.T) {
 		{
 			name:   "nested struct",
 			prefix: "parent",
-			typ:    reflect.TypeOf(NestedStruct{}),
+			typ:    reflect.TypeFor[NestedStruct](),
 			checkLen: func(tags []schemaTag) bool {
 				return len(tags) > 0 // At least title
 			},
@@ -288,7 +288,7 @@ func TestGetCommonFields(t *testing.T) {
 	tests := []struct {
 		name    string
 		json    string
-		want    map[string]interface{}
+		want    map[string]any
 		notWant []string
 	}{
 		{
@@ -299,7 +299,7 @@ func TestGetCommonFields(t *testing.T) {
 				"type": "aws_instance",
 				"instances": [{"id": "i-123"}]
 			}`,
-			want: map[string]interface{}{
+			want: map[string]any{
 				"address": "aws_instance.example",
 				"mode":    "managed",
 				"type":    "aws_instance",
@@ -309,7 +309,7 @@ func TestGetCommonFields(t *testing.T) {
 		{
 			name: "handles empty object",
 			json: `{}`,
-			want: make(map[string]interface{}),
+			want: make(map[string]any),
 		},
 	}
 
@@ -343,24 +343,24 @@ func TestGetColors(t *testing.T) {
 func TestTableWriter(t *testing.T) {
 	tests := []struct {
 		name      string
-		resultSet []map[string]interface{}
+		resultSet []map[string]any
 		attrs     attrs.AttrList
 		withColor bool
 		withTitle string
-		checkFunc func(*testing.T, []map[string]interface{}, attrs.AttrList)
+		checkFunc func(*testing.T, []map[string]any, attrs.AttrList)
 	}{
 		{
 			name:      "empty result set returns early",
-			resultSet: []map[string]interface{}{},
+			resultSet: []map[string]any{},
 			attrs:     attrs.AttrList{},
-			checkFunc: func(t *testing.T, rs []map[string]interface{}, _ attrs.AttrList) {
+			checkFunc: func(t *testing.T, rs []map[string]any, _ attrs.AttrList) {
 				// Empty result set should cause early return
 				assert.Empty(t, rs)
 			},
 		},
 		{
 			name: "single row preserves data",
-			resultSet: []map[string]interface{}{
+			resultSet: []map[string]any{
 				{"name": "resource1", "id": "r-123"},
 			},
 			attrs: attrs.AttrList{
@@ -373,7 +373,7 @@ func TestTableWriter(t *testing.T) {
 					Include:   true,
 				},
 			},
-			checkFunc: func(t *testing.T, rs []map[string]interface{}, _ attrs.AttrList) {
+			checkFunc: func(t *testing.T, rs []map[string]any, _ attrs.AttrList) {
 				assert.Len(t, rs, 1)
 				assert.Equal(t, "resource1", rs[0]["name"])
 				assert.Equal(t, "r-123", rs[0]["id"])
@@ -381,7 +381,7 @@ func TestTableWriter(t *testing.T) {
 		},
 		{
 			name: "respects include flag filtering",
-			resultSet: []map[string]interface{}{
+			resultSet: []map[string]any{
 				{"name": "resource1", "hidden": "secret"},
 			},
 			attrs: attrs.AttrList{
@@ -394,7 +394,7 @@ func TestTableWriter(t *testing.T) {
 					Include:   false,
 				},
 			},
-			checkFunc: func(t *testing.T, _ []map[string]interface{}, a attrs.AttrList) {
+			checkFunc: func(t *testing.T, _ []map[string]any, a attrs.AttrList) {
 				// Check that attributes with Include=false are skipped
 				included := 0
 				for _, attr := range a {
@@ -418,7 +418,7 @@ func TestTableWriter(t *testing.T) {
 					&cli.BoolFlag{Name: "titles", Value: true},
 				},
 			}
-			cmd.Metadata = make(map[string]interface{})
+			cmd.Metadata = make(map[string]any)
 			if tt.withTitle != "" {
 				cmd.Metadata["header"] = tt.withTitle
 			}
@@ -623,7 +623,7 @@ func TestGetCommonFieldsRobust(t *testing.T) {
 	tests := []struct {
 		name      string
 		json      string
-		checkFunc func(*testing.T, map[string]interface{})
+		checkFunc func(*testing.T, map[string]any)
 	}{
 		{
 			name: "extracts all non-instance fields",
@@ -634,7 +634,7 @@ func TestGetCommonFieldsRobust(t *testing.T) {
 				"module": "module.main",
 				"instances": [{"id": "i-123"}]
 			}`,
-			checkFunc: func(t *testing.T, common map[string]interface{}) {
+			checkFunc: func(t *testing.T, common map[string]any) {
 				assert.Equal(t, "aws_instance", common["type"])
 				assert.Equal(t, "web", common["name"])
 				assert.Equal(t, "managed", common["mode"])
@@ -647,14 +647,14 @@ func TestGetCommonFieldsRobust(t *testing.T) {
 				"type": "aws_vpc",
 				"name": "main"
 			}`,
-			checkFunc: func(t *testing.T, common map[string]interface{}) {
+			checkFunc: func(t *testing.T, common map[string]any) {
 				assert.Equal(t, "aws_vpc", common["type"])
 			},
 		},
 		{
 			name: "empty object",
 			json: `{}`,
-			checkFunc: func(t *testing.T, common map[string]interface{}) {
+			checkFunc: func(t *testing.T, common map[string]any) {
 				assert.Empty(t, common)
 			},
 		},
@@ -673,7 +673,7 @@ func TestGetCommonFieldsRobust(t *testing.T) {
 func TestInterfaceToStringEdgeCases(t *testing.T) {
 	tests := []struct {
 		name     string
-		value    interface{}
+		value    any
 		emptyVal string
 		want     string
 	}{
@@ -690,12 +690,12 @@ func TestInterfaceToStringEdgeCases(t *testing.T) {
 		},
 		{
 			name:  "nested map",
-			value: map[string]interface{}{"key": "value"},
+			value: map[string]any{"key": "value"},
 			want:  `{"key":"value"}`,
 		},
 		{
 			name:  "nested slice",
-			value: []interface{}{1, "two", true},
+			value: []any{1, "two", true},
 			want:  `[1,"two",true]`,
 		},
 		{
@@ -724,7 +724,7 @@ func TestInterfaceToStringEdgeCases(t *testing.T) {
 }
 
 func BenchmarkSortDataset(b *testing.B) {
-	testData := []map[string]interface{}{
+	testData := []map[string]any{
 		{"name": "zebra", "count": 3.0},
 		{"name": "alpha", "count": 1.0},
 		{"name": "beta", "count": 2.0},
@@ -734,14 +734,14 @@ func BenchmarkSortDataset(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		data := make([]map[string]interface{}, len(testData))
+		data := make([]map[string]any, len(testData))
 		copy(data, testData)
 		SortDataset(data, spec)
 	}
 }
 
 func BenchmarkInterfaceToString(b *testing.B) {
-	values := []interface{}{
+	values := []any{
 		"string",
 		42,
 		42.5,
@@ -778,7 +778,7 @@ func TestSliceDiceSpit_IntoFileOutput(t *testing.T) {
 				data, err := os.ReadFile(path)
 				require.NoError(t, err)
 
-				var got []map[string]interface{}
+				var got []map[string]any
 				require.NoError(t, json.Unmarshal(data, &got))
 				require.Len(t, got, 2)
 				assert.Equal(t, "alpha", got[0]["name"])
@@ -796,7 +796,7 @@ func TestSliceDiceSpit_IntoFileOutput(t *testing.T) {
 				data, err := os.ReadFile(path)
 				require.NoError(t, err)
 
-				var got []map[string]interface{}
+				var got []map[string]any
 				require.NoError(t, yaml.Unmarshal(data, &got))
 				require.Len(t, got, 2)
 				assert.Equal(t, "alpha", got[0]["name"])
@@ -815,11 +815,11 @@ func TestSliceDiceSpit_IntoFileOutput(t *testing.T) {
 				data, err := os.ReadFile(path)
 				require.NoError(t, err)
 
-				var got map[string]interface{}
+				var got map[string]any
 				require.NoError(t, json.Unmarshal(data, &got))
 				require.Contains(t, got, "data")
 
-				payload, ok := got["data"].(map[string]interface{})
+				payload, ok := got["data"].(map[string]any)
 				require.True(t, ok)
 				assert.Equal(t, "one", payload["id"])
 				assert.Equal(t, "widget", payload["kind"])
@@ -837,11 +837,11 @@ func TestSliceDiceSpit_IntoFileOutput(t *testing.T) {
 				data, err := os.ReadFile(path)
 				require.NoError(t, err)
 
-				var got map[string]interface{}
+				var got map[string]any
 				require.NoError(t, yaml.Unmarshal(data, &got))
 				require.Contains(t, got, "data")
 
-				payload, ok := got["data"].(map[interface{}]interface{})
+				payload, ok := got["data"].(map[any]any)
 				require.True(t, ok)
 				assert.Equal(t, "one", payload["id"])
 				assert.Equal(t, "widget", payload["kind"])
@@ -901,7 +901,7 @@ func TestSliceDiceSpit_IntoFileOutput(t *testing.T) {
 					&cli.StringFlag{Name: "json-into", Value: tt.jsonInto},
 					&cli.StringFlag{Name: "yaml-into", Value: tt.yamlInto},
 				},
-				Metadata: make(map[string]interface{}),
+				Metadata: make(map[string]any),
 			}
 
 			SliceDiceSpit(*raw, attrList, cmd, "", new(bytes.Buffer), nil)
@@ -934,7 +934,7 @@ func TestSliceDiceSpit_JQFilter(t *testing.T) {
 			&cli.StringFlag{Name: "json-into", Value: jsonInto},
 			&cli.StringFlag{Name: "jq", Value: `.name == "alpha"`},
 		},
-		Metadata: make(map[string]interface{}),
+		Metadata: make(map[string]any),
 	}
 
 	out := new(bytes.Buffer)
@@ -943,7 +943,7 @@ func TestSliceDiceSpit_JQFilter(t *testing.T) {
 	data, err := os.ReadFile(jsonInto)
 	require.NoError(t, err)
 
-	var got []map[string]interface{}
+	var got []map[string]any
 	require.NoError(t, json.Unmarshal(data, &got))
 	require.Len(t, got, 1)
 	assert.Equal(t, "1", got[0]["id"])
@@ -967,7 +967,7 @@ func TestSliceDiceSpit_FilterAndJQConflict(t *testing.T) {
 			&cli.StringFlag{Name: "filter", Value: "name=alpha"},
 			&cli.StringFlag{Name: "jq", Value: `.name == "alpha"`},
 		},
-		Metadata: make(map[string]interface{}),
+		Metadata: make(map[string]any),
 	}
 
 	out := new(bytes.Buffer)

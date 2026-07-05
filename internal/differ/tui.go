@@ -5,6 +5,7 @@ package differ
 
 import (
 	"fmt"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/hashicorp/go-tfe"
@@ -62,7 +63,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "Select two state versions:\n\n"
+	var s strings.Builder
+	s.WriteString("Select two state versions:\n\n")
 	for i, sv := range m.items {
 		cursor := " "
 		if m.cursor == i {
@@ -73,9 +75,9 @@ func (m model) View() string {
 			mark = "x"
 		}
 
-		s += fmt.Sprintf("%s [%s] %s %4d %s\n", cursor, mark, sv.ID, sv.Serial, sv.CreatedAt.Format("2006-01-02T15:04:05Z"))
+		s.WriteString(fmt.Sprintf("%s [%s] %s %4d %s\n", cursor, mark, sv.ID, sv.Serial, sv.CreatedAt.Format("2006-01-02T15:04:05Z")))
 	}
-	return s + "\nSPACE: toggle, ENTER: go, Q/ESCAPE: quit\n"
+	return s.String() + "\nSPACE: toggle, ENTER: go, Q/ESCAPE: quit\n"
 }
 
 func contains(versions []*tfe.StateVersion, version *tfe.StateVersion) bool {

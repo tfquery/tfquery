@@ -11,20 +11,20 @@ import (
 
 // ParsedQuery represents a parsed Terraform-style query
 type ParsedQuery struct {
-	Module    []string    // Module path components, e.g., ["module", "sample"]
-	Mode      string      // "managed", "data", empty for managed resources
-	Type      string      // Resource type, e.g., "aws_instance"
-	Name      string      // Resource name, e.g., "web"
-	Index     interface{} // Instance index (int, string, or nil for all)
-	Attribute string      // Attribute name, e.g., "arn", "id"
+	Module    []string // Module path components, e.g., ["module", "sample"]
+	Mode      string   // "managed", "data", empty for managed resources
+	Type      string   // Resource type, e.g., "aws_instance"
+	Name      string   // Resource name, e.g., "web"
+	Index     any      // Instance index (int, string, or nil for all)
+	Attribute string   // Attribute name, e.g., "arn", "id"
 }
 
 // processQuery routes queries to appropriate handlers based on syntax
-func ProcessQuery(stateData map[string]interface{}, query string) {
+func ProcessQuery(stateData map[string]any, query string) {
 	// Check for function evaluation mode
-	if strings.HasPrefix(query, "/") {
+	if after, ok := strings.CutPrefix(query, "/"); ok {
 		// Force function mode with leading /
-		expression := strings.TrimPrefix(query, "/")
+		expression := after
 		result := evaluateFunction(expression, stateData)
 		fmt.Println(result)
 		return
@@ -119,7 +119,7 @@ func hasBalancedParens(s string) bool {
 }
 
 // handleSpecialQueries handles built-in special queries
-func handleSpecialQueries(stateData map[string]interface{}, query string) interface{} {
+func handleSpecialQueries(stateData map[string]any, query string) any {
 	switch query {
 	case "terraform_version":
 		if val, ok := stateData["terraform_version"]; ok {
@@ -134,10 +134,10 @@ func handleSpecialQueries(stateData map[string]interface{}, query string) interf
 	}
 
 	// Handle outputs queries like "outputs.bucket_name"
-	if strings.HasPrefix(query, "outputs.") {
-		outputName := strings.TrimPrefix(query, "outputs.")
-		if outputs, ok := stateData["outputs"].(map[string]interface{}); ok {
-			if output, ok := outputs[outputName].(map[string]interface{}); ok {
+	if after, ok := strings.CutPrefix(query, "outputs."); ok {
+		outputName := after
+		if outputs, ok := stateData["outputs"].(map[string]any); ok {
+			if output, ok := outputs[outputName].(map[string]any); ok {
 				return output["value"]
 			}
 		}
@@ -248,7 +248,7 @@ func smartSplit(s, delimiter string) []string {
 }
 
 // parseIndex parses an index string into appropriate type
-func parseIndex(indexStr string) interface{} {
+func parseIndex(indexStr string) any {
 	// Try to parse as integer
 	if i, err := strconv.Atoi(indexStr); err == nil {
 		return i

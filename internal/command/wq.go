@@ -56,7 +56,7 @@ func wqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	return NewQueryActionRunner(
 		"wq",
-		reflect.TypeOf((*tfe.Workspace)(nil)).Elem(),
+		reflect.TypeFor[tfe.Workspace](),
 		wqDefaultAttrs,
 		fn,
 	).Run(ctx, cmd)

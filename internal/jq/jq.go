@@ -18,9 +18,9 @@ import (
 func FilterDatasetJQ(candidates gjson.Result,
 	attrs attrs.AttrList,
 	querySpec string,
-) ([]map[string]interface{}, error) {
+) ([]map[string]any, error) {
 	//nolint:prealloc // We don't know resulting len before applying the query.
-	var filteredResults []map[string]interface{}
+	var filteredResults []map[string]any
 
 	query, err := gojq.Parse(querySpec)
 	if err != nil {
@@ -28,7 +28,7 @@ func FilterDatasetJQ(candidates gjson.Result,
 	}
 
 	for _, candidate := range candidates.Array() {
-		result := make(map[string]interface{})
+		result := make(map[string]any)
 		for i := range attrs {
 			attr := attrs[i]
 			value := driller.Driller(candidate.Raw, attr.Key)
@@ -52,7 +52,7 @@ func FilterDatasetJQ(candidates gjson.Result,
 
 // rowMatchesJQ evaluates a compiled jq query against a projected row map and
 // returns whether any emitted value is truthy.
-func rowMatchesJQ(row map[string]interface{}, query *gojq.Query) (bool, error) {
+func rowMatchesJQ(row map[string]any, query *gojq.Query) (bool, error) {
 	iter := query.Run(row)
 
 	for {
@@ -75,7 +75,7 @@ func rowMatchesJQ(row map[string]interface{}, query *gojq.Query) (bool, error) {
 
 // isTruthyJQValue applies jq truthiness rules where only false and null are
 // falsey values. nil's are always falsey and non-bool values are always truthy.s
-func isTruthyJQValue(v interface{}) bool {
+func isTruthyJQValue(v any) bool {
 	if v == nil {
 		return false
 	}

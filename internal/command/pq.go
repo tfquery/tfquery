@@ -64,7 +64,7 @@ func pqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	return NewQueryActionRunner(
 		"pq",
-		reflect.TypeOf((*tfe.Project)(nil)).Elem(),
+		reflect.TypeFor[tfe.Project](),
 		pqDefaultAttrs,
 		fn,
 	).Run(ctx, cmd)

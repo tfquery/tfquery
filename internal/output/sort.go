@@ -9,20 +9,20 @@ import (
 )
 
 // THINK Issue 5
-func SortDataset(resultSet []map[string]interface{}, spec string) {
+func SortDataset(resultSet []map[string]any, spec string) {
 	fields := strings.Split(spec, ",")
 
 	sort.SliceStable(resultSet, func(one, two int) bool {
 		for _, field := range fields {
 			ascending := true
-			if strings.HasPrefix(field, "-") {
-				field = strings.TrimPrefix(field, "-")
+			if after, ok := strings.CutPrefix(field, "-"); ok {
+				field = after
 				ascending = false
 			}
 
 			caseSensitive := false
-			if strings.HasPrefix(field, "!") {
-				field = strings.TrimPrefix(field, "!")
+			if after, ok := strings.CutPrefix(field, "!"); ok {
+				field = after
 				caseSensitive = true
 			}
 

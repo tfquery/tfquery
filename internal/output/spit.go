@@ -8,9 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"reflect"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -29,7 +31,7 @@ import (
 
 // InterfaceToString converts supported primitive or composite values to a
 // string. A custom empty value may be provided.
-func InterfaceToString(value interface{}, emptyValue ...string) string {
+func InterfaceToString(value any, emptyValue ...string) string {
 	if len(emptyValue) == 0 {
 		emptyValue = []string{""}
 	}
@@ -84,13 +86,7 @@ func NewTag(h string, s string) schemaTag {
 
 	parts := strings.Split(s, ",")
 	if len(parts) > 0 {
-		found := false
-		for _, a := range allowed {
-			if a == parts[0] {
-				found = true
-				break
-			}
-		}
+		found := slices.Contains(allowed, parts[0])
 
 		if !found {
 			return tag
@@ -122,7 +118,7 @@ func SliceDiceSpit(raw bytes.Buffer,
 	cmd *cli.Command,
 	parent string,
 	w io.Writer,
-	postProcess func([]map[string]interface{}) ([]map[string]interface{}, error),
+	postProcess func([]map[string]any) ([]map[string]any, error),
 ) {
 	// Default to stdout.
 	if w == nil {
@@ -138,7 +134,7 @@ func SliceDiceSpit(raw bytes.Buffer,
 			return
 		}
 
-		var rawDoc interface{}
+		var rawDoc any
 		if err := json.Unmarshal(raw.Bytes(), &rawDoc); err != nil {
 			log.Errorf("SliceDiceSpit json unmarshal for raw into output: %v", err)
 			return
@@ -181,7 +177,7 @@ func SliceDiceSpit(raw bytes.Buffer,
 		return
 	}
 
-	var filteredDataset []map[string]interface{}
+	var filteredDataset []map[string]any
 	if jqSpec != "" {
 		var err error
 		filteredDataset, err = jq.FilterDatasetJQ(fullDataset, attrs, jqSpec)
@@ -256,7 +252,7 @@ func SliceDiceSpit(raw bytes.Buffer,
 // TableWriter renders the result set in a tabular form honoring color,
 // titles and padding options. Output is written to w. If w is nil, os.Stdout
 // is used.
-func TableWriter(resultSet []map[string]interface{}, attrs attrs.AttrList, cmd *cli.Command, w io.Writer) {
+func TableWriter(resultSet []map[string]any, attrs attrs.AttrList, cmd *cli.Command, w io.Writer) {
 	if w == nil {
 		w = os.Stdout
 	}
@@ -369,18 +365,16 @@ func flattenState(resources gjson.Result, short bool) bytes.Buffer {
 	return raw
 }
 
-func flattenStateRows(resources gjson.Result, short bool) []map[string]interface{} {
-	var flatResources []map[string]interface{}
+func flattenStateRows(resources gjson.Result, short bool) []map[string]any {
+	var flatResources []map[string]any
 
 	for _, resource := range resources.Array() {
 		common := getCommonFields(resource)
 
 		instances := resource.Get("instances")
 		for _, instance := range instances.Array() {
-			flatResource := make(map[string]interface{})
-			for key, value := range common {
-				flatResource[key] = value
-			}
+			flatResource := make(map[string]any)
+			maps.Copy(flatResource, common)
 
 			for key, value := range instance.Map() {
 				flatResource[key] = value.Value()
@@ -422,10 +416,10 @@ func flattenStateRows(resources gjson.Result, short bool) []map[string]interface
 
 // FlattenTerraformState flattens a full Terraform state document into a row
 // set compatible with SliceDiceSpit filtering and rendering.
-func FlattenTerraformState(doc []byte, short bool) ([]map[string]interface{}, error) {
+func FlattenTerraformState(doc []byte, short bool) ([]map[string]any, error) {
 	resources := gjson.ParseBytes(doc).Get("resources")
 	if !resources.Exists() {
-		return []map[string]interface{}{}, nil
+		return []map[string]any{}, nil
 	}
 
 	return flattenStateRows(resources, short), nil
@@ -460,8 +454,8 @@ func getColors(key string) (header, even, odd lipgloss.TerminalColor) {
 }
 
 // getCommonFields extracts common fields from a resource, excluding instances.
-func getCommonFields(resource gjson.Result) map[string]interface{} {
-	common := make(map[string]interface{})
+func getCommonFields(resource gjson.Result) map[string]any {
+	common := make(map[string]any)
 	for key, value := range resource.Map() {
 		if key != "instances" {
 			common[key] = value.Value()
@@ -474,7 +468,7 @@ func getCommonFields(resource gjson.Result) map[string]interface{} {
 // --json-into and --yaml-into flags, if present. There is no check to know if
 // the output file can be successfully written or if it already exists. In the
 // latter case, the file will be overwritten.
-func writeIntoFiles(cmd *cli.Command, data interface{}) {
+func writeIntoFiles(cmd *cli.Command, data any) {
 	if path2 := cmd.String("json-into"); path2 != "" {
 		jsonOutput, err := json.Marshal(data)
 		if err != nil {

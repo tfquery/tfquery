@@ -29,7 +29,7 @@ func deduplicateFlags(args []string) []string {
 	// Track the last position where each flag appears.
 	flagPositions := make(map[string]int)
 
-	for i := 0; i < len(rest); i++ {
+	for i := range rest {
 		arg := rest[i]
 
 		if strings.HasPrefix(arg, "-") {

@@ -287,9 +287,9 @@ func TestProcessCommandArgs_PsSkipsExplicitSet(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"ps": map[string]interface{}{
-				"full": []interface{}{"--attrs .resource,.action"},
+		Data: map[string]any{
+			"ps": map[string]any{
+				"full": []any{"--attrs .resource,.action"},
 			},
 		},
 	}
@@ -310,11 +310,11 @@ func TestExpandPresetSegments(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"attrs": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"attrs": map[string]any{
 					"set1": "arn,name",
-					"set2": []interface{}{"created-at", "workspace"},
+					"set2": []any{"created-at", "workspace"},
 				},
 			},
 		},
@@ -374,11 +374,11 @@ func TestExpandFlagValuePresets(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"attrs": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"attrs": map[string]any{
 					"set1": "arn,name",
-					"set2": []interface{}{"created-at", "workspace"},
+					"set2": []any{"created-at", "workspace"},
 					"set3": "workspace,",
 				},
 			},
@@ -462,11 +462,11 @@ func TestExpandFlagValuePresets_Filter(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"filters": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"filters": map[string]any{
 					"set1": "_organization@prod",
-					"set2": []interface{}{"_workspace@dev", "status@applied"},
+					"set2": []any{"_workspace@dev", "status@applied"},
 				},
 			},
 		},
@@ -534,9 +534,9 @@ func TestExpandFlagValuePresets_Filter_CustomDelimiter(t *testing.T) {
 	t.Setenv("TFQUERY_FILTER_DELIM", "|")
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"filters": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"filters": map[string]any{
 					"set1": "status@applied",
 				},
 			},
@@ -564,9 +564,9 @@ func TestProcessCommandArgs_ExpandsAttrsPreset(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"attrs": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"attrs": map[string]any{
 					"set1": "arn,name",
 				},
 			},
@@ -588,9 +588,9 @@ func TestProcessCommandArgs_ExpandsFilterPreset(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"filters": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"filters": map[string]any{
 					"set1": "_organization@prod",
 				},
 			},
@@ -612,12 +612,12 @@ func TestProcessCommandArgs_ExpandsAttrsAndFilterPresets_WithRootDir(t *testing.
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"attrs": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"attrs": map[string]any{
 					"set1": "region,layer",
 				},
-				"filters": map[string]interface{}{
+				"filters": map[string]any{
 					"set2": "layer=myapp",
 				},
 			},
@@ -651,9 +651,9 @@ func TestProcessCommandArgs_SqMultiRoot_InsertsAfterRoots(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"sq": map[string]interface{}{
-				"defaults": []interface{}{"--debug"},
+		Data: map[string]any{
+			"sq": map[string]any{
+				"defaults": []any{"--debug"},
 			},
 		},
 	}
@@ -676,9 +676,9 @@ func TestExpandFlagSingleValuePreset(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"jq": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"jq": map[string]any{
 					"query1": `.updated > "2025-06-01"`,
 					"query2": `.name | contains("cloud")`,
 				},
@@ -735,9 +735,9 @@ func TestProcessCommandArgs_ExpandsJQPreset(t *testing.T) {
 	})
 
 	config.Config = config.Type{
-		Data: map[string]interface{}{
-			"presets": map[string]interface{}{
-				"jq": map[string]interface{}{
+		Data: map[string]any{
+			"presets": map[string]any{
+				"jq": map[string]any{
 					"query1": `.updated > "2025-06-01"`,
 				},
 			},

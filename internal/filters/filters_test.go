@@ -49,19 +49,19 @@ type testCheckNumericOperatorCase struct {
 // testCheckContainsOperatorCase represents a single test case for
 // TestCheckContainsOperator.
 type testCheckContainsOperatorCase struct {
-	Name   string      `yaml:"name"`
-	Value  interface{} `yaml:"value"`
-	Filter Filter      `yaml:"filter"`
-	Want   bool        `yaml:"want"`
+	Name   string `yaml:"name"`
+	Value  any    `yaml:"value"`
+	Filter Filter `yaml:"filter"`
+	Want   bool   `yaml:"want"`
 }
 
 // testToFloat64Case represents a single test case for TestToFloat64.
 type testToFloat64Case struct {
-	Name      string      `yaml:"name"`
-	Value     interface{} `yaml:"value"`
-	Want      float64     `yaml:"want"`
-	WantOk    bool        `yaml:"wantOk"`
-	ValueType string      `yaml:"valueType"`
+	Name      string  `yaml:"name"`
+	Value     any     `yaml:"value"`
+	Want      float64 `yaml:"want"`
+	WantOk    bool    `yaml:"wantOk"`
+	ValueType string  `yaml:"valueType"`
 }
 
 // testApplyFiltersCase represents a single test case for TestApplyFilters.
@@ -80,7 +80,7 @@ type testFilterDatasetCase struct {
 }
 
 // loadTestData loads test data from embedded YAML files.
-func loadTestData(filename string, v interface{}) error {
+func loadTestData(filename string, v any) error {
 	data, err := testDataFS.ReadFile("testdata/" + filename)
 	if err != nil {
 		return err

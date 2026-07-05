@@ -26,7 +26,7 @@ import (
 // Callers should use typed getters (GetString, GetInt) for convenience.
 type Type struct {
 	// Configuration data
-	Data map[string]interface{}
+	Data map[string]any
 
 	// Metadata
 	Namespace string
@@ -162,7 +162,7 @@ func GetStringSlice(key string, defaultValue ...[]string) ([]string, error) {
 	case string:
 		// Single string treated as single-element slice
 		return []string{v}, nil
-	case []interface{}:
+	case []any:
 		result := make([]string, len(v))
 		for i, item := range v {
 			s, ok := item.(string)
@@ -195,7 +195,7 @@ func Load(cfgFilePath ...string) (Type, error) {
 		return Type{}, err
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := yaml.Unmarshal(bytes, &data); err != nil {
 		return Type{}, err
 	}
@@ -224,11 +224,11 @@ func (cfg *Type) get(kspec string) (any, error) {
 
 	for _, key := range candidateKeys {
 		keys := strings.Split(key, ".")
-		var current interface{} = cfg.Data
+		var current any = cfg.Data
 
 		success := true
 		for _, key := range keys {
-			m, ok := current.(map[string]interface{})
+			m, ok := current.(map[string]any)
 			if !ok {
 				success = false
 				break

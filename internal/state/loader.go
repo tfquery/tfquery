@@ -121,7 +121,7 @@ loop:
 
 // LoadStateData loads and optionally decrypts a state document from the
 // detected backend at the provided rootDir.
-func LoadStateData(ctx context.Context, cmd *cli.Command, rootDir string) (map[string]interface{}, error) {
+func LoadStateData(ctx context.Context, cmd *cli.Command, rootDir string) (map[string]any, error) {
 	// Check to make sure the target directory looks like it might be a legit TF
 	// workspace.
 	tfConfigFile := fmt.Sprintf("%s/.terraform/terraform.tfstate", rootDir)
@@ -144,7 +144,7 @@ func LoadStateData(ctx context.Context, cmd *cli.Command, rootDir string) (map[s
 	}
 
 	// If the state is encrypted, there's a little more work to do.
-	var jsonData map[string]interface{}
+	var jsonData map[string]any
 	if err := json.Unmarshal(doc, &jsonData); err == nil {
 		if _, exists := jsonData["encrypted_data"]; exists {
 			// First, look to the flag for passphrase value.
@@ -168,7 +168,7 @@ func LoadStateData(ctx context.Context, cmd *cli.Command, rootDir string) (map[s
 	}
 
 	// Parse the state data as JSON
-	var stateData map[string]interface{}
+	var stateData map[string]any
 	if err := json.Unmarshal(doc, &stateData); err != nil {
 		return nil, fmt.Errorf("failed to parse state JSON: %w", err)
 	}

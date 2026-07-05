@@ -73,24 +73,24 @@ func (h *CustomHandler) HandleLog(e *log.Entry) error {
 }
 
 // Tracef logs at Trace level (below Debug).
-func Tracef(format string, args ...interface{}) {
+func Tracef(format string, args ...any) {
 	if traceEnabled {
 		log.Debug("TRACE: " + fmt.Sprintf(format, args...))
 	}
 }
 
 // Debugf logs at Debug level.
-func Debugf(format string, args ...interface{}) {
+func Debugf(format string, args ...any) {
 	log.Debugf(format, args...)
 }
 
 // Infof logs at Info level.
-func Infof(format string, args ...interface{}) {
+func Infof(format string, args ...any) {
 	log.Infof(format, args...)
 }
 
 // Errorf logs at Error level.
-func Errorf(format string, args ...interface{}) {
+func Errorf(format string, args ...any) {
 	log.Errorf(format, args...)
 }
 
@@ -100,7 +100,7 @@ func Debug(msg string) {
 }
 
 // Warnf logs at Warn level.
-func Warnf(format string, args ...interface{}) {
+func Warnf(format string, args ...any) {
 	log.Warn(fmt.Sprintf(format, args...))
 }
 

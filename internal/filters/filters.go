@@ -60,8 +60,8 @@ func BuildFilters(spec string) []Filter {
 	}
 
 	// Split the spec and iterate over each filter spec entry.
-	filterSpecs := strings.Split(spec, delim)
-	for _, filterSpec := range filterSpecs {
+	filterSpecs := strings.SplitSeq(spec, delim)
+	for filterSpec := range filterSpecs {
 		filterSpec = strings.TrimSpace(filterSpec)
 		if filterSpec == "" {
 			continue
@@ -113,9 +113,9 @@ func BuildFilters(spec string) []Filter {
 // FilterDataset returns a result set filtered per the provided spec. It is the
 // public entry point used by SliceDiceSpit.  To be clear, this is the result
 // filtering. Any server-side filtering was returned by the API.
-func FilterDataset(candidates gjson.Result, attrs attrs.AttrList, spec string) []map[string]interface{} {
+func FilterDataset(candidates gjson.Result, attrs attrs.AttrList, spec string) []map[string]any {
 	//nolint:prealloc // Don't prealloc because we don't know what len will be.
-	var filteredResults []map[string]interface{}
+	var filteredResults []map[string]any
 
 	// Build a slice of filters from the spec once so we can discard invalid
 	// entries and avoid reparsing for each candidate row.
@@ -129,7 +129,7 @@ func FilterDataset(candidates gjson.Result, attrs attrs.AttrList, spec string) [
 
 		// If the filter check was successful, add each attribute from the candidate
 		// to the filtered result set.
-		result := make(map[string]interface{})
+		result := make(map[string]any)
 		for i := range attrs {
 			attr := attrs[i]
 			// Intentionally defer Transform to SliceDiceSpit output phase.
@@ -223,7 +223,7 @@ func applyFilters(candidate gjson.Result, attrs attrs.AttrList,
 
 // checkAllOperators evaluates the filter against the provided value using the
 // appropriate operator check func.
-func checkAllOperators(value interface{}, filter Filter) bool {
+func checkAllOperators(value any, filter Filter) bool {
 	// Try string comparison first.
 	if v, ok := value.(string); ok {
 		return checkStringOperand(v, filter)
@@ -264,7 +264,7 @@ const (
 
 // checkContainsOperand evaluates a membership style filter (operator '@')
 // against slice or map values.
-func checkContainsOperand(value interface{}, filter Filter) bool {
+func checkContainsOperand(value any, filter Filter) bool {
 	switch val := value.(type) {
 	case []any:
 		for _, item := range val {
@@ -379,7 +379,7 @@ func isHungarian(candidate gjson.Result, filter Filter) hungarianCheckType {
 
 // toFloat64 attempts to normalize various numeric types to float64.
 // Returns (0, false) if v is not a recognized numeric type.
-func toFloat64(v interface{}) (float64, bool) {
+func toFloat64(v any) (float64, bool) {
 	switch n := v.(type) {
 	case float64:
 		return n, true

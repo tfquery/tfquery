@@ -55,7 +55,7 @@ func rqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	return NewQueryActionRunner(
 		"rq",
-		reflect.TypeOf((*tfe.Run)(nil)).Elem(),
+		reflect.TypeFor[tfe.Run](),
 		rqDefaultAttrs,
 		fn,
 	).Run(ctx, cmd)

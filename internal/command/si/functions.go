@@ -6,6 +6,7 @@ package si
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"regexp"
 
 	"github.com/hashicorp/hcl/v2"
@@ -17,7 +18,7 @@ import (
 )
 
 // evaluateFunction provides basic Terraform function evaluation
-func evaluateFunction(expression string, stateData map[string]interface{}) string {
+func evaluateFunction(expression string, stateData map[string]any) string {
 	// Preprocess terraform addresses in the expression before HCL evaluation
 	processedExpression := preprocessTerraformAddresses(expression, stateData)
 
@@ -42,7 +43,7 @@ func evaluateFunction(expression string, stateData map[string]interface{}) strin
 
 // preprocessTerraformAddresses finds terraform addresses in the expression and
 // replaces them with their actual values
-func preprocessTerraformAddresses(expression string, stateData map[string]interface{}) string {
+func preprocessTerraformAddresses(expression string, stateData map[string]any) string {
 	// This regex matches terraform addresses like:
 	// module.sample.aws_instance.web[0].arn
 	// aws_security_group.example.id
@@ -155,9 +156,7 @@ func buildFunctionMap() map[string]function.Function {
 	}
 
 	// Add all functions to the map
-	for name, fn := range stdlibFunctions {
-		funcs[name] = fn
-	}
+	maps.Copy(funcs, stdlibFunctions)
 
 	// Add HCL extension functions
 	funcs["try"] = tryfunc.TryFunc
@@ -178,7 +177,7 @@ func buildFunctionMap() map[string]function.Function {
 }
 
 // buildVariableMap converts state data to cty values for HCL evaluation
-func buildVariableMap(stateData map[string]interface{}) map[string]cty.Value {
+func buildVariableMap(stateData map[string]any) map[string]cty.Value {
 	vars := make(map[string]cty.Value)
 
 	// Convert the entire state data
@@ -195,7 +194,7 @@ func buildVariableMap(stateData map[string]interface{}) map[string]cty.Value {
 }
 
 // convertToCtyValue converts Go values to cty values
-func convertToCtyValue(val interface{}) cty.Value {
+func convertToCtyValue(val any) cty.Value {
 	switch v := val.(type) {
 	case nil:
 		return cty.NullVal(cty.DynamicPseudoType)
@@ -209,13 +208,13 @@ func convertToCtyValue(val interface{}) cty.Value {
 		return cty.NumberFloatVal(v)
 	case string:
 		return cty.StringVal(v)
-	case []interface{}:
+	case []any:
 		vals := make([]cty.Value, len(v))
 		for i, item := range v {
 			vals[i] = convertToCtyValue(item)
 		}
 		return cty.TupleVal(vals)
-	case map[string]interface{}:
+	case map[string]any:
 		vals := make(map[string]cty.Value)
 		for key, item := range v {
 			vals[key] = convertToCtyValue(item)
@@ -257,7 +256,7 @@ func formatCtyValue(val cty.Value) string {
 }
 
 // ctyValueToGo converts cty values to Go values
-func ctyValueToGo(val cty.Value) interface{} {
+func ctyValueToGo(val cty.Value) any {
 	if val.IsNull() {
 		return nil
 	}
@@ -276,14 +275,14 @@ func ctyValueToGo(val cty.Value) interface{} {
 	case val.Type() == cty.String:
 		return val.AsString()
 	case val.Type().IsTupleType():
-		var result []interface{}
+		var result []any
 		for it := val.ElementIterator(); it.Next(); {
 			_, elemVal := it.Element()
 			result = append(result, ctyValueToGo(elemVal))
 		}
 		return result
 	case val.Type().IsObjectType():
-		result := make(map[string]interface{})
+		result := make(map[string]any)
 		for it := val.ElementIterator(); it.Next(); {
 			keyVal, elemVal := it.Element()
 			key := keyVal.AsString()

@@ -66,8 +66,8 @@ func TestDecryptOpenTofuState_InvalidJSON(t *testing.T) {
 // encrypted_data field is missing.
 func TestDecryptOpenTofuState_MissingEncryptedData(t *testing.T) {
 	t.Parallel()
-	stateJSON := map[string]interface{}{
-		"meta": map[string]interface{}{
+	stateJSON := map[string]any{
+		"meta": map[string]any{
 			"key_provider.pbkdf2.mykey": "dGVzdA==",
 		},
 	}
@@ -85,8 +85,8 @@ func TestDecryptOpenTofuState_MissingEncryptedData(t *testing.T) {
 // config is not valid base64.
 func TestDecryptOpenTofuState_InvalidBase64Key(t *testing.T) {
 	t.Parallel()
-	stateJSON := map[string]interface{}{
-		"meta": map[string]interface{}{
+	stateJSON := map[string]any{
+		"meta": map[string]any{
 			"key_provider.pbkdf2.mykey": "not-valid-base64!@#$",
 		},
 		"encrypted_data": "dGVzdA==",
@@ -105,8 +105,8 @@ func TestDecryptOpenTofuState_InvalidBase64Key(t *testing.T) {
 // provider config JSON is invalid.
 func TestDecryptOpenTofuState_InvalidKeyProviderConfig(t *testing.T) {
 	t.Parallel()
-	stateJSON := map[string]interface{}{
-		"meta": map[string]interface{}{
+	stateJSON := map[string]any{
+		"meta": map[string]any{
 			"key_provider.pbkdf2.mykey": base64.StdEncoding.EncodeToString(
 				[]byte("invalid json"),
 			),
@@ -127,7 +127,7 @@ func TestDecryptOpenTofuState_InvalidKeyProviderConfig(t *testing.T) {
 // not valid base64.
 func TestDecryptOpenTofuState_InvalidSaltBase64(t *testing.T) {
 	t.Parallel()
-	kpConfig := map[string]interface{}{
+	kpConfig := map[string]any{
 		"salt":          "not-valid-base64!@#$",
 		"iterations":    200000,
 		"hash_function": "sha512",
@@ -137,8 +137,8 @@ func TestDecryptOpenTofuState_InvalidSaltBase64(t *testing.T) {
 	kpConfigJSON, err := json.Marshal(kpConfig)
 	require.NoError(t, err)
 
-	stateJSON := map[string]interface{}{
-		"meta": map[string]interface{}{
+	stateJSON := map[string]any{
+		"meta": map[string]any{
 			"key_provider.pbkdf2.mykey": base64.StdEncoding.EncodeToString(
 				kpConfigJSON,
 			),
@@ -159,7 +159,7 @@ func TestDecryptOpenTofuState_InvalidSaltBase64(t *testing.T) {
 // encrypted data is not valid base64.
 func TestDecryptOpenTofuState_InvalidEncryptedDataBase64(t *testing.T) {
 	t.Parallel()
-	kpConfig := map[string]interface{}{
+	kpConfig := map[string]any{
 		"salt":          base64.StdEncoding.EncodeToString([]byte("salt")),
 		"iterations":    200000,
 		"hash_function": "sha512",
@@ -169,8 +169,8 @@ func TestDecryptOpenTofuState_InvalidEncryptedDataBase64(t *testing.T) {
 	kpConfigJSON, err := json.Marshal(kpConfig)
 	require.NoError(t, err)
 
-	stateJSON := map[string]interface{}{
-		"meta": map[string]interface{}{
+	stateJSON := map[string]any{
+		"meta": map[string]any{
 			"key_provider.pbkdf2.mykey": base64.StdEncoding.EncodeToString(
 				kpConfigJSON,
 			),
@@ -326,7 +326,7 @@ func createEncryptedStateFile(
 	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
 
 	// Create key provider config JSON
-	kpConfig := map[string]interface{}{
+	kpConfig := map[string]any{
 		"salt":          base64.StdEncoding.EncodeToString(salt),
 		"iterations":    iterations,
 		"hash_function": "sha512",
@@ -337,8 +337,8 @@ func createEncryptedStateFile(
 	require.NoError(t, err)
 
 	// Create state JSON
-	state := map[string]interface{}{
-		"meta": map[string]interface{}{
+	state := map[string]any{
+		"meta": map[string]any{
 			"key_provider.pbkdf2.mykey": base64.StdEncoding.EncodeToString(
 				kpConfigJSON,
 			),

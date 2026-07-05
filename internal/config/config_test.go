@@ -75,9 +75,9 @@ func TestLoad(t *testing.T) {
 			testFile: "nested.yaml",
 			wantErr:  false,
 			checkFunc: func(t *testing.T, cfg Type) {
-				backend, ok := cfg.Data["backend"].(map[string]interface{})
+				backend, ok := cfg.Data["backend"].(map[string]any)
 				assert.True(t, ok, "backend should be a map")
-				s3, ok := backend["s3"].(map[string]interface{})
+				s3, ok := backend["s3"].(map[string]any)
 				assert.True(t, ok, "s3 should be a map")
 				assert.Equal(t, "us-west-2", s3["region"])
 				assert.Equal(t, "terraform-state", s3["bucket"])
@@ -92,7 +92,7 @@ func TestLoad(t *testing.T) {
 				assert.Equal(t, 1, cfg.Data["version"])
 				assert.Equal(t, true, cfg.Data["enabled"])
 				assert.Equal(t, 30.5, cfg.Data["timeout"])
-				tags, ok := cfg.Data["tags"].([]interface{})
+				tags, ok := cfg.Data["tags"].([]any)
 				assert.True(t, ok)
 				assert.Len(t, tags, 2)
 			},
@@ -322,7 +322,7 @@ func TestConfig_Get(t *testing.T) {
 		name     string
 		testFile string
 		key      string
-		wantVal  interface{}
+		wantVal  any
 		wantErr  bool
 		errMsg   string
 	}{

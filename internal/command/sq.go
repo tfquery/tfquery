@@ -58,8 +58,7 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	// Setup helper to be run after dataset is in its final form and simply needs
 	// final cosmetic transformations.
-	postProcess := func(dataset []map[string]interface{}) ([]map[string]interface{}, error) {
-
+	postProcess := func(dataset []map[string]any) ([]map[string]any, error) {
 		if cmd.Bool("count") {
 			dataset = countResources(dataset)
 		}
@@ -135,7 +134,7 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 		log.Debug("Backend does not implement SelfDiffer")
 	}
 
-	var combined []map[string]interface{}
+	var combined []map[string]any
 	rawOutput := cmd.String("output") == "raw"
 	aggregateRawOutput := multiRoot && rawOutput
 	singleRawOutput := !multiRoot && rawOutput
@@ -201,12 +200,12 @@ func sqCommandAction(ctx context.Context, cmd *cli.Command) error {
 			for i := range rows {
 				rows[i]["iacroot"] = iacroot
 
-				if rowAttrs, ok := rows[i]["attributes"].(map[string]interface{}); ok {
+				if rowAttrs, ok := rows[i]["attributes"].(map[string]any); ok {
 					rowAttrs["iacroot"] = iacroot
 				} else if rowAttrs, ok := rows[i]["attributes"].(map[string]any); ok {
 					rowAttrs["iacroot"] = iacroot
 				} else if rows[i]["attributes"] == nil {
-					rows[i]["attributes"] = map[string]interface{}{"iacroot": iacroot}
+					rows[i]["attributes"] = map[string]any{"iacroot": iacroot}
 				}
 			}
 		}
@@ -312,7 +311,7 @@ func sqCommandBuilder(meta meta.Meta) *cli.Command {
 // the left, it removes each segment that matches in all entries, then
 // stops when it encounters a position where segments differ. Removed
 // segments are replaced with "..".
-func chopPrefix(dataset []map[string]interface{}) {
+func chopPrefix(dataset []map[string]any) {
 	if len(dataset) == 0 {
 		return
 	}
@@ -410,7 +409,7 @@ type countKey struct {
 
 // countResources takes the resource records extracted from state file(s) and
 // counts them by mode and type, returning a new dataset.
-func countResources(dataset []map[string]interface{}) []map[string]interface{} {
+func countResources(dataset []map[string]any) []map[string]any {
 	counts := make(map[countKey]int)
 
 	// Count occurrences
@@ -429,9 +428,9 @@ func countResources(dataset []map[string]interface{}) []map[string]interface{} {
 	}
 
 	// Convert to output format
-	result := make([]map[string]interface{}, 0, len(counts))
+	result := make([]map[string]any, 0, len(counts))
 	for key, count := range counts {
-		result = append(result, map[string]interface{}{
+		result = append(result, map[string]any{
 			"mode":  key.Mode,
 			"type":  key.Type,
 			"count": count,
@@ -442,7 +441,7 @@ func countResources(dataset []map[string]interface{}) []map[string]interface{} {
 }
 
 func decryptStateIfNeeded(cmd *cli.Command, doc []byte, passphrase string) ([]byte, string, error) {
-	var jsonData map[string]interface{}
+	var jsonData map[string]any
 	if err := json.Unmarshal(doc, &jsonData); err != nil {
 		return doc, passphrase, nil
 	}
@@ -527,13 +526,13 @@ func transformIacroot(iacroot string, baseDir string, relative bool) string {
 // that the final aggregated output has identity built in and also a consistent
 // structure with the non-raw output, which allows us to use the same output
 // formatting logic for both.
-func buildAggregatedRawRow(doc []byte, iacroot string) (map[string]interface{}, error) {
-	var stateDoc interface{}
+func buildAggregatedRawRow(doc []byte, iacroot string) (map[string]any, error) {
+	var stateDoc any
 	if err := json.Unmarshal(doc, &stateDoc); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal aggregated raw state: %w", err)
 	}
 
-	return map[string]interface{}{
+	return map[string]any{
 		"iacroot": iacroot,
 		"state":   stateDoc,
 	}, nil
@@ -546,9 +545,9 @@ func outputSingleRootRaw(
 	doc []byte,
 	attrs attrs.AttrList,
 	cmd *cli.Command,
-	postProcess func([]map[string]interface{}) ([]map[string]interface{}, error),
-	w io.Writer) bool {
-
+	postProcess func([]map[string]any) ([]map[string]any, error),
+	w io.Writer,
+) bool {
 	if !singleRawOutput {
 		return false
 	}

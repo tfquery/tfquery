@@ -56,7 +56,7 @@ func mqCommandAction(ctx context.Context, cmd *cli.Command) error {
 
 	return NewQueryActionRunner(
 		"mq",
-		reflect.TypeOf((*tfe.RegistryModule)(nil)).Elem(),
+		reflect.TypeFor[tfe.RegistryModule](),
 		mqDefaultAttrs,
 		fn,
 	).Run(ctx, cmd)
