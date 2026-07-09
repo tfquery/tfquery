@@ -1,37 +1,62 @@
-# Release signing with Cosign
+# Release Signing With GPG
 
-This project uses Sigstore's `cosign` for signing release artifacts.
+This project uses GPG detached signatures for release artifacts.
 
 Why sign?
 
-- Verifies integrity: users can confirm the downloaded binary matches what was released.
-- Verifies authenticity: signatures show the artifact was released by a trusted party.
+- Verifies integrity: users can confirm the downloaded artifact matches what was
+	released.
+- Verifies authenticity: users can confirm the artifact was signed by the
+	project release key.
 
 How releases are signed
 
-- CI uses keyless Cosign signing (OIDC) to sign artifacts produced by GoReleaser.
-- Detached signatures (`.sig`) are uploaded to the GitHub Release alongside the artifacts.
-- Optionally, if you provide a `COSIGN_PUB` repository secret containing your public key, the workflow will attach `cosign.pub` to the release.
+- CI imports the private key from `GPG_PRIVATE_KEY`.
+- GoReleaser signs all artifacts with `gpg --detach-sign --armor`.
+- Detached signatures (`.sig`) are uploaded with the release artifacts.
+- CI verifies the generated signatures against `KEYS` before release completion.
 
-Local verification
+## Public key
 
-- Verify a keyless-signed artifact:
-
-```
-cosign verify-blob --keyless path/to/artifact
-```
-
-- Verify a key-based signature when you have the public key:
+- Public key file: `KEYS`.
+- Canonical source: `https://raw.githubusercontent.com/tfquery/tfquery/master/KEYS`.
+- Current release key fingerprint:
 
 ```
-cosign verify-blob --key cosign.pub path/to/artifact
+F36D 6C7C 87B2 C6EC 7BA9 F561 D842 C5AA 7A0F 8965
 ```
 
-Publishing the public key
+You can inspect the fingerprint locally:
 
-- If you maintain a long-lived signing key and want users to verify releases with it, set the `COSIGN_PUB` secret (ASCII armored public key) in the repository and the workflow will publish it to each release.
+```bash
+gpg --show-keys --with-fingerprint KEYS
+```
 
-Security notes
+## Verify a release artifact
 
-- Keyless signing (OIDC) is recommended for CI since it avoids long-lived private keys in secrets.
-- If you use a private key for signing, store and rotate it securely and keep the private key out of the repo.
+```bash
+TAG=v1.7.0
+ARCHIVE="tfquery_${TAG}_linux_x86_64.tar.gz"
+
+curl -fL "https://github.com/tfquery/tfquery/releases/download/${TAG}/${ARCHIVE}" -o "${ARCHIVE}"
+curl -fL "https://github.com/tfquery/tfquery/releases/download/${TAG}/${ARCHIVE}.sig" -o "${ARCHIVE}.sig"
+curl -fL "https://raw.githubusercontent.com/tfquery/tfquery/master/KEYS" -o KEYS
+
+gpg --import KEYS
+gpg --verify "${ARCHIVE}.sig" "${ARCHIVE}"
+```
+
+Expected output includes:
+
+```
+gpg: Good signature from "tfquery <staranto@gmail.com>"
+```
+
+## Verify all signatures in a release directory
+
+```bash
+for sig in ./*.sig; do
+	artifact="${sig%.sig}"
+	gpg --verify "$sig" "$artifact"
+done
+```

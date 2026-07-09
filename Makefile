@@ -1,4 +1,4 @@
-.PHONY: default build check clean docs install lint release release-check shadow static test tflint vet
+.PHONY: default build check clean docs install lint release release-check shadow sign-test static test tflint vet
 
 CLEAN_DAYS=30
 INSTALL_DIR=${HOME}/bin
@@ -118,6 +118,35 @@ release-check:
 
 	@goreleaser check
 	@echo "=== release-check passed"
+
+sign-test:
+	@set -eu; \
+	if ! command -v gpg >/dev/null 2>&1; then \
+		echo "=== ERROR: gpg is required."; \
+		exit 1; \
+	fi; \
+	if ! gpg --list-secret-keys --with-colons | grep -q '^sec'; then \
+		echo "=== ERROR: No private GPG key is available for signing."; \
+		echo "=== Import your release key first, then retry."; \
+		exit 1; \
+	fi; \
+	tmpdir="$$(mktemp -d /tmp/tfquery-sign-test.XXXXXX)"; \
+	cleanup() { rm -rf "$$tmpdir"; }; \
+	trap cleanup EXIT INT TERM; \
+	artifact="$$tmpdir/tfquery-sign-test.txt"; \
+	signature="$$artifact.sig"; \
+	verify_home="$$tmpdir/verify-gnupg"; \
+	printf 'tfquery sign-test generated at %s\n' "$$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$$artifact"; \
+	gpg --batch --yes --armor --detach-sign --output "$$signature" "$$artifact"; \
+	gpg --batch --verify "$$signature" "$$artifact" >/dev/null 2>&1; \
+	mkdir -m 700 -p "$$verify_home"; \
+	GNUPGHOME="$$verify_home" gpg --batch --import KEYS >/dev/null 2>&1; \
+	if ! GNUPGHOME="$$verify_home" gpg --batch --verify "$$signature" "$$artifact" >/dev/null 2>&1; then \
+		echo "=== ERROR: Signature verifies in your default keyring but not with KEYS."; \
+		echo "=== Ensure your signing key matches the public key in KEYS."; \
+		exit 1; \
+	fi; \
+	echo "=== sign-test passed"
 
 shadow:
 	shadow ./...

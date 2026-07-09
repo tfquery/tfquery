@@ -72,8 +72,8 @@ Download the latest release for your platform from the [releases page](https://g
 Extract and move the binary to your PATH:
 
 ```bash
-tar xvzf tfctl_*.tar.gz
-sudo mv  /usr/local/bin
+tar xvzf tfquery_*.tar.gz
+sudo mv tfquery /usr/local/bin
 ```
 
 ### Go package install
@@ -85,8 +85,8 @@ go install github.com/tfquery/tfquery@latest
 ### Homebrew
 
 ```bash
-brew tap /
-brew install
+brew tap tfquery/tfquery
+brew install tfquery
 ```
 
 **See the full [Installation Guide](docs/installation.md) for other options, plus installing man and TLDR pages.**
@@ -172,24 +172,31 @@ We sign release artifacts with GPG. To verify the integrity and authenticity of 
 
 **Download and verify**
 ```bash
-# Download the artifact and its signature
-curl -L https://github.com/tfquery/tfquery/releases/latest/download/tfctl_linux_amd64.tar.gz -o tfctl_linux_amd64.tar.gz
-curl -L https://github.com/tfquery/tfquery/releases/latest/download/tfctl_linux_amd64.tar.gz.sig -o tfctl_linux_amd64.tar.gz.sig
+TAG=v1.7.0
+ARCHIVE="tfquery_${TAG}_linux_x86_64.tar.gz"
+
+# Download the artifact, detached signature, and public key.
+curl -fL "https://github.com/tfquery/tfquery/releases/download/${TAG}/${ARCHIVE}" -o "${ARCHIVE}"
+curl -fL "https://github.com/tfquery/tfquery/releases/download/${TAG}/${ARCHIVE}.sig" -o "${ARCHIVE}.sig"
+curl -fL "https://raw.githubusercontent.com/tfquery/tfquery/master/KEYS" -o KEYS
 
 # Import the public key (one-time setup)
-curl -L https://raw.githubusercontent.com///master/KEYS | gpg --import
+gpg --import KEYS
 
 # Verify the signature
-gpg --verify tfctl_linux_amd64.tar.gz.sig tfctl_linux_amd64.tar.gz
+gpg --verify "${ARCHIVE}.sig" "${ARCHIVE}"
 ```
 
 **Expected output**
 ```
 gpg: Signature made [date] using RSA key [key-id]
-gpg: Good signature from " Release Key"
+gpg: Good signature from "tfquery <staranto@gmail.com>"
 ```
 
 If the signature verification fails or shows warnings, do not use the artifact and report the issue.
+
+For complete signing and verification details, including the release key
+fingerprint, see [docs/signing.md](docs/signing.md).
 
 ---
 

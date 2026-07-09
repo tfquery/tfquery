@@ -66,6 +66,46 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_GORELEASER_PAT }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
+      - name: Verify signatures against KEYS
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          sigs=(dist/*.sig)
+          if ((${#sigs[@]} == 0)); then
+            echo "ERROR: No detached signatures were generated in dist/." >&2
+            exit 1
+          fi
+
+          verify_home="$(mktemp -d /tmp/tfquery-release-verify.XXXXXX)"
+          trap 'rm -rf "$verify_home"' EXIT
+
+          GNUPGHOME="$verify_home" gpg --batch --import KEYS >/dev/null 2>&1
+
+          for sig in "${sigs[@]}"; do
+            artifact="${sig%.sig}"
+
+            if [[ ! -f "$artifact" ]]; then
+              echo "ERROR: Missing artifact for signature $sig" >&2
+              exit 1
+            fi
+
+            GNUPGHOME="$verify_home" gpg --batch --verify "$sig" "$artifact" >/dev/null 2>&1
+          done
+
+      - name: Upload KEYS to release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh release upload "${{ github.ref_name }}" \
+            KEYS \
+            --repo tfquery/tfquery --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GH_GORELEASER_PAT }}
+
       - name: Upload dist folder as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -117,7 +157,7 @@ jobs:
 
           # Upload docs
           gh release upload "${{ github.ref_name }}" \
-            README.md LICENSE \
+            README.md LICENSE KEYS \
             --repo tfquery/homebrew-tfquery --clobber
         env:
           GH_TOKEN: ${{ secrets.GH_GORELEASER_PAT }}
