@@ -5,6 +5,7 @@ package output
 
 import (
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -28,6 +29,54 @@ import (
 	"github.com/tfquery/tfquery/internal/filters"
 	"github.com/tfquery/tfquery/internal/jq"
 )
+
+// CSVWriter renders the result set as CSV.  Escaping of embedded commas and
+// quotes is handled by the library per RFC 4180
+func CSVWriter(filteredDataset []map[string]any, attrs attrs.AttrList, cmd *cli.Command, w io.Writer) any {
+	if w == nil {
+		w = os.Stdout
+	}
+
+	cw := csv.NewWriter(w)
+
+	// Render header row when titles are enabled.
+	if cmd.Bool("titles") {
+		headers := make([]string, 0, len(attrs))
+		for _, attr := range attrs {
+			if !attr.Include {
+				continue
+			}
+			headers = append(headers, attr.OutputKey)
+		}
+
+		if err := cw.Write(headers); err != nil {
+			return err
+		}
+	}
+
+	for _, row := range filteredDataset {
+		record := make([]string, 0, len(attrs))
+		for _, attr := range attrs {
+			if !attr.Include {
+				continue
+			}
+
+			value := InterfaceToString(row[attr.OutputKey])
+			record = append(record, value)
+		}
+
+		if err := cw.Write(record); err != nil {
+			return err
+		}
+	}
+
+	cw.Flush()
+	if err := cw.Error(); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // InterfaceToString converts supported primitive or composite values to a
 // string. A custom empty value may be provided.
@@ -126,7 +175,10 @@ func SliceDiceSpit(raw bytes.Buffer,
 	}
 
 	// If raw, just dump it and go home.
-	output := cmd.String("output")
+	output := strings.ToLower(strings.TrimSpace(cmd.String("output")))
+	if output == "" {
+		output = "text"
+	}
 	if output == "raw" {
 		_, _ = w.Write(raw.Bytes())
 
@@ -226,8 +278,14 @@ func SliceDiceSpit(raw bytes.Buffer,
 	SortDataset(filteredDataset, spec)
 
 	switch output {
+	case "csv":
+		// Render the	filtered dataset as CSV.
+		if err := CSVWriter(filteredDataset, attrs, cmd, w); err != nil {
+			log.Errorf("SliceDiceSpit csv render: %v", err)
+		}
+
 	case "json":
-		// We marshal the filtered dataset into a JSON document. Note that the JSON
+		// Marshal the filtered dataset into a JSON document. Note that the JSON
 		// key order will not match the order of the fields in filteredDataset since
 		// we're using maps to represent rows. The Go encoding/json package
 		// intentionally sorts the keys in the output.
@@ -235,13 +293,15 @@ func SliceDiceSpit(raw bytes.Buffer,
 		if err != nil {
 			log.Errorf("SliceDiceSpit json marshal: %v", err)
 		}
-		os.Stdout.Write(jsonOutput)
+		w.Write(jsonOutput) //nolint:Errcheck,gosec
+
 	case "yaml":
 		yamlOutput, err := yaml.Marshal(filteredDataset)
 		if err != nil {
 			log.Errorf("SliceDiceSpit yaml marshal: %v", err)
 		}
-		os.Stdout.Write(yamlOutput)
+		w.Write(yamlOutput) //nolint:Errcheck,gosec
+
 	default:
 		TableWriter(filteredDataset, attrs, cmd, w)
 	}

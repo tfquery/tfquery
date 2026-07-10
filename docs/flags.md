@@ -11,11 +11,45 @@ tfquery has a rich collection of flags available to each command. Many of these 
 | `-f`, `--filter`  | A comma-separated list of filters to apply to the result before it is returned. See [Filters](filters.md) for a much more detailed discussion. |
 | `--help` | Show command-specific help. |
 | `--json-into` | Write the result as JSON to the specified file. This is a secondary output and is independent of `--output`. |
-| `-o`, `--output` | Output format. Valid values are `text` (default), `json`, `yaml` or `raw`. Raw is a JSON dump of the Terraform API response. |
+| `-o`, `--output` | Output format. Valid values are `text` (default), `json`, `yaml`, or `csv`. |
 | `-s`, `--sort`    | A comma-separated list of attributes to sort the result by. Reverse sorting is indicated by a leading `-`. |
 | `-v`, `--version` | Print tfquery version information and exit. |
 | `-t`, `--titles`  | Print attribute name column headings when in text output mode. |
 | `--yaml-into` | Write the result as YAML to the specified file. This is a secondary output and is independent of `--output`. |
+
+## Schema Discovery (`--schema`)
+
+Many query commands support `--schema`, which prints a list of common fields you
+can use with `--attrs`, `--filter`, and `--sort`.
+
+Commands that support `--schema`:
+
+- `tfquery oq --schema`
+- `tfquery mq --schema`
+- `tfquery pq --schema`
+- `tfquery rq --schema`
+- `tfquery svq --schema`
+- `tfquery wq --schema`
+
+Commands that do not support `--schema`:
+
+- `tfquery ps` (plan summary)
+- `tfquery sq` (state query)
+
+Use `--schema` as a discovery-first workflow:
+
+```sh
+# 1. Discover fields available for the command.
+tfquery wq --schema
+
+# 2. Select a subset of fields for output.
+tfquery wq --attrs name,created-at,terraform-version
+
+# 3. Reuse schema fields in filtering and sorting.
+tfquery wq --filter 'name@prod' --sort -created-at,name
+```
+
+If a command supports `--schema`, start there before writing complex attribute, filter, or sort expressions.
 
 
 ## Usage

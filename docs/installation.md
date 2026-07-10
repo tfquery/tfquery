@@ -18,10 +18,13 @@ Notes:
 
 Download the latest .deb release packages for your platform from the [releases page](https://github.com/tfquery/tfquery/releases).
 
+Before installing downloaded artifacts, verify signatures using [Signing and
+verification](signing.md).
+
 ```bash
 # Example for amd64; adjust the filename for the architecture and release you
 # downloaded.
-sudo dpkg -i /path/to/tfq_1.2.1_amd64.deb
+sudo dpkg -i /path/to/tfquery_1.7.1_amd64.deb
 ```
 
 Notes:
@@ -31,10 +34,13 @@ Notes:
 
 Download the latest release for your platform from the [releases page](https://github.com/tfquery/tfquery/releases).
 
+Before installing downloaded artifacts, verify signatures using [Signing and
+verification](signing.md).
+
 Extract and move the binary to your PATH:
 
 ```bash
-tar xvzf tfq_*.tar.gz
+tar xvzf tfquery_*.tar.gz
 sudo mv tfquery /usr/local/bin
 ```
 

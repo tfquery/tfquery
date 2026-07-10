@@ -1,8 +1,19 @@
 # Changelog
 
+## v1.8.0 - 2026-07-17
+
+### Fixed
+
+- `ps` command now supports `--output` flag.
+- Public documentation improvements.
+
+### Chores
+
+- Rotated GPG signing key.
+
 ## v1.7.0 - 2026-07-03
 
-## Added
+### Added
 
 - State query (`sq`) now supports `--count` to provide a summary table of resources in the state(s).
 

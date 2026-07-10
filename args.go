@@ -314,6 +314,10 @@ func isExistingFile(path string) bool {
 
 // processPsArgs handles argument processing for the ps command.
 func processPsArgs(args []string) []string {
+	if len(args) > 2 && strings.HasPrefix(args[2], "-") {
+		return args
+	}
+
 	// Ensure the argument immediately following "ps" is "-" or an existing
 	// file.
 	if len(args) == 2 || (args[2] != "-" && !isExistingFile(args[2])) {
@@ -362,7 +366,7 @@ func processCommandArgs(args []string) []string {
 		// occurrence of each flag.
 		args = injectConfigSet(args, args[1]+".defaults", insertIdx)
 
-		if args[1] != "sq" {
+		if args[1] != "sq" && args[1] != "ps" {
 			args = injectConfigSet(args, "nostate", insertIdx)
 		}
 

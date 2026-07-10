@@ -8,18 +8,18 @@
 
 # The top-level `defaults`` argument set is reserved and defines arguments that
 # are added into every command line. For example, with the configuration below,
-# the command `tfquery sq --color` will effectively become `tfquery sq --padding 1
-# --titles --color`. Note that global defaults arguments are the least
-# precedent and are overridden by both command-specific config and command line
-# arguments. So, for example, `tfquery sq --no-titles` would "cancel out" the
-# global `--titles` argument, but `--padding 1` would still be in effect.
+# the command `tfquery sq --color` will effectively become `tfquery sq
+# --padding 1 --titles --color`. Note that global defaults arguments are the
+# least precedent and are overridden by both command-specific config and command
+# line arguments. So, for example, `tfquery sq --no-titles` would "cancel out"
+# the global `--titles` argument, but `--padding 1` would still be in effect.
 defaults:
   - --local
   - --padding 1
   - --titles
 
 # Similar to the global "defaults" set, the "nostate" set is reserved and
-# defines arguments that are added into every command line THAT DOES NOT REQUIRE
+# defines arguments that are added into every command line THAT DOES NOT QUERY
 # STATE. Currently all commands except "sq" are considered "nostate" and will,
 # therefore, have these arguments injected. Note that these arguments have a
 # higher precedent than "global" arguments, but lower than command-specific
@@ -33,12 +33,12 @@ nostate:
 # COMMAND-SPECIFIC CONFIGURATION
 #
 
-# Each of the commands (mq, oq, sq, etc) can have their own configuration
-# section. Each section is made up of one or more "sets", which are, in turn,
-# a list of arguments to automatically use for that command. The set identifier
-# `defaults` is reserved and is automatically injected into every command line
-# for it's parent command. Any arguments in a set can explicitly be overriden on
-# the command line.
+# Each of the commands (mq, oq, sq, etc) can have their own, optional,
+# configuration section. Each section is made up of one or more "sets", which
+# are, in turn, a list of arguments to automatically use for that command. The
+# set identifier `defaults` is reserved and is automatically injected into every
+# command line for it's parent command. Any arguments in a set can explicitly be
+# overriden on  the command line.
 #
 sq:
   # attrs is a reserved key that defines the default list of output attributes
@@ -80,8 +80,8 @@ sq:
 
 presets:
   attrs:
-    # Global presets that can be used in any command's --attrs arguement.
-    # For example, with the configuration below, the command `tfquery sq --attrs
+    # Global presets that can be used in any command's --attrs argument. For
+    # example, with the configuration below, the command `tfquery sq --attrs
     # set1` will effectively become `tfquery sq --attrs region,tags_all.layer`.
     # Not that these presets are additive, so `tfquery sq --attrs "arn,@set1"`
     # will become `tfquery sq --attrs arn,region,tags_all.layer`. Multiple presets
@@ -110,14 +110,14 @@ presets:
 #
 
 cache:
-  # Number of hours after which cached state file info is considered stale and
+  # Number of hours after which a cached state file info is considered stale and
   # removed from the cache. Note that cache cleaning occurs even if caching is
   # disabled. Set to 0 to disable automatic cleaning.
   clean: 24
 
   # Caching of raw state file info used by, currently, only the sq command can
   # be enabled or disabled here. By default it is disabled. This setting can
-  # be overriden by the TFQ_CACHE environment variable.
+  # be overriden by the TFQUERY_CACHE environment variable.
   enabled: false
 
 # Colors to use for --output=text --colors. They must be set here and cannot be

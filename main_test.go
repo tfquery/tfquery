@@ -303,6 +303,73 @@ func TestProcessCommandArgs_PsSkipsExplicitSet(t *testing.T) {
 	}
 }
 
+func TestProcessCommandArgs_PsFlagFirstNoDashInjection(t *testing.T) {
+	args := []string{"tfquery", "ps", "--output", "json"}
+	got := processCommandArgs(args)
+
+	if len(got) > 2 && got[2] == "-" {
+		t.Errorf("processCommandArgs(%v) injected stdin marker before flags: %v", args, got)
+	}
+
+	if !hasArgSequence(got, "--output", "json") {
+		t.Errorf("processCommandArgs(%v) missing output flag pair: %v", args, got)
+	}
+}
+
+func TestProcessCommandArgs_PsFlagFirstNoDashInjection_EqualsSyntax(t *testing.T) {
+	args := []string{"tfquery", "ps", "--output=json"}
+	got := processCommandArgs(args)
+
+	if len(got) > 2 && got[2] == "-" {
+		t.Errorf("processCommandArgs(%v) injected stdin marker before flags: %v", args, got)
+	}
+
+	if !hasArg(got, "--output=json") {
+		t.Errorf("processCommandArgs(%v) missing equals output flag: %v", args, got)
+	}
+}
+
+func TestProcessCommandArgs_PsSkipsNoStateInjection(t *testing.T) {
+	originalConfig := config.Config
+	t.Cleanup(func() {
+		config.Config = originalConfig
+	})
+
+	config.Config = config.Type{
+		Data: map[string]any{
+			"nostate": []any{"--host app.terraform.io"},
+		},
+	}
+
+	args := []string{"tfquery", "ps", "--output", "json"}
+	got := processCommandArgs(args)
+	want := []string{"tfquery", "ps", "--output", "json"}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("processCommandArgs(%v) = %v, want %v", args, got, want)
+	}
+}
+
+func hasArg(args []string, target string) bool {
+	for _, arg := range args {
+		if arg == target {
+			return true
+		}
+	}
+
+	return false
+}
+
+func hasArgSequence(args []string, a string, b string) bool {
+	for i := 0; i < len(args)-1; i++ {
+		if args[i] == a && args[i+1] == b {
+			return true
+		}
+	}
+
+	return false
+}
+
 func TestExpandPresetSegments(t *testing.T) {
 	originalConfig := config.Config
 	t.Cleanup(func() {

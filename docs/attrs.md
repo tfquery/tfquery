@@ -29,6 +29,66 @@ Where:
 - `output_name` - Column name in output (optional)
 - `transform_spec` - Data transformation rules (optional)
 
+## Formal Specification
+
+Use this section as the authoritative syntax reference for `--attrs`.
+
+### Parsing Rules
+
+1. Split the full `--attrs` value on commas to get each `spec`.
+2. For each `spec`, parse up to three colon-delimited fields:
+  - Field 1: `path` (required)
+  - Field 2: `out_name` (optional)
+  - Field 3: `transform` (optional)
+3. If a custom output name is omitted but transform is present, keep an empty
+  second field:
+
+```text
+name::U
+```
+
+4. `!` is a per-spec exclusion marker:
+  - `!name` means evaluate for filtering/sorting context but omit from output.
+5. `*` targets all selected attributes for a global transform.
+
+### Transform Tokens
+
+Transform tokens are evaluated left-to-right.
+
+- `U`: uppercase
+- `L`: lowercase
+- `t`: convert UTC timestamp string to local time
+- `N` (positive integer): keep first `N` characters
+- `-N` (negative integer): compact long strings to head/tail display
+
+Examples:
+
+- `name::U10` means uppercase first, then truncate to 10 characters.
+- `created-at::tL` means local-time conversion first, then lowercase.
+
+### Valid and Invalid Examples
+
+Valid:
+
+```text
+email
+.id
+created-at:Created
+created-at::t
+name:Name:U
+name::U10
+*:U
+!type
+```
+
+Invalid or ambiguous (avoid):
+
+```text
+name:U           # This sets output_name to "U"; it is not a transform.
+name:::U         # Too many field separators.
+name:Display:U:L # Too many colon-delimited fields.
+```
+
 ## JSON Path Extraction
 
 ### Root vs Attributes Paths
@@ -123,6 +183,10 @@ tfquery oq --attrs name::10
 # Compress long strings (show beginning and end)
 tfquery oq --attrs name::-8
 # "my-long-organization" → "my-l..on"
+
+# Head/tail format with a custom output column name
+tfquery oq --attrs name:Name::-12
+# "production-network-core" → "produ..core"
 ```
 
 ### Time Transformations
@@ -206,12 +270,6 @@ tfquery wq --filter 'name@prod' \
   --attrs name:Workspace,working-directory:Path,auto-apply:Auto::U
 ```
 
-### State Analysis
-```sh
-# Analyze state file resources
-tfquery sq --attrs type::15,name::25,provider::10
-```
-
 ## Tips and Best Practices
 
 1. **Start with `--schema`** - Always explore available attributes first.
@@ -222,8 +280,8 @@ tfquery sq --attrs type::15,name::25,provider::10
 
 ## Error Handling
 
-**Invalid paths** - tfquery will show empty values for non-existent paths
-**Invalid transforms** - Bad transformation specs are ignored
-**Type mismatches** - Only string values can be transformed; others pass through unchanged
+**Invalid paths** - tfquery will show empty values for non-existent paths.
+**Invalid transforms** - Bad transformation specs are ignored.
+**Type mismatches** - Only string and numeric values can be transformed; others pass through unchanged.
 
 Understanding these attribute extraction patterns unlocks tfquery's full querying power, enabling you to extract exactly the data you need in the format you want.

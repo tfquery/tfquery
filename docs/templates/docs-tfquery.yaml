@@ -129,13 +129,23 @@ subcommands:
   - id: ps
     alias: summarize
     short: Plan summary
-    description: Show a summary of the given plan.
+    description: Summarize Terraform plan output for review and automation.
     usage: tfquery ps [planfile] [options]
+    notes:
+      - "`ps` reads plan output from stdin by default."
+      - "Use `--filter` or `--jq` to narrow summary rows to specific actions or resources."
+      - "Use `--output json` when passing summary results to automation tools."
     examples:
       - command: terraform plan | tfquery ps
         description: Show only a summary of a Terraform plan.
       - command: terraform plan | tee >(tfquery ps)
         description: Show the full plan output while also including a summary.
+      - command: terraform plan | tfquery ps --filter 'action=created'
+        description: Show only resources that will be created.
+      - command: terraform plan | tfquery ps --output json
+        description: Emit summary data in JSON for automation.
+      - command: terraform plan | tfquery ps --sort action,type
+        description: Sort summary rows by action and then resource type.
 
   - id: rq
     alias: run

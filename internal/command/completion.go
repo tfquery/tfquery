@@ -86,7 +86,7 @@ _tfctl()
     esac
 
     if [[ "$prev" == "--output" || "$prev" == "-o" ]]; then
-        COMPREPLY=( $(compgen -W "text json raw yaml" -- "$cur") )
+        COMPREPLY=( $(compgen -W "csv text json raw yaml" -- "$cur") )
         return 0
     fi
 
@@ -125,7 +125,7 @@ _tfctl() {
   '(-a --attrs)'{-a,--attrs}'[attributes to include]:attrs'
   '(-c --color)'{-c,--color}'[enable colored text]'
   '(-f --filter)'{-f,--filter}'[filters to apply]:filters'
-  '(-o --output)'{-o,--output}'[output format]:format:(text json raw yaml)'
+  '(-o --output)'{-o,--output}'[output format]:format:(csv text json raw yaml)'
   '(-s --sort)'{-s,--sort}'[sort attributes]:attrs'
   '(-t --titles)'{-t,--titles}'[show titles]'
   '--tldr[show tldr page]'

@@ -38,52 +38,34 @@ var psDefaultAttrs = []string{".resource", ".action"}
 
 // psCommandAction is the action handler for the "ps" subcommand. It reads
 // Terraform plan output from a file or stdin, extracts resource action lines,
-// and displays them in columnar format.
+// and renders them according to output flags.
 func psCommandAction(ctx context.Context, cmd *cli.Command) error {
 	config.Config.Namespace = "ps"
 
-	meta := cmd.Metadata["meta"].(meta.Meta)
+	meta := GetMeta(cmd)
 	log.Debugf("Executing action for %v", meta.Args[1:])
-
-	header := "\nPlan action summary"
-	if cmd.String("filter") != "" {
-		header += " (filtered)"
+	if ShortCircuitTLDR(ctx, cmd, "ps") {
+		return nil
 	}
-	header += ":"
-	cmd.Metadata["header"] = header
 
-	config.Config.Namespace = "ps"
-
-	// Get the positional argument (the plan input file or default to stdin)
-	var planInput string
-	if len(meta.Args) > 2 && meta.Args[2] != "-" {
-		planInput = meta.Args[2]
+	psPrepareRender(cmd)
+	header := psHeader(cmd)
+	if header != "" {
+		cmd.Metadata["header"] = header
 	} else {
-		planInput = "-"
+		delete(cmd.Metadata, "header")
 	}
 
-	var input io.ReadCloser
-
-	// Determine input source: file or stdin
-	if planInput == "-" {
-		input = os.Stdin
-	} else {
-		if info, err := os.Stat(planInput); err != nil {
-			return fmt.Errorf("plan file does not exist: %s", planInput)
-		} else if info.IsDir() {
-			return fmt.Errorf("plan input cannot be a directory: %s", planInput)
-		}
-		input, err := os.Open(planInput)
-		if err != nil {
-			return fmt.Errorf("failed to open plan file: %w", err)
-		}
-		defer func() {
-			if cerr := input.Close(); cerr != nil {
-				log.Errorf("failed to close plan file: %v", cerr)
-				err = cerr
-			}
-		}()
+	planInput := psPlanInput(cmd.Args().Slice())
+	input, closeFn, err := psOpenInput(planInput)
+	if err != nil {
+		return err
 	}
+	defer func() {
+		if closeErr := closeFn(); closeErr != nil {
+			log.Errorf("failed to close plan file: %v", closeErr)
+		}
+	}()
 
 	// Parse the plan output and get resource actions
 	resources, err := parsePlanOutput(input, cmd.Bool("concrete"))
@@ -99,22 +81,77 @@ func psCommandAction(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("failed to marshal dataset: %w", err)
 	}
 
-	// Build attributes from defaults and command flags
-	attrList := attrs.AttrList{}
-	for _, attr := range psDefaultAttrs {
-		_ = attrList.Set(attr)
-	}
-	if userAttrs := cmd.String("attrs"); userAttrs != "" {
-		_ = attrList.Set(userAttrs)
-	}
-
 	// Use the output framework to display results
 	var raw bytes.Buffer
 	raw.Write(jsonData)
 
-	output.SliceDiceSpit(raw, attrList, cmd, "", os.Stdout, nil)
+	output.SliceDiceSpit(raw, psBuildAttrs(cmd), cmd, "", os.Stdout, nil)
 
 	return nil
+}
+
+func psBuildAttrs(cmd *cli.Command) attrs.AttrList {
+	return BuildAttrs(cmd, true, psDefaultAttrs...)
+}
+
+func psPrepareRender(cmd *cli.Command) {
+	if psIsTextOutput(cmd) {
+		return
+	}
+
+	_ = cmd.Set("titles", "false")
+}
+
+func psHeader(cmd *cli.Command) string {
+	if !psIsTextOutput(cmd) {
+		return ""
+	}
+
+	header := "\nPlan action summary"
+	if cmd.String("filter") != "" || cmd.String("jq") != "" {
+		header += " (filtered)"
+	}
+
+	return header + ":"
+}
+
+func psIsTextOutput(cmd *cli.Command) bool {
+	mode := strings.ToLower(strings.TrimSpace(cmd.String("output")))
+	if mode == "" {
+		mode = "text"
+	}
+
+	return mode == "text"
+}
+
+func psPlanInput(args []string) string {
+	if len(args) > 0 && args[0] != "-" {
+		return args[0]
+	}
+
+	return "-"
+}
+
+func psOpenInput(path string) (io.Reader, func() error, error) {
+	if path == "-" {
+		return os.Stdin, func() error { return nil }, nil
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, nil, fmt.Errorf("plan file does not exist: %s", path)
+	}
+
+	if info.IsDir() {
+		return nil, nil, fmt.Errorf("plan input cannot be a directory: %s", path)
+	}
+
+	input, err := os.Open(path)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to open plan file: %w", err)
+	}
+
+	return input, input.Close, nil
 }
 
 // parsePlanOutput reads the plan input and extracts resource action lines.
@@ -201,6 +238,11 @@ func psCommandBuilder(meta meta.Meta) *cli.Command {
 				Value:   false,
 			},
 		}...),
+		Before: func(ctx context.Context, cmd *cli.Command) (context.Context, error) {
+			ResolveInverseFlags(cmd, meta.Args, []string{"color", "local", "titles"})
+
+			return ctx, GlobalFlagsValidator(ctx, cmd)
+		},
 		Action: psCommandAction,
 	}
 }

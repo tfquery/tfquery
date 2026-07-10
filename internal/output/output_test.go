@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -974,4 +975,58 @@ func TestSliceDiceSpit_FilterAndJQConflict(t *testing.T) {
 	SliceDiceSpit(*raw, attrList, cmd, "", out, nil)
 
 	assert.Equal(t, "", out.String())
+}
+
+func TestSliceDiceSpit_CSVOutput(t *testing.T) {
+	raw := bytes.NewBufferString(`[
+		{"name":"beta","count":2},
+		{"name":"alpha","count":1}
+	]`)
+
+	attrList := attrs.AttrList{
+		{Key: "name", OutputKey: "name", Include: true},
+		{Key: "count", OutputKey: "count", Include: true},
+	}
+
+	cmd := &cli.Command{
+		Flags: []cli.Flag{
+			&cli.StringFlag{Name: "output", Value: "csv"},
+			&cli.StringFlag{Name: "sort", Value: "name"},
+			&cli.BoolFlag{Name: "titles", Value: true},
+		},
+		Metadata: make(map[string]any),
+	}
+
+	out := new(bytes.Buffer)
+	SliceDiceSpit(*raw, attrList, cmd, "", out, nil)
+
+	got := strings.TrimSpace(out.String())
+	assert.Equal(t, "name,count\nalpha,1\nbeta,2", got)
+}
+
+func TestSliceDiceSpit_JSONOutputNormalization(t *testing.T) {
+	raw := bytes.NewBufferString(`[
+		{"name":"beta","count":2},
+		{"name":"alpha","count":1}
+	]`)
+
+	attrList := attrs.AttrList{
+		{Key: "name", OutputKey: "name", Include: true},
+		{Key: "count", OutputKey: "count", Include: true},
+	}
+
+	cmd := &cli.Command{
+		Flags: []cli.Flag{
+			&cli.StringFlag{Name: "output", Value: " JSON "},
+			&cli.StringFlag{Name: "sort", Value: "name"},
+			&cli.BoolFlag{Name: "titles", Value: true},
+		},
+		Metadata: map[string]any{"header": "Plan action summary:"},
+	}
+
+	out := new(bytes.Buffer)
+	SliceDiceSpit(*raw, attrList, cmd, "", out, nil)
+
+	got := strings.TrimSpace(out.String())
+	assert.Equal(t, `[{"count":1,"name":"alpha"},{"count":2,"name":"beta"}]`, got)
 }

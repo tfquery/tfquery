@@ -57,11 +57,11 @@ HashiCorp's `tfctl-cli` focuses on managing HashiCorp platforms and services. `t
 
 <a href="docs/asciinema/queries.gif" target="_blank" rel="noopener noreferrer">jq Queries</a>
 
-## Why ?
+## Why tfquery?
 
 The native Terraform CLI provides essential IAC tooling for managing the lifecycle of resources it creates. But it lacks powerful state querying tools and offers no easily accessible way to query other elements of the Terraform ecosystem like workspaces, organizations, or module registries. This is especially problematic for automation use cases, when you need programmatic access to infrastructure metadata, state history, or cross-workspace insights.
 
-** fills these gaps** by providing a unified, high-performance CLI for deep querying and analysis of the Terraform ecosystem, enabling better automation, reporting, and operational workflows.
+**tfquery fills these gaps** by providing a unified, high-performance CLI for deep querying and analysis of the Terraform ecosystem, enabling better automation, reporting, and operational workflows.
 
 ## Installation
 
@@ -95,38 +95,38 @@ brew install tfquery
 
 ```bash
 # Find all workspaces containing "prod" across your organization
- wq --filter 'name@prod'
+tfquery wq --filter 'name@prod'
 
 # Compare state versions to see what changed
- sq --diff
+tfquery sq --diff
 
 # Summarize changes from a Terraform plan, only showing those resources that
 # would be created.
-terraform plan |  ps plan.out --filter 'action=created'
+terraform plan | tfquery ps --filter 'action=created'
 
 # List modules by popularity across registries
- mq --sort -downloads
+tfquery mq --sort -downloads
 
 # Export workspace data for automation
- wq --attrs created-at,updated-at --output json
+tfquery wq --attrs created-at,updated-at --output json
 
-# All "short-style" queries have aliases. Functionality is identical.
- mq --color
- module --color
+# Aliases are available and functionally identical.
+tfquery mq --color
+tfquery module --color
 ```
 
 ## Available Commands
 
 | Command | Alias | Purpose | Example |
 |---------| ----- | ------- |---------|
-| **`mq`** | `module` | Module query | ` mq --filter 'name@aws'` |
-| **`oq`** | `org` | Organization query | ` oq --attrs email` |
-| **`pq`** | `project` | Project query | ` pq --sort created-at` |
-| **`ps`** | `summarize` | Plan summary | `terraform plan \|  ps` |
-| **`rq`** | `run` |Run query | ` rq --attrs status` |
-| **`sq`** | `state` | State query | ` sq --attrs arn --sort arn` |
-| **`svq`** | `state-version` | State version query | ` svq --limit 10` |
-| **`wq`** | `workspace` | Workspace query | ` wq --filter 'status@applied'` |
+| **`mq`** | `module` | Module query | `tfquery mq --filter 'name@aws'` |
+| **`oq`** | `org` | Organization query | `tfquery oq --attrs email` |
+| **`pq`** | `project` | Project query | `tfquery pq --sort created-at` |
+| **`ps`** | `summarize` | Plan summary | `terraform plan \| tfquery ps` |
+| **`rq`** | `run` | Run query | `tfquery rq --attrs status` |
+| **`sq`** | `state` | State query | `tfquery sq --attrs arn --sort arn` |
+| **`svq`** | `state-version` | State version query | `tfquery svq --limit 10` |
+| **`wq`** | `workspace` | Workspace query | `tfquery wq --filter 'status@applied'` |
 
 ## Documentation
 
@@ -139,7 +139,7 @@ terraform plan |  ps plan.out --filter 'action=created'
 
 ## Roadmap
 
-**** is currently read-only and focused on querying. Version 1.x provides stable query functionality for local, TFE/HCP and S3 backends.
+**tfquery** is currently read-only and focused on querying. Version 1.x provides stable query functionality for local, TFE/HCP and S3 backends.
 
 **Planned features:**
 - Workspace and state manipulation.
