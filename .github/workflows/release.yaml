@@ -25,9 +25,21 @@ jobs:
         run: |
           rm -rf dist
 
-      - name: Import GPG key
+      - name: Configure GPG for CI signing
+        shell: bash
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --batch --yes
+          set -euo pipefail
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          gpgconf --kill gpg-agent || true
+
+      - name: Import GPG key
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --import
           gpg --list-secret-keys
 
       - name: Generate release notes
@@ -65,6 +77,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_GORELEASER_PAT }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Verify signatures against KEYS
         shell: bash
