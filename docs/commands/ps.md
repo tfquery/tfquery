@@ -6,7 +6,7 @@ tfquery summarize
 
 # DESCRIPTION
 
-Show a summary of the given plan.
+Summarize Terraform plan output for review and automation.
 
 # USAGE
 
@@ -38,6 +38,15 @@ Show a summary of the given plan.
   Prefix field names with `-` to sort in descending order. For example, `--sort=-created-at,name` sorts first by Created At (newest first), then by Name (A-Z).
 
 
+## NOTES
+
+- `ps` reads plan output from stdin by default.
+
+- Use `--filter` or `--jq` to narrow summary rows to specific actions or resources.
+
+- Use `--output json` when passing summary results to automation tools.
+
+
 
 
 # EXAMPLES
@@ -53,6 +62,27 @@ terraform plan | tfquery ps
 
 ```sh
 terraform plan | tee >(tfquery ps)
+```
+
+
+**Show only resources that will be created.**
+
+```sh
+terraform plan | tfquery ps --filter 'action=created'
+```
+
+
+**Emit summary data in JSON for automation.**
+
+```sh
+terraform plan | tfquery ps --output json
+```
+
+
+**Sort summary rows by action and then resource type.**
+
+```sh
+terraform plan | tfquery ps --sort action,type
 ```
 
 

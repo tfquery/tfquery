@@ -1,4 +1,4 @@
-.TH tfquery-ps 1 "July 6, 2026" "tfquery v1.7.0" "tfquery"
+.TH tfquery-ps 1 "August 14, 2026" "tfquery v1.8.0" "tfquery"
 .SH NAME
 tfquery\-ps \- Plan summary
 .SH SYNOPSIS
@@ -6,7 +6,7 @@ tfquery ps [planfile] [options]
 .br
 tfquery summarize [planfile] [options]
 .SH DESCRIPTION
-Show a summary of the given plan.
+Summarize Terraform plan output for review and automation.
 
 .SH OPTIONS
 
@@ -87,4 +87,31 @@ Show the full plan output while also including a summary.
 .IP
 terraform plan | tee >(tfquery ps)
 
+.TP
+Show only resources that will be created.
+.IP
+terraform plan | tfquery ps --filter 'action=created'
+
+.TP
+Emit summary data in JSON for automation.
+.IP
+terraform plan | tfquery ps --output json
+
+.TP
+Sort summary rows by action and then resource type.
+.IP
+terraform plan | tfquery ps --sort action,type
+
+
+
+.SH NOTES
+
+.IP
+`ps` reads plan output from stdin by default.
+
+.IP
+Use `--filter` or `--jq` to narrow summary rows to specific actions or resources.
+
+.IP
+Use `--output json` when passing summary results to automation tools.
 
