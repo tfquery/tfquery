@@ -106,7 +106,7 @@ signs:
   - artifacts: all
     cmd: gpg
     env:
-      - GPG_PASSPHRASE={{ .Env.GPG_PASSPHRASE }}
+      - GPG_PASSPHRASE=$GPG_PASSPHRASE
     args:
       [
         "--batch",
@@ -114,7 +114,7 @@ signs:
         "--pinentry-mode",
         "loopback",
         "--passphrase",
-        "{{ .Env.GPG_PASSPHRASE }}",
+        "$GPG_PASSPHRASE",
         "--detach-sign",
         "--armor",
         "--output",
