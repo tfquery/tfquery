@@ -25,6 +25,16 @@ jobs:
         run: |
           rm -rf dist
 
+      - name: Validate signing secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${GPG_PRIVATE_KEY:?missing GPG_PRIVATE_KEY}"
+          : "${GPG_PASSPHRASE:?missing GPG_PASSPHRASE}"
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Configure GPG for CI signing
         shell: bash
         run: |
