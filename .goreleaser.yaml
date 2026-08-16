@@ -105,19 +105,17 @@ nfpms:
 signs:
   - artifacts: all
     cmd: gpg
-    env:
-      - GPG_PASSPHRASE=$GPG_PASSPHRASE
+    output: true
+    stdin: "{{ .Env.GPG_PASSPHRASE }}"
     args:
-      [
-        "--batch",
-        "--yes",
-        "--pinentry-mode",
-        "loopback",
-        "--passphrase",
-        "$GPG_PASSPHRASE",
-        "--detach-sign",
-        "--armor",
-        "--output",
-        "${signature}",
-        "${artifact}",
-      ]
+      - "--batch"
+      - "--yes"
+      - "--pinentry-mode"
+      - "loopback"
+      - "--passphrase-fd"
+      - "0"
+      - "--detach-sign"
+      - "--armor"
+      - "--output"
+      - "${signature}"
+      - "${artifact}"

@@ -87,6 +87,20 @@ jobs:
             }
           ' CHANGELOG.md > /tmp/release-notes.md
 
+      - name: Dump environment variables
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' entry; do
+            name="${entry%%=*}"
+            value="${entry#*=}"
+            printf '%s=%d\n' "$name" "${#value}"
+          done < <(printenv -0 | sort -z)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_GORELEASER_PAT }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
